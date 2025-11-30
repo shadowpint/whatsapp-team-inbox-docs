@@ -1,0 +1,727 @@
+---
+title: 'Contact Management'
+description: 'Organize and manage customer contact information effectively'
+---
+
+## Overview
+
+The contact management system helps you maintain comprehensive customer profiles, track interaction history, and personalize communication.
+
+## Contact Profiles
+
+Each contact has a detailed profile containing:
+
+<CardGroup cols={2}>
+  <Card title="Basic Information" icon="user">
+    Name, phone, email, and company details
+  </Card>
+  <Card title="Custom Fields" icon="sliders">
+    Industry-specific data and preferences
+  </Card>
+  <Card title="Conversation History" icon="clock-rotate-left">
+    All past conversations and interactions
+  </Card>
+  <Card title="Tags & Segments" icon="tags">
+    Organization and categorization
+  </Card>
+</CardGroup>
+
+## Adding Contacts
+
+<Tabs>
+  <Tab title="Automatic Creation">
+    Contacts are created automatically when:
+    - Customer sends first WhatsApp message
+    - You start a new conversation
+    - Imported from integrations
+
+    **Auto-populated fields:**
+    - Phone number (from WhatsApp)
+    - Name (from WhatsApp profile)
+    - First contact date
+    - Conversation count
+  </Tab>
+
+  <Tab title="Manual Creation">
+    Add contacts manually:
+
+    <Steps>
+      <Step title="Open Contact Form">
+        Click **Contacts** → **Add Contact**
+      </Step>
+
+      <Step title="Fill Basic Information">
+        ```
+        Required:
+        • Phone: +1 234 567 8900
+        • Name: John Smith
+
+        Optional:
+        • Email: john@example.com
+        • Company: Acme Inc
+        • Job Title: Marketing Manager
+        • Location: New York, NY
+        ```
+      </Step>
+
+      <Step title="Add Custom Fields">
+        ```
+        • Customer Since: Nov 29, 2025
+        • Account Type: Premium
+        • Preferred Language: English
+        • Timezone: EST
+        • Account ID: CUST-12345
+        ```
+      </Step>
+
+      <Step title="Apply Tags">
+        Select relevant tags:
+        - VIP
+        - Premium Customer
+        - New York
+        - Marketing Team
+      </Step>
+
+      <Step title="Save Contact">
+        Click **Create Contact**
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Bulk Import">
+    Import multiple contacts from CSV:
+
+    <Steps>
+      <Step title="Prepare CSV File">
+        ```csv
+        phone,name,email,company,tags
+        +12345678900,John Smith,john@example.com,Acme Inc,"VIP,Premium"
+        +12345678901,Jane Doe,jane@example.com,Tech Corp,"Premium"
+        ```
+
+        **Required columns:**
+        - `phone` (with country code)
+
+        **Optional columns:**
+        - `name`, `email`, `company`
+        - `tags` (comma-separated)
+        - Custom fields
+      </Step>
+
+      <Step title="Upload and Map">
+        1. Click **Import Contacts**
+        2. Upload CSV file
+        3. Map columns to fields
+        4. Preview import
+      </Step>
+
+      <Step title="Review and Import">
+        ```
+        Import Preview
+        ━━━━━━━━━━━━━━━━━━━━
+        Total rows: 150
+        Valid: 145
+        Duplicates: 3 (will skip)
+        Errors: 2 (invalid phone)
+
+        [Review Errors] [Import]
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Editing Contacts
+
+### Quick Edit
+
+Edit basic information inline:
+
+1. Find contact in list
+2. Hover over field
+3. Click to edit
+4. Press Enter to save
+
+### Full Edit
+
+Comprehensive contact editing:
+
+<Steps>
+  <Step title="Open Contact">
+    Click contact name to open profile
+  </Step>
+
+  <Step title="Edit Information">
+    **Available sections:**
+
+    **Personal Details:**
+    ```
+    Name: [John Smith]
+    Email: [john@example.com]
+    Phone: [+1 234 567 8900] (read-only)
+    Company: [Acme Inc]
+    Job Title: [Marketing Manager]
+    ```
+
+    **Address:**
+    ```
+    Street: [123 Main St]
+    City: [New York]
+    State/Province: [NY]
+    Postal Code: [10001]
+    Country: [United States]
+    ```
+
+    **Social Profiles:**
+    ```
+    LinkedIn: [linkedin.com/in/johnsmith]
+    Twitter: [@johnsmith]
+    Website: [johnsmith.com]
+    ```
+  </Step>
+
+  <Step title="Manage Tags">
+    ```
+    Current Tags:
+    [VIP] [Premium] [New York]
+
+    Add Tags:
+    Type to search or create...
+    [+ Enterprise] [+ Marketing]
+
+    Remove: Click × on tag
+    ```
+  </Step>
+
+  <Step title="Custom Fields">
+    Configure industry-specific data:
+
+    **E-commerce:**
+    - Customer Lifetime Value: $5,420
+    - Total Orders: 23
+    - Last Purchase: Nov 15, 2025
+    - Favorite Category: Electronics
+
+    **SaaS:**
+    - Plan: Enterprise
+    - MRR: $299
+    - Contract End: Dec 31, 2026
+    - Usage Tier: High
+
+    **Service Business:**
+    - Client Since: Jan 2024
+    - Service Type: Consulting
+    - Billing Cycle: Monthly
+    - Account Manager: Sarah
+  </Step>
+
+  <Step title="Save Changes">
+    Click **Save Contact** or **Ctrl+S**
+  </Step>
+</Steps>
+
+## Contact Segmentation
+
+### Using Tags
+
+Organize contacts with tags:
+
+<AccordionGroup>
+  <Accordion title="Creating Tag System">
+    **Recommended tag categories:**
+
+    **Customer Tier:**
+    - VIP, Premium, Standard, Trial
+
+    **Status:**
+    - Active, Inactive, Churned, Lead
+
+    **Industry:**
+    - Technology, Healthcare, Retail, Finance
+
+    **Region:**
+    - North America, Europe, Asia Pacific
+
+    **Product Interest:**
+    - Product A, Product B, Service X
+
+    **Lifecycle Stage:**
+    - New Customer, Onboarding, Active, At Risk
+  </Accordion>
+
+  <Accordion title="Tag Management">
+    **Create tags:**
+    ```
+    Settings → Tags → New Tag
+
+    Name: [VIP Customer]
+    Color: [🟡 Gold]
+    Description: [High-value customers requiring priority support]
+    Auto-apply when:
+    ☑ LTV > $10,000
+    ☑ Monthly spend > $500
+    ```
+
+    **Bulk tagging:**
+    1. Select multiple contacts
+    2. Click **Bulk Actions** → **Add Tag**
+    3. Choose tag
+    4. Apply
+  </Accordion>
+
+  <Accordion title="Smart Tags">
+    Auto-apply tags based on conditions:
+
+    ```javascript
+    {
+      "tag": "At Risk",
+      "conditions": {
+        "last_conversation": ">30 days ago",
+        "total_conversations": "<2 in 60 days",
+        "sentiment": "negative"
+      },
+      "action": "notify_account_manager"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Custom Segments
+
+Create dynamic contact groups:
+
+<Steps>
+  <Step title="Create Segment">
+    ```
+    New Segment: High-Value Inactive Customers
+
+    Conditions:
+    • Tags include: Premium OR VIP
+    • Last conversation: >60 days ago
+    • Total spend: >$1,000
+    • Status: Active
+
+    Matches: 23 contacts
+    ```
+  </Step>
+
+  <Step title="Use Segment">
+    **Actions available:**
+    - Send broadcast message
+    - Export to CSV
+    - Bulk update fields
+    - Assign to team member
+    - Monitor activity
+  </Step>
+
+  <Step title="Automate Actions">
+    ```
+    When contact enters segment:
+    1. Add tag "Re-engagement Needed"
+    2. Assign to account manager
+    3. Send template: "We miss you"
+    4. Create follow-up task
+    ```
+  </Step>
+</Steps>
+
+## Conversation History
+
+View all interactions with a contact:
+
+### Timeline View
+
+```
+John Smith - Conversation History
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nov 2025 (3 conversations)
+├─ Nov 28: Billing question (Resolved)
+│  Agent: Sarah | Duration: 15 min
+│  Tags: billing, payment
+│
+├─ Nov 15: Feature request (Open)
+│  Agent: John | Duration: ongoing
+│  Tags: feature-request, mobile-app
+│
+└─ Nov 3: Onboarding help (Resolved)
+   Agent: Alice | Duration: 45 min
+   Tags: onboarding, training
+
+Oct 2025 (2 conversations)
+└─ Oct 20: Technical support (Resolved)
+   Agent: Bob | Duration: 1.5 hours
+   Tags: technical, bug-fix
+
+[Load More...]
+```
+
+### Conversation Statistics
+
+```
+Engagement Metrics
+━━━━━━━━━━━━━━━━━━━━
+Total Conversations: 18
+Average Response Time: 3.2 min
+Resolution Rate: 94%
+Satisfaction Score: 4.8/5
+Lifetime Value: $5,420
+
+Recent Activity
+━━━━━━━━━━━━━━━━━━━━
+Last Contact: 2 days ago
+Avg Frequency: 2x per month
+Preferred Channel: WhatsApp
+Active Times: 9 AM - 5 PM EST
+```
+
+## Contact Notes
+
+Add private notes about contacts:
+
+<Tabs>
+  <Tab title="Adding Notes">
+    ```
+    Internal Notes (not visible to customer)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Nov 28, 2025 - Sarah
+    Customer mentioned they're evaluating competitors.
+    Need to follow up with special offer by Dec 5.
+
+    Oct 20, 2025 - John
+    VIP customer. Always responds well to technical
+    explanations. Prefers email for documentation.
+
+    [Add Note...]
+    ```
+  </Tab>
+
+  <Tab title="Note Types">
+    **Call logs:**
+    ```
+    📞 Call with John - Nov 28, 10:30 AM
+    Duration: 15 minutes
+    Topics: Discussed upgrade options
+    Next step: Send proposal by Friday
+    ```
+
+    **Meeting notes:**
+    ```
+    🤝 Quarterly business review
+    Attendees: John, Sarah (our side)
+    Satisfaction: Very happy with service
+    Expansion opportunity: Additional users
+    ```
+
+    **Important details:**
+    ```
+    ⚠️ Important: Customer has special pricing agreement
+    Discount: 20% on all plans
+    Contract expires: Dec 31, 2025
+    Renewal contact: Sarah
+    ```
+  </Tab>
+</Tabs>
+
+## Contact Search
+
+Find contacts quickly:
+
+### Basic Search
+
+```
+Search contacts...
+┌────────────────────────────────┐
+│ john                          │
+└────────────────────────────────┘
+
+Results (3):
+• John Smith - Acme Inc
+• John Doe - Tech Corp
+• Johnny Walker - Retail Co
+```
+
+### Advanced Search
+
+```
+Advanced Contact Search
+━━━━━━━━━━━━━━━━━━━━━━
+
+Name contains: [john]
+Email contains: [@example.com]
+Tags: [Premium] [VIP]
+Company: [Acme Inc]
+
+Custom Fields:
+• Account Type: [is] [Premium]
+• Last Order: [within] [30 days]
+• LTV: [greater than] [$5,000]
+
+Last Activity:
+○ Any time
+○ Last 7 days
+⦿ Last 30 days
+○ Custom range
+
+[Reset] [Search]
+```
+
+### Saved Searches
+
+```
+My Saved Searches
+━━━━━━━━━━━━━━━━━━
+• VIP Customers in NY
+• Inactive Premium Users
+• Recent Signups (<7 days)
+• High-Value Opportunities
+
+[+ New Saved Search]
+```
+
+## Data Privacy & GDPR
+
+### Contact Consent
+
+Track communication permissions:
+
+```
+Communication Preferences
+━━━━━━━━━━━━━━━━━━━━━━━━
+WhatsApp: ✓ Consented (Nov 15, 2025)
+Email: ✓ Consented (Nov 15, 2025)
+SMS: ✗ Not consented
+Phone: ✓ Consented (Nov 15, 2025)
+
+Marketing Messages: ✓ Opted in
+Transactional Only: ✗
+
+[Update Preferences]
+```
+
+### Data Export
+
+Provide customer data on request:
+
+<Steps>
+  <Step title="Request Export">
+    ```
+    Contact → Actions → Export Data
+
+    Include:
+    ☑ Profile information
+    ☑ Conversation history
+    ☑ Custom fields
+    ☑ Tags and segments
+    ☑ Notes (internal - optional)
+
+    Format: ⦿ JSON ○ CSV ○ PDF
+    ```
+  </Step>
+
+  <Step title="Generate Export">
+    Processing... (large datasets may take a few minutes)
+  </Step>
+
+  <Step title="Download">
+    ```
+    Export ready!
+    File: john-smith-data-export.zip
+    Size: 2.3 MB
+    Expires: 7 days
+
+    [Download]
+    ```
+  </Step>
+</Steps>
+
+### Data Deletion
+
+Delete contact data (GDPR right to be forgotten):
+
+<Warning>
+This action is permanent and cannot be undone!
+</Warning>
+
+```
+Delete Contact Data
+━━━━━━━━━━━━━━━━━━━━
+
+This will permanently delete:
+☑ Contact profile
+☑ All conversation history
+☑ Custom fields and notes
+☑ Associated files and media
+
+Anonymize instead?
+○ Keep conversations but remove personal data
+
+Reason for deletion:
+⦿ Customer request (GDPR)
+○ Duplicate record
+○ Test data
+
+[Cancel] [Confirm Deletion]
+```
+
+## Contact Deduplication
+
+Find and merge duplicate contacts:
+
+<Steps>
+  <Step title="Find Duplicates">
+    ```
+    Settings → Contacts → Find Duplicates
+
+    Matching criteria:
+    ☑ Same phone number
+    ☑ Similar name (80% match)
+    ☑ Same email
+
+    Found 5 potential duplicates
+    ```
+  </Step>
+
+  <Step title="Review Matches">
+    ```
+    Possible Duplicate
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Contact A                Contact B
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    John Smith              John Smith
+    +1 234 567 8900        +1 234 567 8900
+    john@example.com       j.smith@example.com
+    2 conversations        5 conversations
+    Tags: VIP              Tags: Premium, NY
+
+    Action:
+    ○ Merge (combine all data)
+    ○ Keep separate
+    ○ Mark as not duplicate
+    ```
+  </Step>
+
+  <Step title="Merge Contacts">
+    ```
+    Merge Preview
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Primary Contact: Contact B
+    (Has more complete data)
+
+    Will merge:
+    ✓ All conversations (7 total)
+    ✓ Combined tags (VIP, Premium, NY)
+    ✓ Most recent email (j.smith@example.com)
+    ✓ All custom fields
+    ✓ All notes
+
+    [Cancel] [Merge Contacts]
+    ```
+  </Step>
+</Steps>
+
+## Integration with Other Systems
+
+### CRM Sync
+
+Sync with external CRM systems:
+
+<Tabs>
+  <Tab title="Salesforce">
+    ```
+    Salesforce Integration
+    ━━━━━━━━━━━━━━━━━━━━━━
+
+    Status: ✓ Connected
+
+    Sync Settings:
+    ☑ Two-way sync enabled
+    ☑ Sync contacts every 15 minutes
+    ☑ Create leads from new contacts
+    ☑ Update opportunities from conversations
+
+    Last sync: 5 minutes ago
+    Synced contacts: 1,247
+    ```
+  </Tab>
+
+  <Tab title="HubSpot">
+    ```
+    HubSpot Integration
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Status: ✓ Connected
+
+    Field Mapping:
+    • WhatsApp Phone → Mobile Number
+    • Tags → Contact Lists
+    • Conversations → Activities
+    • Custom Fields → Custom Properties
+
+    [Configure Mapping]
+    ```
+  </Tab>
+
+  <Tab title="Custom API">
+    ```javascript
+    // Webhook on contact update
+    POST https://your-api.com/webhook/contact-updated
+    {
+      "event": "contact.updated",
+      "contact": {
+        "id": "cont_123",
+        "name": "John Smith",
+        "phone": "+12345678900",
+        "email": "john@example.com",
+        "tags": ["VIP", "Premium"],
+        "custom_fields": {
+          "account_type": "Enterprise"
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Complete Profiles" icon="circle-check">
+    Fill in as much information as possible for context
+  </Card>
+  <Card title="Use Tags Consistently" icon="tags">
+    Establish tagging conventions across team
+  </Card>
+  <Card title="Regular Cleanup" icon="broom">
+    Review and merge duplicates monthly
+  </Card>
+  <Card title="Add Notes" icon="note-sticky">
+    Document important details after each interaction
+  </Card>
+  <Card title="Respect Privacy" icon="shield">
+    Only collect necessary information, honor opt-outs
+  </Card>
+  <Card title="Keep Updated" icon="arrows-rotate">
+    Update contact info when customers inform you of changes
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Settings" icon="gear" href="/user-guide/settings">
+    Configure your personal preferences
+  </Card>
+  <Card title="Managing Conversations" icon="comments" href="/user-guide/managing-conversations">
+    Learn to manage customer conversations
+  </Card>
+  <Card title="Integrations" icon="plug" href="/admin/integrations">
+    Connect with other tools
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/contacts">
+    Programmatic contact management
+  </Card>
+</CardGroup>

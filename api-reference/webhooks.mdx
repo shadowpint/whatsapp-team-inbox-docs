@@ -1,0 +1,50 @@
+---
+title: 'Webhooks API'
+description: 'Configure webhooks for real-time events'
+---
+
+## Create Webhook
+
+```bash
+POST /api/v1/webhooks
+```
+
+**Body:**
+```json
+{
+  "url": "https://your-app.com/webhook",
+  "events": ["message.received", "conversation.assigned"],
+  "secret": "your_secret_key"
+}
+```
+
+## List Webhooks
+
+```bash
+GET /api/v1/webhooks
+```
+
+## Delete Webhook
+
+```bash
+DELETE /api/v1/webhooks/:id
+```
+
+## Event Payload
+
+```json
+{
+  "id": "evt_123",
+  "type": "message.received",
+  "created_at": "2025-11-29T10:30:00Z",
+  "data": {
+    "message": {
+      "id": "msg_456",
+      "text": "Hello",
+      "from": "+1234567890"
+    }
+  }
+}
+```
+
+[More on webhooks →](/features/webhooks)

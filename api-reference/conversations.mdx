@@ -1,0 +1,62 @@
+---
+title: 'Conversations API'
+description: 'Manage conversations programmatically'
+---
+
+## List Conversations
+
+```bash
+GET /api/v1/conversations
+```
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": "conv_123",
+      "status": "open",
+      "customer": {
+        "name": "John Smith",
+        "phone": "+1234567890"
+      },
+      "assigned_to": "user_456",
+      "last_message_at": "2025-11-29T10:30:00Z"
+    }
+  ]
+}
+```
+
+## Get Conversation
+
+```bash
+GET /api/v1/conversations/:id
+```
+
+## Send Message
+
+```bash
+POST /api/v1/conversations/:id/messages
+```
+
+**Body:**
+```json
+{
+  "type": "text",
+  "text": "Hello! How can I help you?"
+}
+```
+
+## Update Conversation
+
+```bash
+PATCH /api/v1/conversations/:id
+```
+
+**Body:**
+```json
+{
+  "status": "closed",
+  "assigned_to": "user_789"
+}
+```

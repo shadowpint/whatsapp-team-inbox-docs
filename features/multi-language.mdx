@@ -1,0 +1,67 @@
+---
+title: 'Multi-Language Support'
+description: 'Serve customers worldwide with multi-language capabilities'
+---
+
+## Overview
+
+Support customers in their preferred language with interface translations, language detection, and language-based routing.
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Interface Translation" icon="language">
+    UI in 15+ languages
+  </Card>
+  <Card title="Auto-Detection" icon="wand-magic">
+    Detect customer language automatically
+  </Card>
+  <Card title="Language Routing" icon="route">
+    Route to language-fluent agents
+  </Card>
+  <Card title="Real-Time Translation" icon="globe">
+    Coming soon: Auto-translate messages
+  </Card>
+</CardGroup>
+
+## Supported Languages
+
+**Interface Languages:**
+- English
+- Spanish
+- French
+- German
+- Portuguese
+- Italian
+- Dutch
+- Hindi
+- Arabic
+- Chinese (Simplified)
+- Japanese
+- Korean
+- And more...
+
+## Language-Based Routing
+
+Route conversations to agents who speak the customer's language:
+
+```javascript
+{
+  "language_routing": {
+    "enabled": true,
+    "detect_from": "message_content",
+    "mappings": {
+      "es": "Spanish Team",
+      "fr": "French Team",
+      "en": "General Support"
+    }
+  }
+}
+```
+
+## Best Practices
+
+- Tag team members with language skills
+- Set up language-specific teams
+- Use native speakers when possible
+- Enable fallback to English for rare languages

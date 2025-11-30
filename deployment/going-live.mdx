@@ -1,0 +1,672 @@
+---
+title: 'Going Live Checklist'
+description: 'Production deployment checklist and best practices for launching your WhatsApp Team Inbox'
+---
+
+## Overview
+
+This comprehensive checklist ensures your WhatsApp Team Inbox is production-ready, secure, and optimized for your team. Follow each section carefully before going live.
+
+<Warning>
+**Don't skip steps!** Each item in this checklist is critical for a successful production deployment.
+</Warning>
+
+## Pre-Launch Checklist
+
+<Steps>
+  <Step title="Infrastructure Verification">
+    <AccordionGroup>
+      <Accordion title="✓ Server Requirements">
+        - [ ] Server meets minimum requirements (2 vCPU, 4GB RAM)
+        - [ ] Node.js 18+ installed
+        - [ ] PostgreSQL 14+ running and accessible
+        - [ ] Redis installed (optional but recommended)
+        - [ ] HTTPS certificate configured and valid
+        - [ ] Domain DNS properly configured
+        - [ ] Firewall rules allow necessary ports (80, 443)
+      </Accordion>
+
+      <Accordion title="✓ Database Configuration">
+        - [ ] Database created and migrations run
+        - [ ] Database user with appropriate permissions
+        - [ ] Connection pooling enabled
+        - [ ] Automated backups configured
+        - [ ] Database performance tuning complete
+        - [ ] Indexes created on critical tables
+        - [ ] Test restore from backup successful
+      </Accordion>
+
+      <Accordion title="✓ WhatsApp Business API">
+        - [ ] Business verified with Meta
+        - [ ] Phone number registered and approved
+        - [ ] Production access granted (not sandbox)
+        - [ ] Webhook verified and receiving messages
+        - [ ] Message templates approved
+        - [ ] Business profile complete
+        - [ ] Payment method added to Meta Business Account
+        - [ ] Test messages sent and received successfully
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Application Configuration">
+    <AccordionGroup>
+      <Accordion title="✓ Environment Variables">
+        All required environment variables set:
+
+        ```bash
+        # Application
+        NODE_ENV=production
+        PORT=3000
+        APP_URL=https://yourdomain.com
+        SESSION_SECRET=<generate-strong-random-string>
+
+        # Database
+        DATABASE_URL=postgresql://...
+        DATABASE_POOL_MAX=20
+
+        # WhatsApp
+        WHATSAPP_ACCESS_TOKEN=<your-permanent-token>
+        WHATSAPP_PHONE_NUMBER_ID=<your-number-id>
+        WHATSAPP_BUSINESS_ACCOUNT_ID=<your-account-id>
+        WHATSAPP_WEBHOOK_VERIFY_TOKEN=<your-verify-token>
+
+        # Email (if using)
+        EMAIL_PROVIDER=sendgrid
+        SENDGRID_API_KEY=<your-api-key>
+        EMAIL_FROM=noreply@yourdomain.com
+
+        # Redis (recommended)
+        REDIS_URL=redis://localhost:6379
+
+        # Security
+        CORS_ORIGIN=https://yourdomain.com
+        RATE_LIMIT_WINDOW_MS=900000
+        RATE_LIMIT_MAX_REQUESTS=100
+        ```
+
+        - [ ] All secrets use strong, randomly generated values
+        - [ ] No hardcoded credentials in code
+        - [ ] Environment file not committed to git
+        - [ ] Secrets stored securely (e.g., AWS Secrets Manager)
+      </Accordion>
+
+      <Accordion title="✓ Security Settings">
+        - [ ] HTTPS enforced (redirect HTTP to HTTPS)
+        - [ ] Security headers configured (CSP, HSTS, etc.)
+        - [ ] Rate limiting enabled
+        - [ ] CORS properly configured
+        - [ ] Authentication tokens secured
+        - [ ] SQL injection prevention verified
+        - [ ] XSS protection enabled
+        - [ ] CSRF protection implemented
+        - [ ] File upload validation enabled
+        - [ ] Secrets rotation policy defined
+      </Accordion>
+
+      <Accordion title="✓ Monitoring & Logging">
+        - [ ] Error tracking configured (Sentry, Rollbar, etc.)
+        - [ ] Application logging enabled
+        - [ ] Log aggregation setup (CloudWatch, Datadog, etc.)
+        - [ ] Performance monitoring active (New Relic, Datadog, etc.)
+        - [ ] Uptime monitoring configured (UptimeRobot, Pingdom, etc.)
+        - [ ] Alert notifications setup (email, Slack, PagerDuty)
+        - [ ] Database query logging enabled for slow queries
+        - [ ] Webhook delivery monitoring active
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Testing & Validation">
+    <AccordionGroup>
+      <Accordion title="✓ Functional Testing">
+        - [ ] Send and receive WhatsApp messages
+        - [ ] Message delivery confirmed
+        - [ ] Read receipts working
+        - [ ] Media messages (images, videos, documents) work
+        - [ ] Conversation assignment functions correctly
+        - [ ] Team member notifications received
+        - [ ] Email notifications delivered (if enabled)
+        - [ ] Search functionality works
+        - [ ] Contact management functions
+        - [ ] User authentication and authorization work
+      </Accordion>
+
+      <Accordion title="✓ Performance Testing">
+        - [ ] Load testing completed (simulate expected traffic)
+        - [ ] Database performance under load acceptable
+        - [ ] API response times within acceptable range (&lt;500ms)
+        - [ ] Webhook processing time acceptable (&lt;2s)
+        - [ ] No memory leaks detected
+        - [ ] Connection pooling working correctly
+        - [ ] Cache hit rates acceptable (if using caching)
+      </Accordion>
+
+      <Accordion title="✓ Security Testing">
+        - [ ] Penetration testing completed (or security audit)
+        - [ ] SSL/TLS configuration tested (SSL Labs)
+        - [ ] Authentication bypass attempts fail
+        - [ ] SQL injection attempts blocked
+        - [ ] XSS attempts sanitized
+        - [ ] CSRF protection verified
+        - [ ] Rate limiting tested and working
+        - [ ] File upload vulnerabilities checked
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Team Preparation">
+    <AccordionGroup>
+      <Accordion title="✓ User Accounts">
+        - [ ] Admin accounts created
+        - [ ] Team member accounts created
+        - [ ] Roles and permissions assigned correctly
+        - [ ] Email addresses verified
+        - [ ] Profile pictures uploaded
+        - [ ] Notification preferences configured
+        - [ ] Test login for all team members successful
+      </Accordion>
+
+      <Accordion title="✓ Team Training">
+        - [ ] Team members trained on basic features
+        - [ ] Documentation shared with team
+        - [ ] Conversation handling procedures defined
+        - [ ] Assignment rules communicated
+        - [ ] Response time expectations set
+        - [ ] Escalation procedures documented
+        - [ ] FAQ/knowledge base created
+      </Accordion>
+
+      <Accordion title="✓ Business Rules">
+        - [ ] Conversation assignment rules configured
+        - [ ] Auto-assignment settings defined
+        - [ ] Business hours configured
+        - [ ] Away messages prepared
+        - [ ] Canned responses created
+        - [ ] Tags and labels defined
+        - [ ] SLA targets set
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Launch Preparation">
+    <AccordionGroup>
+      <Accordion title="✓ Backups">
+        - [ ] Database backup completed
+        - [ ] Backup restoration tested
+        - [ ] Automated backup schedule configured
+        - [ ] Backup retention policy set
+        - [ ] Off-site backup storage configured
+        - [ ] Backup monitoring and alerts enabled
+      </Accordion>
+
+      <Accordion title="✓ Rollback Plan">
+        - [ ] Rollback procedure documented
+        - [ ] Previous version kept available
+        - [ ] Database migration rollback tested
+        - [ ] Rollback timeline defined
+        - [ ] Team aware of rollback process
+      </Accordion>
+
+      <Accordion title="✓ Communication Plan">
+        - [ ] Customer announcement prepared
+        - [ ] Internal team notification ready
+        - [ ] Support contact information published
+        - [ ] Status page configured (optional)
+        - [ ] Social media updates scheduled (if applicable)
+      </Accordion>
+    </AccordionGroup>
+  </Step>
+</Steps>
+
+## Deployment Steps
+
+<Steps>
+  <Step title="Final Code Deployment">
+    ```bash
+    # Pull latest code
+    git pull origin main
+
+    # Install dependencies
+    npm ci --production
+
+    # Build application
+    npm run build
+
+    # Run database migrations
+    npx prisma migrate deploy
+
+    # Run health check
+    npm run health-check
+    ```
+  </Step>
+
+  <Step title="Start Application">
+    ```bash
+    # Using PM2 (recommended)
+    pm2 start ecosystem.config.js --env production
+    pm2 save
+    pm2 startup
+
+    # Or using systemd
+    sudo systemctl start team-inbox
+    sudo systemctl enable team-inbox
+
+    # Or using Docker
+    docker-compose up -d --build
+    ```
+  </Step>
+
+  <Step title="Verify Deployment">
+    <Tabs>
+      <Tab title="Health Checks">
+        ```bash
+        # Application health
+        curl https://yourdomain.com/api/health
+
+        # Database connectivity
+        curl https://yourdomain.com/api/health/db
+
+        # WhatsApp webhook
+        curl https://yourdomain.com/api/health/whatsapp
+
+        # All checks should return 200 OK
+        ```
+      </Tab>
+
+      <Tab title="Test Messages">
+        1. Send a WhatsApp message to your business number
+        2. Verify it appears in inbox within 3 seconds
+        3. Reply from the inbox
+        4. Confirm reply received on WhatsApp
+        5. Check message status updates (delivered, read)
+      </Tab>
+
+      <Tab title="Monitor Logs">
+        ```bash
+        # PM2 logs
+        pm2 logs team-inbox --lines 100
+
+        # System logs
+        sudo journalctl -u team-inbox -f
+
+        # Docker logs
+        docker-compose logs -f --tail=100
+
+        # Look for errors or warnings
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Enable Monitoring">
+    ```bash
+    # Start monitoring services
+
+    # Application monitoring
+    # Configure based on your chosen service (Datadog, New Relic, etc.)
+
+    # Uptime monitoring
+    # Configure in UptimeRobot, Pingdom, etc.
+
+    # Error tracking
+    # Verify Sentry (or alternative) is receiving events
+
+    # Log aggregation
+    # Ensure logs flowing to centralized system
+    ```
+  </Step>
+
+  <Step title="Gradual Rollout (Recommended)">
+    <Tabs>
+      <Tab title="Option 1: Feature Flag">
+        ```javascript
+        // Enable for specific users first
+        const BETA_USERS = ['user1@example.com', 'user2@example.com'];
+
+        if (process.env.BETA_MODE === 'true') {
+          // Only allow beta users
+          if (!BETA_USERS.includes(user.email)) {
+            return res.status(403).json({ error: 'Beta access only' });
+          }
+        }
+        ```
+      </Tab>
+
+      <Tab title="Option 2: Traffic Split">
+        ```nginx
+        # NGINX configuration for gradual rollout
+        upstream backend {
+          server new-server:3000 weight=20;  # 20% traffic
+          server old-server:3000 weight=80;  # 80% traffic
+        }
+
+        # Gradually increase new server weight
+        ```
+      </Tab>
+
+      <Tab title="Option 3: Internal First">
+        1. Week 1: Internal team only
+        2. Week 2: Add pilot customers (10-20%)
+        3. Week 3: Expand to 50% of customers
+        4. Week 4: Full rollout to all customers
+      </Tab>
+    </Tabs>
+  </Step>
+</Steps>
+
+## Post-Launch Monitoring
+
+<CardGroup cols={2}>
+  <Card title="First Hour" icon="clock-one">
+    - Monitor error rates
+    - Check response times
+    - Verify message delivery
+    - Watch server resources
+  </Card>
+  <Card title="First Day" icon="calendar-day">
+    - Review all error logs
+    - Check performance metrics
+    - Gather team feedback
+    - Monitor conversation volume
+  </Card>
+  <Card title="First Week" icon="calendar-week">
+    - Analyze usage patterns
+    - Identify bottlenecks
+    - Review customer feedback
+    - Optimize based on data
+  </Card>
+  <Card title="First Month" icon="calendar">
+    - Evaluate against SLAs
+    - Plan feature improvements
+    - Review cost vs. budget
+    - Conduct retrospective
+  </Card>
+</CardGroup>
+
+## Performance Benchmarks
+
+Your production system should meet these benchmarks:
+
+| Metric | Target | Warning | Critical |
+|--------|--------|---------|----------|
+| API Response Time | &lt;200ms | &gt;500ms | &gt;1000ms |
+| Webhook Processing | &lt;2s | &gt;5s | &gt;10s |
+| Message Delivery | &lt;3s | &gt;10s | &gt;30s |
+| Database Query Time | &lt;100ms | &gt;500ms | &gt;1000ms |
+| CPU Usage | &lt;50% | &gt;70% | &gt;90% |
+| Memory Usage | &lt;60% | &gt;80% | &gt;95% |
+| Error Rate | &lt;0.1% | &gt;1% | &gt;5% |
+| Uptime | &gt;99.9% | &lt;99% | &lt;95% |
+
+## Troubleshooting Common Launch Issues
+
+<AccordionGroup>
+  <Accordion title="Messages not being received">
+    **Quick Checks:**
+    1. Verify webhook URL is accessible via HTTPS
+    2. Check webhook verification token matches
+    3. Review WhatsApp webhook logs in Meta dashboard
+    4. Verify phone number ID is correct
+    5. Check application logs for webhook errors
+
+    **Debug:**
+    ```bash
+    # Test webhook endpoint
+    curl -X POST https://yourdomain.com/api/webhooks/whatsapp \
+      -H "Content-Type: application/json" \
+      -d '{"entry": [{"changes": [{"value": {"messages": []}}]}]}'
+
+    # Should return 200 OK
+    ```
+  </Accordion>
+
+  <Accordion title="High response times">
+    **Common Causes:**
+    - Database queries not optimized
+    - Missing database indexes
+    - Connection pool exhausted
+    - Memory leak
+    - Network latency
+
+    **Solutions:**
+    ```sql
+    -- Find slow queries
+    SELECT query, mean_exec_time, calls
+    FROM pg_stat_statements
+    ORDER BY mean_exec_time DESC
+    LIMIT 10;
+
+    -- Add missing indexes
+    -- Check query execution plans
+    EXPLAIN ANALYZE SELECT ...;
+    ```
+  </Accordion>
+
+  <Accordion title="Database connection errors">
+    **Solutions:**
+    1. Increase connection pool size
+    2. Enable connection pooling (PgBouncer)
+    3. Fix connection leaks in code
+    4. Scale database instance
+
+    ```bash
+    # Check active connections
+    SELECT count(*) FROM pg_stat_activity;
+
+    # Increase pool size in .env
+    DATABASE_POOL_MAX=50
+    ```
+  </Accordion>
+
+  <Accordion title="Memory usage growing">
+    **Investigate:**
+    ```bash
+    # Monitor Node.js memory
+    node --inspect app.js
+
+    # Or use PM2
+    pm2 monit
+
+    # Look for memory leaks
+    # Take heap snapshots at intervals
+    ```
+
+    **Common Causes:**
+    - Not closing database connections
+    - Event listeners not removed
+    - Large objects in memory
+    - Cache growing unbounded
+
+    **Solutions:**
+    1. Implement proper cleanup
+    2. Set cache size limits
+    3. Use streaming for large data
+    4. Restart periodically (cron job)
+  </Accordion>
+
+  <Accordion title="SSL/HTTPS errors">
+    **Check Certificate:**
+    ```bash
+    # Test SSL configuration
+    openssl s_client -connect yourdomain.com:443
+
+    # Check certificate expiry
+    echo | openssl s_client -connect yourdomain.com:443 2>/dev/null | openssl x509 -noout -dates
+
+    # SSL Labs test
+    # Visit: https://www.ssllabs.com/ssltest/
+    ```
+
+    **Renew Certificate (Let's Encrypt):**
+    ```bash
+    sudo certbot renew
+    sudo systemctl reload nginx
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Rollback Procedure
+
+If critical issues occur, follow this rollback process:
+
+<Steps>
+  <Step title="Assess Situation">
+    - Identify the critical issue
+    - Determine impact and affected users
+    - Decide if rollback is necessary
+    - Notify team of rollback decision
+  </Step>
+
+  <Step title="Initiate Rollback">
+    ```bash
+    # Stop current application
+    pm2 stop team-inbox
+
+    # Restore previous version
+    git checkout <previous-stable-tag>
+
+    # Restore dependencies
+    npm ci
+
+    # Rollback database if needed
+    npx prisma migrate resolve --rolled-back <migration-name>
+
+    # Restart with previous version
+    pm2 start team-inbox
+    ```
+  </Step>
+
+  <Step title="Verify Rollback">
+    - Test critical functionality
+    - Verify messages being received
+    - Check error rates
+    - Confirm system stability
+  </Step>
+
+  <Step title="Post-Rollback">
+    - Notify customers (if customer-facing impact)
+    - Document issues encountered
+    - Plan fixes for identified issues
+    - Schedule new deployment with fixes
+  </Step>
+</Steps>
+
+## Cost Monitoring
+
+Track costs from day one to avoid surprises:
+
+<CardGroup cols={2}>
+  <Card title="WhatsApp Costs" icon="whatsapp">
+    Monitor conversation volumes in Meta Business Suite
+  </Card>
+  <Card title="Infrastructure" icon="server">
+    Track server, database, and email costs
+  </Card>
+  <Card title="Email Sending" icon="envelope">
+    Monitor email volume in SendGrid/AWS SES
+  </Card>
+  <Card title="Third-party Services" icon="plug">
+    Track costs for monitoring, logging, etc.
+  </Card>
+</CardGroup>
+
+Set up billing alerts:
+```bash
+# AWS CloudWatch billing alarm example
+aws cloudwatch put-metric-alarm \
+  --alarm-name team-inbox-billing \
+  --alarm-description "Alert when costs exceed $100" \
+  --metric-name EstimatedCharges \
+  --namespace AWS/Billing \
+  --statistic Maximum \
+  --period 21600 \
+  --evaluation-periods 1 \
+  --threshold 100 \
+  --comparison-operator GreaterThanThreshold
+```
+
+## Optimization Tips
+
+<Accordion title="Database Optimization">
+  - Run `VACUUM ANALYZE` weekly
+  - Monitor and add indexes as needed
+  - Archive old conversations (>6 months)
+  - Use read replicas for reporting
+  - Enable query caching
+</Accordion>
+
+<Accordion title="Application Optimization">
+  - Enable Redis caching for frequently accessed data
+  - Implement lazy loading for large lists
+  - Optimize database queries (use SELECT specific columns)
+  - Batch webhook processing
+  - Use CDN for static assets
+</Accordion>
+
+<Accordion title="Cost Optimization">
+  - Respond to WhatsApp messages within 24 hours (free window)
+  - Use read replicas instead of scaling primary DB
+  - Implement message batching for emails
+  - Right-size server resources
+  - Use spot instances where applicable
+</Accordion>
+
+## Success Metrics
+
+Track these KPIs to measure launch success:
+
+| Metric | Definition | Target |
+|--------|------------|--------|
+| Uptime | System availability | &gt;99.9% |
+| Response Time | Average first response time | &lt;5 minutes |
+| Message Delivery | % messages delivered within 3s | &gt;99% |
+| Error Rate | % of requests resulting in errors | &lt;0.1% |
+| Team Adoption | % team actively using system | &gt;90% |
+| Customer Satisfaction | CSAT score | &gt;4.5/5 |
+
+## Next Steps After Launch
+
+<Steps>
+  <Step title="Week 1: Monitor and Stabilize">
+    - Address any critical issues immediately
+    - Optimize based on real usage patterns
+    - Gather team feedback
+    - Document any workarounds
+  </Step>
+
+  <Step title="Week 2-4: Optimize">
+    - Analyze performance data
+    - Implement quick wins
+    - Train team on advanced features
+    - Refine assignment rules
+  </Step>
+
+  <Step title="Month 2+: Enhance">
+    - Gather feature requests
+    - Plan roadmap
+    - Implement integrations
+    - Scale infrastructure if needed
+  </Step>
+</Steps>
+
+## Support Resources
+
+<CardGroup cols={2}>
+  <Card title="FAQ" icon="circle-question" href="/support/faq">
+    Common questions and answers
+  </Card>
+  <Card title="Common Issues" icon="triangle-exclamation" href="/support/common-issues">
+    Troubleshooting guide for known issues
+  </Card>
+  <Card title="Monitoring Guide" icon="chart-line" href="/admin/monitoring">
+    Set up comprehensive monitoring
+  </Card>
+  <Card title="Contact Support" icon="headset" href="/support/contact">
+    Get help from our team
+  </Card>
+</CardGroup>
+
+<Check>
+**Congratulations!** If you've completed this checklist, your WhatsApp Team Inbox is ready for production. Monitor closely in the first few days and don't hesitate to reach out for support.
+</Check>

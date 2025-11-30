@@ -1,0 +1,1091 @@
+---
+title: 'Troubleshooting Guide'
+description: 'Solutions to common issues when deploying and running WhatsApp Team Inbox'
+---
+
+## Overview
+
+This guide covers common issues you might encounter during deployment and operation of your WhatsApp Team Inbox, along with detailed solutions.
+
+<Info>
+Can't find your issue here? Check our [Common Issues](/support/common-issues) page or [contact support](/support/contact).
+</Info>
+
+## Quick Diagnostic Tools
+
+Run these commands to quickly diagnose common issues:
+
+```bash
+# Check application health
+curl http://localhost:3000/api/health
+
+# Check database connectivity
+curl http://localhost:3000/api/health/db
+
+# Check WhatsApp connection
+curl http://localhost:3000/api/health/whatsapp
+
+# View application logs
+pm2 logs team-inbox --lines 100
+
+# Check system resources
+top
+# or
+htop
+```
+
+## WhatsApp Integration Issues
+
+<AccordionGroup>
+  <Accordion title="Messages not being received">
+    ### Symptoms
+    - WhatsApp messages sent to your business number don't appear in inbox
+    - No webhook events logged
+
+    ### Diagnosis
+    ```bash
+    # Check if webhook endpoint is accessible
+    curl https://your-domain.com/api/webhooks/whatsapp
+
+    # Should return 405 Method Not Allowed (GET not allowed, only POST)
+
+    # Check webhook logs
+    tail -f logs/webhooks.log
+    ```
+
+    ### Solutions
+
+    <Steps>
+      <Step title="Verify Webhook Configuration">
+        1. Go to Meta Developer Console
+        2. Navigate to WhatsApp > Configuration
+        3. Verify webhook URL is correct: `https://your-domain.com/api/webhooks/whatsapp`
+        4. Check verify token matches your `.env` file
+        5. Ensure these fields are subscribed:
+           - `messages`
+           - `message_status`
+      </Step>
+
+      <Step title="Check HTTPS Certificate">
+        ```bash
+        # Test SSL certificate
+        curl -vI https://your-domain.com
+
+        # Should see successful SSL handshake
+        # Check certificate is valid and not expired
+        ```
+
+        If certificate issues:
+        ```bash
+        # Renew Let's Encrypt certificate
+        sudo certbot renew
+        sudo systemctl reload nginx
+        ```
+      </Step>
+
+      <Step title="Verify Firewall Rules">
+        ```bash
+        # Check if port 443 is open
+        sudo ufw status
+
+        # Allow HTTPS if not open
+        sudo ufw allow 443/tcp
+        sudo ufw reload
+        ```
+      </Step>
+
+      <Step title="Test Webhook Manually">
+        Send a test webhook event:
+        ```bash
+        curl -X POST https://your-domain.com/api/webhooks/whatsapp \
+          -H "Content-Type: application/json" \
+          -d '{
+            "object": "whatsapp_business_account",
+            "entry": [{
+              "changes": [{
+                "value": {
+                  "messaging_product": "whatsapp",
+                  "metadata": {
+                    "phone_number_id": "YOUR_PHONE_NUMBER_ID"
+                  },
+                  "messages": [{
+                    "from": "1234567890",
+                    "id": "test_message_id",
+                    "timestamp": "1234567890",
+                    "text": { "body": "Test message" },
+                    "type": "text"
+                  }]
+                }
+              }]
+            }]
+          }'
+        ```
+
+        Should return `200 OK` and message should appear in inbox.
+      </Step>
+
+      <Step title="Check Application Logs">
+        ```bash
+        # Look for webhook processing errors
+        grep "webhook" logs/application.log
+        grep "error" logs/application.log
+
+        # Common errors:
+        # - Database connection failed
+        # - Invalid message format
+        # - Missing environment variables
+        ```
+      </Step>
+    </Steps>
+
+    ### Still Not Working?
+
+    <Tabs>
+      <Tab title="Check Meta Status">
+        Visit [Meta Status Dashboard](https://metastatus.com/) to check if WhatsApp API is experiencing issues.
+      </Tab>
+
+      <Tab title="Verify Permissions">
+        Ensure your WhatsApp Business Account has correct permissions:
+        1. Go to Meta Business Suite
+        2. Check Business Account settings
+        3. Verify phone number is correctly linked
+        4. Confirm access token has `whatsapp_business_messaging` permission
+      </Tab>
+
+      <Tab title="Review Meta Logs">
+        Check webhook delivery logs in Meta:
+        1. Go to WhatsApp > Configuration
+        2. Click "View Logs" next to webhook
+        3. Look for failed delivery attempts
+        4. Check error messages
+      </Tab>
+    </Tabs>
+  </Accordion>
+
+  <Accordion title="Cannot send messages">
+    ### Symptoms
+    - Replies from inbox don't reach WhatsApp users
+    - Error: "Failed to send message"
+    - 400 or 403 errors from WhatsApp API
+
+    ### Common Causes
+
+    <Tabs>
+      <Tab title="Invalid Access Token">
+        **Error:** `Invalid OAuth access token`
+
+        **Solution:**
+        ```bash
+        # Generate new permanent access token
+        # 1. Go to Meta Developer Console
+        # 2. WhatsApp > Configuration
+        # 3. Generate new system user token
+        # 4. Update .env file
+
+        # Test token
+        curl -X GET "https://graph.facebook.com/v18.0/debug_token?input_token=YOUR_TOKEN&access_token=YOUR_TOKEN"
+        ```
+      </Tab>
+
+      <Tab title="24-Hour Window Expired">
+        **Error:** `Message failed to send because more than 24 hours have passed since the customer last replied`
+
+        **Solution:**
+        Use an approved message template:
+
+        ```javascript
+        // Send template message
+        const response = await sendTemplateMessage({
+          to: customerPhone,
+          template: {
+            name: "hello_world",  // Your approved template
+            language: { code: "en" }
+          }
+        });
+        ```
+
+        Create and approve templates in Meta Business Suite.
+      </Tab>
+
+      <Tab title="Phone Number Not Verified">
+        **Error:** `Phone number not registered`
+
+        **Solution:**
+        1. Go to Meta Developer Console
+        2. WhatsApp > Phone Numbers
+        3. Verify your phone number is showing as "Connected"
+        4. If not, re-register the number
+      </Tab>
+
+      <Tab title="Rate Limits Exceeded">
+        **Error:** `Rate limit exceeded`
+
+        **Solution:**
+        ```javascript
+        // Implement rate limiting in your application
+        const RATE_LIMIT = {
+          messages_per_second: 80,
+          messages_per_day: 100000
+        };
+
+        // Use queue for sending messages
+        const messageQueue = new Queue('messages', {
+          limiter: {
+            max: 80,
+            duration: 1000  // 80 messages per second
+          }
+        });
+        ```
+
+        Check your rate limits in Meta Business Suite.
+      </Tab>
+    </Tabs>
+
+    ### Debug Message Sending
+
+    ```javascript
+    // Enable debug mode for WhatsApp API calls
+    WHATSAPP_API_DEBUG=true
+
+    // Check detailed error response
+    try {
+      await sendMessage(messageData);
+    } catch (error) {
+      console.error('WhatsApp API Error:', {
+        status: error.response?.status,
+        code: error.response?.data?.error?.code,
+        message: error.response?.data?.error?.message,
+        details: error.response?.data?.error?.error_data
+      });
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Webhook verification failing">
+    ### Symptoms
+    - Cannot save webhook URL in Meta Developer Console
+    - Error: "The callback URL or verify token couldn't be validated"
+
+    ### Solution Steps
+
+    <Steps>
+      <Step title="Check Verify Token">
+        ```bash
+        # In your .env file
+        WHATSAPP_WEBHOOK_VERIFY_TOKEN=your_secret_token
+
+        # This must match exactly what you enter in Meta Console
+        ```
+      </Step>
+
+      <Step title="Test Verification Endpoint">
+        ```bash
+        # Meta sends a GET request like this
+        curl "https://your-domain.com/api/webhooks/whatsapp?hub.mode=subscribe&hub.challenge=CHALLENGE_ACCEPTED&hub.verify_token=your_secret_token"
+
+        # Should return exactly: CHALLENGE_ACCEPTED
+        ```
+      </Step>
+
+      <Step title="Check Server Response">
+        Your webhook endpoint should implement this:
+
+        ```javascript
+        app.get('/api/webhooks/whatsapp', (req, res) => {
+          const mode = req.query['hub.mode'];
+          const token = req.query['hub.verify_token'];
+          const challenge = req.query['hub.challenge'];
+
+          if (mode === 'subscribe' && token === process.env.WHATSAPP_WEBHOOK_VERIFY_TOKEN) {
+            console.log('Webhook verified');
+            res.status(200).send(challenge);
+          } else {
+            res.sendStatus(403);
+          }
+        });
+        ```
+      </Step>
+
+      <Step title="Verify HTTPS">
+        - Webhook URL must use HTTPS (not HTTP)
+        - Certificate must be valid
+        - No self-signed certificates allowed
+
+        ```bash
+        # Test SSL
+        openssl s_client -connect your-domain.com:443 -servername your-domain.com
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Media messages not working">
+    ### Symptoms
+    - Images, videos, or documents not sending/receiving
+    - Media appears as broken link
+    - Download errors
+
+    ### Solutions
+
+    <Tabs>
+      <Tab title="Receiving Media">
+        ```javascript
+        // Download media from WhatsApp
+        async function downloadMedia(mediaId) {
+          // Get media URL
+          const mediaInfo = await fetch(
+            `https://graph.facebook.com/v18.0/${mediaId}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
+              }
+            }
+          );
+
+          const { url } = await mediaInfo.json();
+
+          // Download media file
+          const mediaFile = await fetch(url, {
+            headers: {
+              'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
+            }
+          });
+
+          return mediaFile.buffer();
+        }
+        ```
+
+        **Common issues:**
+        - Media URLs expire after a few minutes - download immediately
+        - Large files may timeout - increase request timeout
+        - Check file storage permissions
+      </Tab>
+
+      <Tab title="Sending Media">
+        ```javascript
+        // Upload and send media
+        async function sendMediaMessage(to, mediaUrl, caption) {
+          // Media must be publicly accessible URL
+          // Or upload to WhatsApp first
+
+          const response = await fetch(
+            `https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                messaging_product: 'whatsapp',
+                to: to,
+                type: 'image',  // or 'video', 'document', 'audio'
+                image: {
+                  link: mediaUrl,  // Must be HTTPS
+                  caption: caption
+                }
+              })
+            }
+          );
+
+          return response.json();
+        }
+        ```
+
+        **Requirements:**
+        - Media URL must be publicly accessible via HTTPS
+        - File size limits:
+          - Images: 5 MB
+          - Videos: 16 MB
+          - Audio: 16 MB
+          - Documents: 100 MB
+        - Supported formats vary by type
+      </Tab>
+
+      <Tab title="Storage Issues">
+        ```bash
+        # Check disk space
+        df -h
+
+        # Check media storage directory
+        ls -lh storage/media/
+
+        # Ensure correct permissions
+        sudo chown -R www-data:www-data storage/
+        sudo chmod -R 755 storage/
+
+        # Configure storage in .env
+        MEDIA_STORAGE_PATH=/path/to/storage
+        MEDIA_MAX_SIZE=10485760  # 10 MB
+        MEDIA_ALLOWED_TYPES=image/jpeg,image/png,video/mp4,application/pdf
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+## Database Issues
+
+<AccordionGroup>
+  <Accordion title="Connection errors">
+    ### Symptoms
+    - `ECONNREFUSED` errors
+    - `too many clients already`
+    - Database timeouts
+
+    ### Solutions
+
+    <Steps>
+      <Step title="Check Database is Running">
+        ```bash
+        # PostgreSQL
+        sudo systemctl status postgresql
+
+        # Start if not running
+        sudo systemctl start postgresql
+
+        # For Docker
+        docker ps | grep postgres
+        docker-compose up -d postgres
+        ```
+      </Step>
+
+      <Step title="Verify Connection String">
+        ```bash
+        # Test connection
+        psql "postgresql://user:pass@host:5432/dbname"
+
+        # Or use environment variable
+        psql $DATABASE_URL
+
+        # Common issues:
+        # - Wrong password
+        # - Wrong host/port
+        # - Database doesn't exist
+        # - User lacks permissions
+        ```
+      </Step>
+
+      <Step title="Fix Connection Pool">
+        ```bash
+        # In .env
+        DATABASE_POOL_MIN=2
+        DATABASE_POOL_MAX=20
+
+        # Check current connections
+        SELECT count(*) FROM pg_stat_activity WHERE datname = 'team_inbox';
+
+        # Kill idle connections
+        SELECT pg_terminate_backend(pid)
+        FROM pg_stat_activity
+        WHERE datname = 'team_inbox'
+        AND state = 'idle'
+        AND state_change < current_timestamp - INTERVAL '10 minutes';
+        ```
+      </Step>
+
+      <Step title="Increase Max Connections">
+        ```bash
+        # Edit postgresql.conf
+        sudo nano /etc/postgresql/14/main/postgresql.conf
+
+        # Increase max_connections
+        max_connections = 200
+
+        # Restart PostgreSQL
+        sudo systemctl restart postgresql
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+
+  <Accordion title="Migration errors">
+    ### Symptoms
+    - Migration fails to run
+    - Schema out of sync
+    - Cannot start application
+
+    ### Solutions
+
+    ```bash
+    # Check migration status
+    npx prisma migrate status
+
+    # Mark migration as applied (if already applied manually)
+    npx prisma migrate resolve --applied <migration_name>
+
+    # Mark migration as rolled back
+    npx prisma migrate resolve --rolled-back <migration_name>
+
+    # Reset database (DEVELOPMENT ONLY - deletes all data!)
+    npx prisma migrate reset
+
+    # Deploy migrations
+    npx prisma migrate deploy
+
+    # Generate Prisma Client
+    npx prisma generate
+    ```
+
+    ### Common Issues
+
+    <Tabs>
+      <Tab title="Missing Migration">
+        ```bash
+        # If migration file is missing
+        # Recreate migration from schema
+        npx prisma migrate dev --name recreate_missing_migration
+
+        # Or manually create migration SQL file in prisma/migrations/
+        ```
+      </Tab>
+
+      <Tab title="Failed Migration">
+        ```bash
+        # Check why migration failed
+        npx prisma migrate status
+
+        # Fix the migration SQL
+        # Then mark as rolled back and retry
+        npx prisma migrate resolve --rolled-back <migration_name>
+        npx prisma migrate deploy
+        ```
+      </Tab>
+
+      <Tab title="Schema Drift">
+        ```bash
+        # Database schema doesn't match Prisma schema
+        npx prisma db pull  # Pull current database schema
+        npx prisma migrate dev  # Create migration for differences
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+
+  <Accordion title="Slow queries">
+    ### Diagnosis
+
+    ```sql
+    -- Enable slow query logging
+    ALTER DATABASE team_inbox SET log_min_duration_statement = 1000;  -- 1 second
+
+    -- Find slow queries
+    SELECT query, mean_exec_time, calls
+    FROM pg_stat_statements
+    ORDER BY mean_exec_time DESC
+    LIMIT 10;
+
+    -- Analyze specific query
+    EXPLAIN ANALYZE SELECT * FROM conversations WHERE assigned_to = 'user-id';
+    ```
+
+    ### Solutions
+
+    <Steps>
+      <Step title="Add Missing Indexes">
+        ```sql
+        -- Common indexes for Team Inbox
+        CREATE INDEX CONCURRENTLY idx_conversations_assigned
+          ON conversations(assigned_to);
+
+        CREATE INDEX CONCURRENTLY idx_conversations_status_updated
+          ON conversations(status, updated_at DESC);
+
+        CREATE INDEX CONCURRENTLY idx_messages_conversation_created
+          ON messages(conversation_id, created_at DESC);
+
+        CREATE INDEX CONCURRENTLY idx_contacts_phone
+          ON contacts(phone);
+
+        -- Check index usage
+        SELECT schemaname, tablename, indexname, idx_scan
+        FROM pg_stat_user_indexes
+        ORDER BY idx_scan ASC;
+        ```
+      </Step>
+
+      <Step title="Optimize Queries">
+        ```javascript
+        // Bad: N+1 query problem
+        const conversations = await prisma.conversation.findMany();
+        for (const conv of conversations) {
+          const messages = await prisma.message.findMany({
+            where: { conversationId: conv.id }
+          });
+        }
+
+        // Good: Use include/join
+        const conversations = await prisma.conversation.findMany({
+          include: {
+            messages: {
+              take: 10,
+              orderBy: { createdAt: 'desc' }
+            }
+          }
+        });
+        ```
+      </Step>
+
+      <Step title="Use Database Caching">
+        ```javascript
+        // Cache frequent queries in Redis
+        const cacheKey = `conversations:user:${userId}`;
+        let conversations = await redis.get(cacheKey);
+
+        if (!conversations) {
+          conversations = await prisma.conversation.findMany({
+            where: { assignedTo: userId }
+          });
+          await redis.set(cacheKey, JSON.stringify(conversations), 'EX', 300);
+        }
+        ```
+      </Step>
+
+      <Step title="Run VACUUM">
+        ```sql
+        -- Regular maintenance
+        VACUUM ANALYZE conversations;
+        VACUUM ANALYZE messages;
+
+        -- Full vacuum (requires lock, do during maintenance window)
+        VACUUM FULL;
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+## Application Errors
+
+<AccordionGroup>
+  <Accordion title="Application won't start">
+    ### Diagnosis
+
+    ```bash
+    # Check application logs
+    pm2 logs team-inbox --err --lines 50
+
+    # Or direct logs
+    tail -f logs/error.log
+
+    # Check for common issues:
+    # - Port already in use
+    # - Missing environment variables
+    # - Syntax errors
+    # - Missing dependencies
+    ```
+
+    ### Common Solutions
+
+    <Tabs>
+      <Tab title="Port Already in Use">
+        ```bash
+        # Find process using port 3000
+        sudo lsof -i :3000
+
+        # Kill the process
+        sudo kill -9 <PID>
+
+        # Or use different port
+        PORT=3001 npm start
+        ```
+      </Tab>
+
+      <Tab title="Missing Environment Variables">
+        ```bash
+        # Validate all required variables
+        node -e "
+        const required = [
+          'DATABASE_URL',
+          'WHATSAPP_ACCESS_TOKEN',
+          'WHATSAPP_PHONE_NUMBER_ID',
+          'SESSION_SECRET'
+        ];
+        const missing = required.filter(v => !process.env[v]);
+        if (missing.length) {
+          console.error('Missing variables:', missing);
+          process.exit(1);
+        }
+        "
+        ```
+      </Tab>
+
+      <Tab title="Dependency Issues">
+        ```bash
+        # Clear and reinstall
+        rm -rf node_modules package-lock.json
+        npm install
+
+        # Or use npm ci (faster, more reliable)
+        npm ci
+
+        # Check for peer dependency warnings
+        npm ls
+        ```
+      </Tab>
+
+      <Tab title="Syntax Errors">
+        ```bash
+        # Run linter
+        npm run lint
+
+        # Check TypeScript compilation
+        npm run build
+
+        # Test import
+        node --check src/index.js
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+
+  <Accordion title="Memory leaks">
+    ### Symptoms
+    - Memory usage constantly increasing
+    - Application becomes slow over time
+    - Out of memory errors
+
+    ### Diagnosis
+
+    ```bash
+    # Monitor memory usage
+    pm2 monit
+
+    # Or use Node.js built-in
+    node --inspect app.js
+    # Then open chrome://inspect
+
+    # Take heap snapshot
+    kill -USR2 <process_pid>
+
+    # Check for common causes:
+    # - Event listeners not removed
+    # - Global variables growing
+    # - Cache without size limit
+    # - Database connections not closed
+    ```
+
+    ### Solutions
+
+    ```javascript
+    // Fix: Remove event listeners
+    const handler = (data) => { /* ... */ };
+    socket.on('message', handler);
+    // Later:
+    socket.off('message', handler);
+
+    // Fix: Limit cache size
+    const cache = new Map();
+    const MAX_CACHE_SIZE = 1000;
+
+    function addToCache(key, value) {
+      if (cache.size >= MAX_CACHE_SIZE) {
+        const firstKey = cache.keys().next().value;
+        cache.delete(firstKey);
+      }
+      cache.set(key, value);
+    }
+
+    // Fix: Close database connections
+    try {
+      const result = await prisma.conversation.findMany();
+      return result;
+    } finally {
+      // Connections automatically returned to pool with Prisma
+      // But ensure no lingering references
+    }
+
+    // Temporary fix: Restart periodically
+    // Add to crontab:
+    // 0 4 * * * pm2 restart team-inbox
+    ```
+  </Accordion>
+
+  <Accordion title="High CPU usage">
+    ### Diagnosis
+
+    ```bash
+    # Check CPU usage
+    top -p $(pgrep -f "node.*team-inbox")
+
+    # Profile CPU
+    node --prof app.js
+    # Run workload
+    # Stop server
+    node --prof-process isolate-*.log > profile.txt
+    ```
+
+    ### Common Causes
+
+    <Tabs>
+      <Tab title="Inefficient Loops">
+        ```javascript
+        // Bad: Nested loops with large datasets
+        conversations.forEach(conv => {
+          messages.forEach(msg => {
+            if (msg.conversationId === conv.id) {
+              // Process
+            }
+          });
+        });
+
+        // Good: Use Map for O(1) lookup
+        const messagesByConv = new Map();
+        messages.forEach(msg => {
+          if (!messagesByConv.has(msg.conversationId)) {
+            messagesByConv.set(msg.conversationId, []);
+          }
+          messagesByConv.get(msg.conversationId).push(msg);
+        });
+
+        conversations.forEach(conv => {
+          const msgs = messagesByConv.get(conv.id) || [];
+          // Process
+        });
+        ```
+      </Tab>
+
+      <Tab title="Too Many Concurrent Requests">
+        ```javascript
+        // Implement rate limiting
+        const rateLimit = require('express-rate-limit');
+
+        const limiter = rateLimit({
+          windowMs: 15 * 60 * 1000,  // 15 minutes
+          max: 100  // Limit each IP to 100 requests per window
+        });
+
+        app.use('/api/', limiter);
+
+        // Use queue for heavy processing
+        const Queue = require('bull');
+        const messageQueue = new Queue('messages');
+
+        messageQueue.process(5, async (job) => {
+          // Process maximum 5 jobs concurrently
+          await processMessage(job.data);
+        });
+        ```
+      </Tab>
+
+      <Tab title="RegEx Performance">
+        ```javascript
+        // Bad: Expensive regex in hot path
+        messages.forEach(msg => {
+          if (/complex.*regex.*pattern/i.test(msg.content)) {
+            // Process
+          }
+        });
+
+        // Good: Compile regex once
+        const pattern = /complex.*regex.*pattern/i;
+        messages.forEach(msg => {
+          if (pattern.test(msg.content)) {
+            // Process
+          }
+        });
+
+        // Better: Use simple string methods when possible
+        messages.forEach(msg => {
+          if (msg.content.toLowerCase().includes('keyword')) {
+            // Process
+          }
+        });
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+## Email Issues
+
+<AccordionGroup>
+  <Accordion title="Emails not sending">
+    ### Solutions by Provider
+
+    <Tabs>
+      <Tab title="SendGrid">
+        ```bash
+        # Test API key
+        curl -X POST https://api.sendgrid.com/v3/mail/send \
+          -H "Authorization: Bearer $SENDGRID_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "personalizations": [{
+              "to": [{"email": "test@example.com"}]
+            }],
+            "from": {"email": "noreply@yourdomain.com"},
+            "subject": "Test",
+            "content": [{"type": "text/plain", "value": "Test"}]
+          }'
+
+        # Check SendGrid activity
+        # Visit: https://app.sendgrid.com/email_activity
+
+        # Common issues:
+        # - API key invalid or expired
+        # - Sender not verified
+        # - Account suspended
+        ```
+      </Tab>
+
+      <Tab title="AWS SES">
+        ```bash
+        # Test AWS credentials
+        aws ses send-email \
+          --from noreply@yourdomain.com \
+          --to test@example.com \
+          --subject "Test" \
+          --text "Test message"
+
+        # Check if still in sandbox
+        aws sesv2 get-account
+
+        # Request production access if needed
+        # Visit: AWS SES Console > Account Dashboard
+        ```
+      </Tab>
+
+      <Tab title="SMTP">
+        ```bash
+        # Test SMTP connection
+        telnet smtp.gmail.com 587
+
+        # Or use swaks
+        swaks --to test@example.com \
+          --from noreply@yourdomain.com \
+          --server smtp.gmail.com:587 \
+          --auth LOGIN \
+          --auth-user your-email@gmail.com \
+          --auth-password "your-app-password"
+
+        # Check SMTP credentials in .env
+        # For Gmail, ensure using App Password, not regular password
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+
+  <Accordion title="Emails going to spam">
+    ### Solutions
+
+    <Steps>
+      <Step title="Set Up SPF Record">
+        ```dns
+        # Add to your DNS
+        Type: TXT
+        Host: @
+        Value: v=spf1 include:sendgrid.net ~all
+        # Or for AWS SES:
+        Value: v=spf1 include:amazonses.com ~all
+        ```
+      </Step>
+
+      <Step title="Set Up DKIM">
+        ```dns
+        # SendGrid provides these records
+        # Add each to your DNS:
+        Type: CNAME
+        Host: s1._domainkey
+        Value: s1.domainkey.u123456.wl.sendgrid.net
+
+        Type: CNAME
+        Host: s2._domainkey
+        Value: s2.domainkey.u123456.wl.sendgrid.net
+        ```
+      </Step>
+
+      <Step title="Set Up DMARC">
+        ```dns
+        Type: TXT
+        Host: _dmarc
+        Value: v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com
+        ```
+      </Step>
+
+      <Step title="Test Email Deliverability">
+        1. Send test email to mail-tester.com
+        2. Check spam score (aim for 9/10 or higher)
+        3. Review and fix flagged issues
+        4. Re-test after fixes
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+## Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Slow response times">
+    ### Quick Fixes
+
+    ```bash
+    # Enable caching
+    CACHE_ENABLED=true
+    REDIS_URL=redis://localhost:6379
+
+    # Optimize database queries (add indexes)
+    # See Database Issues > Slow queries
+
+    # Enable compression
+    npm install compression
+    ```
+
+    ```javascript
+    const compression = require('compression');
+    app.use(compression());
+    ```
+
+    ### Monitor Performance
+
+    ```javascript
+    // Add request timing middleware
+    app.use((req, res, next) => {
+      const start = Date.now();
+      res.on('finish', () => {
+        const duration = Date.now() - start;
+        if (duration > 1000) {
+          console.warn(`Slow request: ${req.method} ${req.path} ${duration}ms`);
+        }
+      });
+      next();
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Getting Help
+
+If you're still stuck after trying these solutions:
+
+<CardGroup cols={2}>
+  <Card title="Check FAQ" icon="circle-question" href="/support/faq">
+    Common questions and answers
+  </Card>
+  <Card title="Common Issues" icon="bug" href="/support/common-issues">
+    Known issues and workarounds
+  </Card>
+  <Card title="Contact Support" icon="headset" href="/support/contact">
+    Get help from our team
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/yourusername/whatsapp-team-inbox/issues">
+    Report bugs or request features
+  </Card>
+</CardGroup>
+
+## Debug Mode
+
+Enable comprehensive logging:
+
+```bash
+# In .env
+NODE_ENV=development
+DEBUG=*
+LOG_LEVEL=debug
+WHATSAPP_API_DEBUG=true
+DATABASE_LOGGING=true
+EMAIL_DEBUG=true
+```
+
+This will provide detailed logs for troubleshooting all components.

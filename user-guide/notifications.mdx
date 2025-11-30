@@ -1,0 +1,635 @@
+---
+title: 'Notification Settings'
+description: 'Customize how and when you receive notifications for conversations and updates'
+---
+
+## Overview
+
+Stay informed without being overwhelmed. Configure notifications to match your workflow and preferences.
+
+## Notification Channels
+
+<CardGroup cols={3}>
+  <Card title="Desktop" icon="desktop">
+    Browser notifications on your computer
+  </Card>
+  <Card title="Email" icon="envelope">
+    Email alerts to your inbox
+  </Card>
+  <Card title="Mobile" icon="mobile">
+    Push notifications on mobile devices
+  </Card>
+</CardGroup>
+
+## Desktop Notifications
+
+### Enabling Desktop Notifications
+
+<Steps>
+  <Step title="Grant Browser Permission">
+    1. Click notification icon in top bar
+    2. Click **Enable Notifications**
+    3. Browser prompts for permission
+    4. Click **Allow**
+
+    <Info>
+    If you accidentally blocked, reset in browser settings: `chrome://settings/content/notifications`
+    </Info>
+  </Step>
+
+  <Step title="Configure Notification Types">
+    Choose which events trigger notifications:
+
+    ```
+    Desktop Notifications
+    ━━━━━━━━━━━━━━━━━━━━
+    ☑ New messages in assigned conversations
+    ☑ @Mentions in conversations or notes
+    ☑ Conversation assignments
+    ☐ Team chat messages
+    ☐ Status changes
+    ☑ Priority escalations
+    ```
+  </Step>
+
+  <Step title="Customize Behavior">
+    **Sound:**
+    - Enable/disable notification sound
+    - Choose notification tone
+    - Adjust volume
+
+    **Display:**
+    - Show message preview (or just sender)
+    - Keep notification visible until dismissed
+    - Auto-dismiss after X seconds
+  </Step>
+</Steps>
+
+### Do Not Disturb Mode
+
+Temporarily silence notifications:
+
+<Tabs>
+  <Tab title="Quick DND">
+    ```
+    Click notification icon → Turn on DND
+
+    Options:
+    ○ For 30 minutes
+    ○ For 1 hour
+    ○ For 2 hours
+    ○ Until I turn it off
+    ○ Custom time...
+    ```
+
+    Urgent notifications still come through.
+  </Tab>
+
+  <Tab title="Scheduled DND">
+    Auto-enable during specific times:
+
+    ```
+    Schedule DND
+    ━━━━━━━━━━━━━━━━━━━━
+    ☑ Weekdays: 6:00 PM - 9:00 AM
+    ☑ Weekends: All day
+    ☐ Lunch: 12:00 PM - 1:00 PM
+
+    Exceptions:
+    ☑ Allow urgent priority
+    ☑ Allow @mentions from managers
+    ```
+  </Tab>
+
+  <Tab title="Focus Mode">
+    Reduce distractions during focused work:
+
+    ```
+    Focus Mode
+    ━━━━━━━━━━━━━━━━━━━━
+    When active:
+    ☑ Mute non-urgent notifications
+    ☑ Batch notifications (show every 15 min)
+    ☐ Auto-set status to "Busy"
+
+    Quick toggle: Alt+Shift+D
+    ```
+  </Tab>
+</Tabs>
+
+## Email Notifications
+
+### Email Preferences
+
+<AccordionGroup>
+  <Accordion title="Real-time Notifications">
+    Instant email alerts:
+
+    ```
+    Send Email When:
+    ━━━━━━━━━━━━━━━━━━━━━━━━━
+    ☑ New conversation assigned to me
+    ☑ Someone @mentions me
+    ☑ Urgent conversation unattended >15 min
+    ☐ Any new conversation
+    ☐ Customer replies to my conversation
+    ☐ Status changes
+
+    Delivery:
+    ⦿ Immediately
+    ○ Batched every 15 minutes
+    ○ Batched hourly
+    ```
+
+    <Warning>
+    Too many real-time emails? Consider batched delivery or digest format.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Daily Digest">
+    Summary email once per day:
+
+    ```
+    Daily Summary Email
+    ━━━━━━━━━━━━━━━━━━━━
+    ☑ Enabled
+
+    Send at: [9:00 AM ▾]
+    Timezone: [America/New_York ▾]
+
+    Include:
+    ☑ Conversations handled yesterday
+    ☑ Open conversations assigned to me
+    ☑ Team performance summary
+    ☑ Upcoming tasks/reminders
+    ☐ Knowledge base updates
+    ```
+
+    **Example digest:**
+    ```
+    Your Daily Summary - Nov 29, 2025
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    📊 Yesterday's Activity:
+    • 15 conversations handled
+    • Avg response time: 4.2 min
+    • CSAT: 4.7/5
+
+    📥 Open Conversations (5):
+    1. Refund request - Customer A (2h)
+    2. Technical issue - Customer B (45m)
+    ...
+
+    ⚡ Urgent Items (1):
+    • VIP customer waiting >1 hour
+    ```
+  </Accordion>
+
+  <Accordion title="Weekly Report">
+    Comprehensive weekly summary:
+
+    ```
+    Weekly Report
+    ━━━━━━━━━━━━━━━━━━━━
+    ☑ Enabled
+
+    Send: [Every Monday ▾] at [9:00 AM ▾]
+
+    Include:
+    ☑ Personal performance metrics
+    ☑ Team comparison (anonymous)
+    ☑ Top conversation topics
+    ☑ Customer feedback summary
+    ☑ Goals and achievements
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Email Frequency Limits
+
+Prevent email overload:
+
+```javascript
+{
+  "max_emails_per_hour": 10,
+  "max_emails_per_day": 50,
+  "batch_threshold": 5, // If >5 pending, batch them
+  "batch_interval_minutes": 15
+}
+```
+
+**Smart batching:**
+- Single event → Immediate email
+- Multiple events → Wait and batch
+- Urgent events → Always immediate
+
+## Mobile Notifications
+
+### Mobile App Setup
+
+<Steps>
+  <Step title="Install PWA">
+    1. Visit inbox on mobile browser
+    2. Tap "Add to Home Screen"
+    3. Name: "Team Inbox"
+    4. Tap "Add"
+  </Step>
+
+  <Step title="Enable Push Notifications">
+    1. Open app
+    2. Allow notifications when prompted
+    3. Configure preferences in app settings
+  </Step>
+
+  <Step title="Configure Mobile-Specific Settings">
+    ```
+    Mobile Notifications
+    ━━━━━━━━━━━━━━━━━━━━
+    Notifications: [All ▾]
+
+    Sound: [Default ▾]
+    Vibration: ☑ Enabled
+    LED Color: [Green ▾]
+
+    Behavior:
+    ☑ Show on lock screen
+    ☑ Wake screen on notification
+    ☐ Persistent notification icon
+    ```
+  </Step>
+</Steps>
+
+### Mobile-Specific Options
+
+<Tabs>
+  <Tab title="Smart Notification">
+    Contextual notifications based on activity:
+
+    ```
+    When app is:
+    • Open: No notification (you're already looking)
+    • Background: Show notification
+    • Closed >1 hour: Sound + vibrate
+    • Phone silent: Visual only
+    ```
+  </Tab>
+
+  <Tab title="Location-Based">
+    Adjust notifications by location:
+
+    ```
+    At Work (GPS):
+    ☑ Enable all notifications
+
+    At Home:
+    ☐ Disable work notifications
+    ☑ Urgent only
+
+    Custom Locations:
+    + Add location...
+    ```
+  </Tab>
+
+  <Tab title="Battery Saver">
+    Reduce battery impact:
+
+    ```
+    Battery Optimization
+    ━━━━━━━━━━━━━━━━━━━━
+    When battery <20%:
+    ☑ Reduce notification frequency
+    ☑ Disable notification sounds
+    ☑ Batch updates every 30 min
+    ```
+  </Tab>
+</Tabs>
+
+## Notification Types
+
+### Conversation Notifications
+
+<Tabs>
+  <Tab title="New Messages">
+    ```
+    New Message Notifications
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+    Notify me when:
+    ☑ Customer replies to my conversation
+    ☑ New message in high-priority conversation
+    ☐ Any new message in any conversation
+
+    Except:
+    ☑ Messages I sent
+    ☑ Auto-replies
+    ☑ When I'm viewing the conversation
+    ```
+  </Tab>
+
+  <Tab title="Assignments">
+    ```
+    Assignment Notifications
+    ━━━━━━━━━━━━━━━━━━━━━━
+    ☑ Conversation assigned to me
+    ☑ Conversation reassigned from me
+    ☐ Conversation assigned to my team
+
+    Priority:
+    ⦿ All assignments
+    ○ Urgent priority only
+    ○ High and urgent only
+    ```
+  </Tab>
+
+  <Tab title="@Mentions">
+    ```
+    Mention Notifications
+    ━━━━━━━━━━━━━━━━━━━━
+    ☑ @mentions in conversation notes
+    ☑ @mentions in team chat
+    ☑ @mentions in comments
+
+    Always notify (bypass DND):
+    ☑ @mentions with "urgent"
+    ☑ @mentions from managers
+    ```
+  </Tab>
+
+  <Tab title="Status Changes">
+    ```
+    Status Change Notifications
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+    ☑ Closed conversation reopened
+    ☑ Conversation escalated to urgent
+    ☐ Conversation moved to pending
+    ☐ Conversation resolved
+
+    For:
+    ⦿ My conversations only
+    ○ Team conversations
+    ○ All conversations
+    ```
+  </Tab>
+</Tabs>
+
+### Team Notifications
+
+```
+Team Activity
+━━━━━━━━━━━━━━━━━━━━
+☑ Team member goes offline during shift
+☑ Unassigned queue reaches X conversations
+☑ Team SLA breach warning
+☐ Team member requests help
+☐ Knowledge base updates
+
+Threshold: [10 ▾] unassigned conversations
+```
+
+### System Notifications
+
+```
+System Updates
+━━━━━━━━━━━━━━━━━━━━
+☑ New features announced
+☑ Scheduled maintenance
+☑ Security alerts
+☐ Template approvals/rejections
+☐ Integration status changes
+
+Delivery:
+⦿ Email only
+○ Desktop + Email
+○ All channels
+```
+
+## Notification Grouping
+
+Organize multiple notifications:
+
+<Tabs>
+  <Tab title="Smart Grouping">
+    **Automatically group related notifications:**
+
+    ```
+    Instead of:
+    • New message from Customer A
+    • New message from Customer B
+    • New message from Customer A
+    • New message from Customer C
+
+    Show as:
+    • 4 new messages
+      └─ Customer A (2), Customer B (1), Customer C (1)
+    ```
+
+    **Click to expand and see details**
+  </Tab>
+
+  <Tab title="By Conversation">
+    Group by conversation:
+
+    ```
+    Conversation #12345 (3 updates)
+    ├─ New message from customer
+    ├─ @mention from Sarah
+    └─ Status changed to Urgent
+    ```
+  </Tab>
+
+  <Tab title="By Type">
+    Group by notification type:
+
+    ```
+    @Mentions (5)
+    ├─ In conversation #123
+    ├─ In conversation #456
+    └─ ...
+
+    Assignments (2)
+    ├─ Conversation #789
+    └─ Conversation #101
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Settings
+
+### Notification Filters
+
+Create custom notification rules:
+
+<Steps>
+  <Step title="Create Filter">
+    ```
+    New Notification Rule
+    ━━━━━━━━━━━━━━━━━━━━━
+    Name: VIP Customer Alerts
+
+    Conditions:
+    • Contact has tag: "VIP"
+    • Priority: Any
+    • Status: Open
+
+    Actions:
+    ☑ Desktop notification (sound)
+    ☑ Email immediately
+    ☑ SMS (if urgent)
+
+    Override DND: ☑ Yes
+    ```
+  </Step>
+
+  <Step title="Priority Rules">
+    Different handling by priority:
+
+    | Priority | Desktop | Email | Mobile | Sound |
+    |----------|---------|-------|--------|-------|
+    | Urgent | ✅ Always | ✅ Immediate | ✅ Alert | 🔊 Loud |
+    | High | ✅ Working hours | ✅ Batched | ✅ Silent | 🔈 Normal |
+    | Normal | ✅ If assigned | ☑️ Digest | ☑️ Optional | 🔇 Off |
+    | Low | ☑️ Optional | ☑️ Weekly | ❌ No | 🔇 Off |
+  </Step>
+</Steps>
+
+### Quiet Hours
+
+Auto-adjust notifications by time:
+
+```
+Quiet Hours Configuration
+━━━━━━━━━━━━━━━━━━━━━━━━
+Weekdays:
+├─ 9:00 AM - 6:00 PM: Normal notifications
+├─ 6:00 PM - 11:00 PM: Urgent only
+└─ 11:00 PM - 9:00 AM: Critical only
+
+Weekends:
+└─ All day: Urgent only
+
+Holidays:
+└─ All day: Critical only
+
+Critical events:
+• System outages
+• VIP customer issues
+• @mention with "urgent" keyword
+```
+
+## Notification History
+
+Review past notifications:
+
+```
+Notification Center
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[All ▾] [Today ▾] [Mark all read]
+
+Today
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+● New message from Customer A    2m ago
+  "When will my order ship?"
+  [View] [Dismiss]
+
+● @mention from Sarah            15m ago
+  "Can you help with this?"
+  [View] [Dismiss]
+
+○ Conversation assigned           1h ago
+  Support issue #789
+  [View] [Dismiss]
+
+Yesterday
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+...
+```
+
+**Actions:**
+- Click notification to open conversation
+- Dismiss individual notifications
+- Mark all as read
+- Clear old notifications
+
+## Testing Notifications
+
+Verify your notification settings:
+
+<Steps>
+  <Step title="Send Test Notification">
+    ```
+    Settings → Notifications → Test
+
+    Send test:
+    ☑ Desktop notification
+    ☑ Email
+    ☑ Mobile push
+
+    [Send Test Notifications]
+    ```
+  </Step>
+
+  <Step title="Verify Receipt">
+    Check each channel:
+    - Desktop: Should see browser notification
+    - Email: Check inbox (also spam folder)
+    - Mobile: Check phone notification tray
+  </Step>
+
+  <Step title="Troubleshoot Issues">
+    If not receiving:
+
+    **Desktop:**
+    - Check browser permissions
+    - Verify notifications enabled in OS
+    - Try different browser
+
+    **Email:**
+    - Check spam/junk folder
+    - Verify email address correct
+    - Check email provider not blocking
+
+    **Mobile:**
+    - Check app permissions
+    - Verify notifications enabled in OS
+    - Check Do Not Disturb mode
+  </Step>
+</Steps>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Conservative" icon="shield-halved">
+    Enable fewer notifications initially, add more as needed
+  </Card>
+  <Card title="Use Quiet Hours" icon="moon">
+    Set boundaries between work and personal time
+  </Card>
+  <Card title="Prioritize Channels" icon="signal">
+    Critical → Mobile, Important → Desktop, FYI → Email
+  </Card>
+  <Card title="Review Weekly" icon="calendar-check">
+    Adjust settings based on what works for you
+  </Card>
+  <Card title="Leverage Batching" icon="layer-group">
+    Reduce interruptions with batched notifications
+  </Card>
+  <Card title="Test Changes" icon="flask">
+    Always test after changing notification settings
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Contacts" icon="address-book" href="/user-guide/contacts">
+    Manage customer contact information
+  </Card>
+  <Card title="Settings" icon="gear" href="/user-guide/settings">
+    Configure other personal preferences
+  </Card>
+  <Card title="Team Collaboration" icon="users" href="/user-guide/team-collaboration">
+    Collaborate with your team
+  </Card>
+  <Card title="Managing Conversations" icon="comments" href="/user-guide/managing-conversations">
+    Master conversation workflows
+  </Card>
+</CardGroup>

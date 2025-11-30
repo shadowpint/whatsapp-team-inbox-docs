@@ -1,0 +1,222 @@
+---
+title: 'Quick Start'
+description: 'Deploy WhatsApp Team Inbox in under 5 minutes'
+icon: 'rocket'
+---
+
+# Quick Start Deployment
+
+Get your WhatsApp Team Inbox up and running in minutes with our one-click installation script.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+<CardGroup cols={2}>
+  <Card title="Docker" icon="docker" href="https://docs.docker.com/get-docker/">
+    Docker 20.10 or higher
+  </Card>
+  <Card title="Docker Compose" icon="layer-group" href="https://docs.docker.com/compose/install/">
+    Docker Compose v2.0 or higher
+  </Card>
+  <Card title="WhatsApp Business API" icon="whatsapp" href="/deployment/whatsapp-setup">
+    Meta Business account with WhatsApp API access
+  </Card>
+  <Card title="Database" icon="database">
+    PostgreSQL 14+ (included in Docker setup)
+  </Card>
+</CardGroup>
+
+## One-Click Installation
+
+### 1. Download the Repository
+
+```bash
+git clone https://github.com/your-org/whatsapp-team-inbox.git
+cd whatsapp-team-inbox
+```
+
+### 2. Run Installation Script
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+The script will:
+- ✅ Check Docker prerequisites
+- ✅ Generate secure secrets
+- ✅ Prompt for configuration
+- ✅ Build Docker containers
+- ✅ Run database migrations
+- ✅ Create admin user
+- ✅ Start all services
+
+### 3. Configuration Prompts
+
+You'll be asked to provide:
+
+<AccordionGroup>
+  <Accordion title="Admin Credentials">
+    ```
+    Enter admin email [admin@example.com]: admin@yourcompany.com
+    Enter admin password (min 8 characters): ********
+    ```
+  </Accordion>
+
+  <Accordion title="WhatsApp API Credentials">
+    ```
+    WhatsApp Access Token: EAAxxxxxxxxxxxxxxx
+    WhatsApp Phone Number ID: 123456789012345
+    WhatsApp Business Account ID: 123456789012345
+    ```
+
+    <Info>Get these from [Meta Business Suite](https://business.facebook.com)</Info>
+  </Accordion>
+
+  <Accordion title="Domain Configuration">
+    ```
+    Enter your domain (e.g., app.company.com) [localhost]:
+    ```
+
+    For production, use your actual domain. For testing, use `localhost`.
+  </Accordion>
+</AccordionGroup>
+
+## Access Your Installation
+
+Once installation completes, access your services:
+
+<CardGroup cols={3}>
+  <Card title="Frontend" icon="window">
+    http://localhost:3000
+  </Card>
+  <Card title="Backend API" icon="server">
+    http://localhost:4000
+  </Card>
+  <Card title="WebSocket" icon="network-wired">
+    ws://localhost:4001
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<Steps>
+  <Step title="Configure WhatsApp Webhook">
+    Set your webhook URL in Meta Business Suite:
+    ```
+    https://your-domain.com/api/webhook
+    ```
+    [Learn how →](/deployment/whatsapp-setup)
+  </Step>
+
+  <Step title="Invite Team Members">
+    Log in and invite your team from Settings > Team
+  </Step>
+
+  <Step title="Customize Settings">
+    Configure templates, automated responses, and more
+  </Step>
+
+  <Step title="Test First Conversation">
+    Send a test message to your WhatsApp number
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Containers won't start">
+    Check Docker daemon is running:
+    ```bash
+    docker ps
+    ```
+
+    View logs:
+    ```bash
+    docker-compose logs -f
+    ```
+  </Accordion>
+
+  <Accordion title="Database connection failed">
+    Verify PostgreSQL is healthy:
+    ```bash
+    docker-compose ps postgres
+    ```
+
+    Check database logs:
+    ```bash
+    docker-compose logs postgres
+    ```
+  </Accordion>
+
+  <Accordion title="Admin login not working">
+    Verify admin was created:
+    ```bash
+    docker-compose exec backend node scripts/create-admin.js
+    ```
+  </Accordion>
+
+  <Accordion title="WhatsApp messages not received">
+    1. Verify webhook is configured in Meta Business Suite
+    2. Check webhook verify token matches your .env
+    3. Ensure your server is publicly accessible
+    4. Test webhook endpoint: `curl https://your-domain.com/api/webhook`
+  </Accordion>
+</AccordionGroup>
+
+## Useful Commands
+
+```bash
+# View all logs
+docker-compose logs -f
+
+# View specific service logs
+docker-compose logs -f backend
+
+# Restart services
+docker-compose restart
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes (⚠️ deletes data)
+docker-compose down -v
+
+# Update to latest version
+git pull
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+<Warning>
+  **Important**: After installation, change your admin password immediately from the Settings page.
+</Warning>
+
+## Production Deployment
+
+For production deployments with managed hosting, see our platform-specific guides:
+
+<CardGroup cols={3}>
+  <Card title="Railway" icon="train" href="/deployment/railway">
+    One-click deploy with built-in PostgreSQL
+  </Card>
+  <Card title="Vercel" icon="triangle" href="/deployment/vercel">
+    Deploy Next.js frontend with global CDN
+  </Card>
+  <Card title="DigitalOcean" icon="water" href="/deployment/digitalocean">
+    Deploy on App Platform with managed database
+  </Card>
+</CardGroup>
+
+### Recommended Production Stack
+
+For optimal performance and cost:
+
+1. **Frontend:** Vercel (Next.js optimization + global CDN)
+2. **Backend:** Railway (easy deployment + included PostgreSQL)
+3. **Cost:** ~$20-30/month total
+
+Alternative all-in-one options:
+- **Railway:** Full-stack deployment on single platform
+- **DigitalOcean:** Complete deployment with managed database

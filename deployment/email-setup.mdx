@@ -1,0 +1,613 @@
+---
+title: 'Email Setup with Resend'
+description: 'Configure email notifications for team invitations using Resend'
+icon: 'envelope'
+---
+
+# Email Setup with Resend
+
+Configure Resend to send team invitation emails and notifications from your WhatsApp Team Inbox.
+
+## TL;DR - Quick Setup
+
+<Steps>
+  <Step title="Sign up for Resend">
+    [resend.com](https://resend.com) → Create account (free tier: 100 emails/day)
+  </Step>
+  <Step title="Get API Key">
+    Dashboard → API Keys → Create API Key → Copy key
+  </Step>
+  <Step title="Add to .env">
+    ```bash
+    RESEND_API_KEY=re_xxxxxxxxxxxx
+    FROM_EMAIL=noreply@yourdomain.com
+    FROM_NAME=WhatsApp Team Inbox
+    ```
+  </Step>
+  <Step title="Verify Domain (Optional)">
+    For production: Add DNS records to send from your domain
+  </Step>
+</Steps>
+
+**Total time:** ~10 minutes | **Cost:** Free (100 emails/day)
+
+---
+
+## Overview
+
+<Info>
+Resend is a modern email API designed for developers. It's the email service used by WhatsApp Team Inbox for sending team invitation emails.
+</Info>
+
+### What Resend is Used For
+
+<CardGroup cols={2}>
+  <Card title="Team Invitations" icon="user-plus">
+    Send invitation emails when adding new team members
+  </Card>
+  <Card title="Password Resets" icon="key">
+    Send password reset links (future feature)
+  </Card>
+  <Card title="Notifications" icon="bell">
+    Optional email notifications for new messages
+  </Card>
+  <Card title="System Alerts" icon="triangle-exclamation">
+    Critical system notifications to admins
+  </Card>
+</CardGroup>
+
+<Note>
+Email setup is **optional**. If not configured, invitation links will be displayed in the admin panel for manual sharing.
+</Note>
+
+## Why Resend?
+
+<CardGroup cols={2}>
+  <Card title="Simple API" icon="code">
+    Clean REST API, no complicated SMTP configuration
+  </Card>
+  <Card title="Generous Free Tier" icon="gift">
+    100 emails/day free forever
+  </Card>
+  <Card title="Built for Developers" icon="terminal">
+    Modern developer experience, great documentation
+  </Card>
+  <Card title="Reliable Delivery" icon="check">
+    High deliverability rates out of the box
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+<Check>A Resend account (free tier available)</Check>
+<Check>A domain name (optional, for production use)</Check>
+<Check>Access to your domain's DNS settings (for production)</Check>
+
+## Step 1: Create Resend Account
+
+<Steps>
+  <Step title="Sign Up">
+    Go to [resend.com](https://resend.com) and create a free account.
+
+    No credit card required for the free tier.
+  </Step>
+
+  <Step title="Verify Email">
+    Check your email and click the verification link.
+  </Step>
+
+  <Step title="Complete Onboarding">
+    Follow the onboarding prompts to set up your account.
+  </Step>
+</Steps>
+
+## Step 2: Get API Key
+
+<Steps>
+  <Step title="Navigate to API Keys">
+    In Resend dashboard, go to **API Keys** section.
+  </Step>
+
+  <Step title="Create New API Key">
+    1. Click **Create API Key**
+    2. Name: "WhatsApp Team Inbox"
+    3. Permission: **Full Access** (or **Sending access** for production)
+    4. Click **Add**
+  </Step>
+
+  <Step title="Copy API Key">
+    Copy the API key immediately - you won't be able to see it again!
+
+    ```bash
+    # Example format:
+    re_123abc456def789ghi012jkl345mno678
+    ```
+
+    <Warning>
+    Store this key securely. Never commit it to version control.
+    </Warning>
+  </Step>
+</Steps>
+
+## Step 3: Configure Environment Variables
+
+Add these variables to your `.env` file:
+
+### Required Variables
+
+<ParamField path="RESEND_API_KEY" type="string" required>
+  Your Resend API key
+
+  **Example:** `re_123abc456def789ghi012jkl345mno678`
+
+  **Get from:** Resend Dashboard → API Keys
+</ParamField>
+
+### Optional Variables
+
+<ParamField path="FROM_EMAIL" type="string" default="onboarding@resend.dev">
+  Email address to send from
+
+  **Development:** Use default `onboarding@resend.dev`
+
+  **Production:** Use your verified domain `noreply@yourdomain.com`
+</ParamField>
+
+<ParamField path="FROM_NAME" type="string" default="Team Inbox">
+  Display name for sender
+
+  **Example:** `WhatsApp Team Inbox` or `Your Company Name`
+</ParamField>
+
+<ParamField path="NEXT_PUBLIC_APP_URL" type="string" required>
+  Your application URL (used for invitation links)
+
+  **Development:** `http://localhost:3000`
+
+  **Production:** `https://app.yourdomain.com`
+</ParamField>
+
+### Example Configuration
+
+<Tabs>
+  <Tab title="Development">
+    ```bash
+    # .env (Development)
+    RESEND_API_KEY=re_123abc456def789ghi012jkl345mno678
+    FROM_EMAIL=onboarding@resend.dev
+    FROM_NAME=Team Inbox Dev
+    NEXT_PUBLIC_APP_URL=http://localhost:3000
+    ```
+
+    <Info>
+    In development, you can use Resend's default `onboarding@resend.dev` sender without domain verification.
+    </Info>
+  </Tab>
+
+  <Tab title="Production">
+    ```bash
+    # .env (Production)
+    RESEND_API_KEY=re_production_key_here
+    FROM_EMAIL=noreply@yourdomain.com
+    FROM_NAME=WhatsApp Team Inbox
+    NEXT_PUBLIC_APP_URL=https://app.yourdomain.com
+    ```
+
+    <Warning>
+    For production, verify your domain (see Step 4) before using your custom email address.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Step 4: Verify Domain (Production Only)
+
+For production deployments, verify your domain to send emails from your own domain.
+
+<Steps>
+  <Step title="Add Domain to Resend">
+    1. In Resend dashboard, go to **Domains**
+    2. Click **Add Domain**
+    3. Enter your domain: `yourdomain.com`
+    4. Click **Add**
+  </Step>
+
+  <Step title="Add DNS Records">
+    Resend will provide DNS records to add to your domain:
+
+    ```
+    Type: TXT
+    Name: resend._domainkey
+    Value: p=MIGfMA0GCSqG...
+
+    Type: TXT
+    Name: @
+    Value: v=spf1 include:resend.io ~all
+    ```
+
+    Add these records in your domain registrar's DNS settings:
+    - Namecheap
+    - GoDaddy
+    - Cloudflare
+    - Google Domains
+    - etc.
+  </Step>
+
+  <Step title="Verify Domain">
+    1. Wait for DNS propagation (5 minutes - 48 hours)
+    2. Click **Verify** in Resend dashboard
+    3. Once verified, you can send from `@yourdomain.com`
+  </Step>
+
+  <Step title="Update Environment Variable">
+    Update your `FROM_EMAIL` to use verified domain:
+
+    ```bash
+    FROM_EMAIL=noreply@yourdomain.com
+    # or
+    FROM_EMAIL=team@yourdomain.com
+    ```
+  </Step>
+</Steps>
+
+## Step 5: Test Email Sending
+
+Verify your email configuration is working:
+
+<Steps>
+  <Step title="Restart Application">
+    Restart your backend server to load new environment variables:
+
+    ```bash
+    # If using Docker
+    docker-compose restart backend
+
+    # If using PM2
+    pm2 restart backend
+
+    # If running directly
+    npm run dev
+    ```
+  </Step>
+
+  <Step title="Check Logs">
+    Look for email service initialization message:
+
+    ```bash
+    ✅ Email service initialized with Resend API
+    ```
+
+    If you see a warning:
+    ```bash
+    ⚠️  Email service not configured
+    ```
+
+    Then `RESEND_API_KEY` is not set correctly.
+  </Step>
+
+  <Step title="Send Test Invitation">
+    Invite a team member from the admin panel:
+
+    1. Go to **Settings** → **Team**
+    2. Click **Invite Member**
+    3. Enter email address
+    4. Select role
+    5. Click **Send Invitation**
+
+    Check backend logs for:
+    ```bash
+    ✅ Invitation email sent to user@example.com (ID: abc123...)
+    ```
+  </Step>
+
+  <Step title="Check Email Delivery">
+    1. Check the recipient's inbox
+    2. Email should arrive within seconds
+    3. Subject: "You've been invited to join [Your App Name] as [Role]"
+    4. Click invitation link to verify it works
+  </Step>
+</Steps>
+
+## Email Templates
+
+The invitation email includes:
+
+<CardGroup cols={2}>
+  <Card title="Professional Design" icon="palette">
+    Clean, responsive HTML email template
+  </Card>
+  <Card title="Clear CTA" icon="hand-pointer">
+    Prominent "Accept Invitation" button
+  </Card>
+  <Card title="Plain Text Fallback" icon="align-left">
+    Works in all email clients
+  </Card>
+  <Card title="Expiry Notice" icon="clock">
+    7-day expiration mentioned in email
+  </Card>
+</CardGroup>
+
+### Customizing Email Templates
+
+To customize email templates, edit:
+
+```bash
+backend/src/services/email.service.ts
+```
+
+The template includes:
+- Inviter name
+- Role assignment
+- Invitation link
+- Expiration period
+- Company branding
+
+## Pricing & Limits
+
+### Free Tier
+
+<Card title="Resend Free Tier" icon="gift">
+  **Perfect for small teams**
+
+  - 100 emails per day
+  - 3,000 emails per month
+  - Full API access
+  - 1 verified domain
+  - No credit card required
+
+  **Sufficient for:**
+  - Teams up to 10 people
+  - Light notification usage
+</Card>
+
+### Paid Plans
+
+| Plan | Monthly Cost | Emails Included | Best For |
+|------|-------------|----------------|----------|
+| **Free** | $0 | 3,000/month | Small teams |
+| **Pro** | $20 | 50,000/month | Growing teams |
+| **Scale** | Custom | Custom | Large teams |
+
+[View full pricing →](https://resend.com/pricing)
+
+<Info>
+Most teams stay on the free tier. You only need paid plans if sending &gt;100 invitations per day or using advanced features.
+</Info>
+
+## Deliverability Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Verify Domain" icon="shield-check">
+    Use verified domain for better deliverability
+  </Card>
+  <Card title="Monitor Bounces" icon="chart-line">
+    Check Resend dashboard for bounce rates
+  </Card>
+  <Card title="Avoid Spam Triggers" icon="ban">
+    Don't send unsolicited emails
+  </Card>
+  <Card title="Use Real Reply-To" icon="reply">
+    Set up monitored reply-to address
+  </Card>
+</CardGroup>
+
+### Domain Verification Benefits
+
+<AccordionGroup>
+  <Accordion title="Higher Deliverability">
+    Verified domains have better inbox placement rates:
+    - Unverified: ~85-90% inbox rate
+    - Verified: ~95-99% inbox rate
+  </Accordion>
+
+  <Accordion title="Custom Email Addresses">
+    Use your brand's email addresses:
+    - `team@yourcompany.com`
+    - `noreply@yourcompany.com`
+    - `invites@yourcompany.com`
+  </Accordion>
+
+  <Accordion title="DKIM Signatures">
+    Automatic email authentication:
+    - Prevents email spoofing
+    - Increases trust with email providers
+    - Required by some enterprise recipients
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Emails not sending">
+    **Check these:**
+
+    1. Verify `RESEND_API_KEY` is set correctly
+    2. Check backend logs for errors
+    3. Verify API key has "Sending access" permission
+    4. Check Resend dashboard for failed sends
+    5. Ensure `NEXT_PUBLIC_APP_URL` is correct
+
+    **Test API key manually:**
+    ```bash
+    curl -X POST https://api.resend.com/emails \
+      -H "Authorization: Bearer $RESEND_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "from": "onboarding@resend.dev",
+        "to": "test@example.com",
+        "subject": "Test",
+        "html": "<p>Test email</p>"
+      }'
+    ```
+  </Accordion>
+
+  <Accordion title="Emails going to spam">
+    **Common causes:**
+    - Domain not verified
+    - Sending from `onboarding@resend.dev` in production
+    - No DKIM/SPF records
+
+    **Solutions:**
+    1. Verify your domain in Resend
+    2. Add all DNS records (DKIM, SPF)
+    3. Use custom domain email address
+    4. Avoid spam trigger words in content
+  </Accordion>
+
+  <Accordion title="Domain verification failing">
+    **Steps to fix:**
+
+    1. Wait 24-48 hours for DNS propagation
+    2. Check DNS records are added correctly:
+       ```bash
+       dig TXT resend._domainkey.yourdomain.com
+       dig TXT yourdomain.com
+       ```
+    3. Verify no typos in DNS values
+    4. Check you're adding records to the right domain
+    5. Contact Resend support if still failing
+  </Accordion>
+
+  <Accordion title="API key invalid error">
+    **Solutions:**
+
+    1. Verify key starts with `re_`
+    2. Check for spaces or line breaks when copying
+    3. Regenerate API key in Resend dashboard
+    4. Ensure environment variable is loaded:
+       ```bash
+       echo $RESEND_API_KEY
+       ```
+    5. Restart backend after updating .env
+  </Accordion>
+</AccordionGroup>
+
+## Monitoring Email Delivery
+
+### Resend Dashboard
+
+Track email performance in Resend dashboard:
+
+1. Go to **Emails** in Resend dashboard
+2. View recent sends with status:
+   - ✅ Delivered
+   - ⏳ Queued
+   - ❌ Failed
+   - ⚠️ Bounced
+
+3. Click on any email to see:
+   - Delivery time
+   - Recipient
+   - Subject
+   - Content
+   - Error details (if failed)
+
+### Application Logs
+
+Monitor in your backend logs:
+
+```bash
+# Successful send
+✅ Invitation email sent to user@example.com (ID: abc123...)
+
+# Failed send
+❌ Failed to send invitation email to user@example.com: Error details
+
+# Service not configured
+⚠️  Skipping email send to user@example.com (email service not configured)
+```
+
+## Alternative: Running Without Email
+
+If you don't want to set up email, you can still invite team members:
+
+<Steps>
+  <Step title="Generate Invitation Link">
+    When inviting a member, the invitation link will be displayed in the UI even if email fails.
+  </Step>
+
+  <Step title="Share Link Manually">
+    Copy the invitation link and share via:
+    - Slack/Teams
+    - WhatsApp
+    - Text message
+    - Any other communication channel
+  </Step>
+
+  <Step title="Team Member Accepts">
+    They click the link and complete registration.
+  </Step>
+</Steps>
+
+<Warning>
+Invitation links expire after 7 days for security.
+</Warning>
+
+## Security Considerations
+
+<CardGroup cols={2}>
+  <Card title="Protect API Key" icon="lock">
+    Never expose in client-side code or version control
+  </Card>
+  <Card title="Use Environment Variables" icon="key">
+    Store in .env files, not hardcoded
+  </Card>
+  <Card title="Rotate Keys" icon="rotate">
+    Regenerate API keys periodically
+  </Card>
+  <Card title="Monitor Usage" icon="chart-mixed">
+    Watch for unusual sending patterns
+  </Card>
+</CardGroup>
+
+### API Key Best Practices
+
+```bash
+# ✅ Good - Environment variable
+RESEND_API_KEY=re_123abc...
+
+# ❌ Bad - Hardcoded in code
+const apiKey = "re_123abc...";
+
+# ❌ Bad - Committed to Git
+# .env file in repository
+
+# ✅ Good - Excluded from Git
+# .env added to .gitignore
+```
+
+## Production Checklist
+
+<Check>Resend account created</Check>
+<Check>API key generated and secured</Check>
+<Check>Environment variables configured</Check>
+<Check>Domain verified (for production)</Check>
+<Check>DNS records added and verified</Check>
+<Check>Test email sent successfully</Check>
+<Check>Invitation emails working</Check>
+<Check>Emails arriving in inbox (not spam)</Check>
+<Check>FROM_EMAIL uses verified domain</Check>
+<Check>Monitoring configured in Resend dashboard</Check>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environment Variables" icon="gear" href="/deployment/environment-variables">
+    Complete all configuration settings
+  </Card>
+  <Card title="Team Management" icon="users" href="/admin/team-management">
+    Learn how to invite and manage team members
+  </Card>
+  <Card title="Going Live" icon="rocket" href="/deployment/going-live">
+    Final checklist before launching
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/deployment/troubleshooting">
+    Common issues and solutions
+  </Card>
+</CardGroup>
+
+## Additional Resources
+
+- [Resend Documentation](https://resend.com/docs)
+- [Resend API Reference](https://resend.com/docs/api-reference)
+- [Domain Verification Guide](https://resend.com/docs/dashboard/domains/introduction)
+- [Resend Status Page](https://status.resend.com)

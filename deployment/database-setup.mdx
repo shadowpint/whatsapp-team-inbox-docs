@@ -1,0 +1,745 @@
+---
+title: 'Database Setup'
+description: 'Configure PostgreSQL database for your WhatsApp Team Inbox'
+---
+
+## Overview
+
+WhatsApp Team Inbox uses PostgreSQL to store conversations, messages, team members, and configuration. This guide covers database setup for both local development and production deployment.
+
+<Info>
+PostgreSQL 14 or higher is recommended for optimal performance and features.
+</Info>
+
+## Database Options
+
+<Tabs>
+  <Tab title="Supabase (Recommended)">
+    Managed PostgreSQL with built-in auth, real-time subscriptions, and automatic backups.
+
+    **Free Tier:**
+    - 500 MB database
+    - Unlimited API requests
+    - 50,000 monthly active users
+    - Automatic backups (7 days)
+
+    **Pricing:**
+    - Free: Perfect for getting started
+    - Pro: $25/mo (8 GB database, daily backups)
+    - Team: $599/mo (unlimited projects)
+
+    **Best for:**
+    - Quick setup and deployment
+    - Small to medium teams
+    - Teams wanting managed infrastructure
+
+    [Sign up for Supabase →](https://supabase.com/)
+  </Tab>
+
+  <Tab title="Neon">
+    Serverless PostgreSQL with automatic scaling and branching.
+
+    **Free Tier:**
+    - 0.5 GB storage
+    - Automatic pause after inactivity
+    - Free compute hours
+
+    **Pricing:**
+    - Free: Development and testing
+    - Pro: $19/mo (scale to zero, more storage)
+
+    **Best for:**
+    - Serverless deployments
+    - Development environments
+    - Cost optimization
+
+    [Sign up for Neon →](https://neon.tech/)
+  </Tab>
+
+  <Tab title="Railway">
+    Simple PostgreSQL hosting with automatic backups.
+
+    **Pricing:**
+    - $5/month base + usage
+    - Pay for what you use
+    - Automatic scaling
+
+    **Best for:**
+    - Simple deployment
+    - Integrated hosting with app
+    - Developers who want simplicity
+
+    [Sign up for Railway →](https://railway.app/)
+  </Tab>
+
+  <Tab title="Self-Hosted">
+    Run PostgreSQL on your own infrastructure.
+
+    **Pros:**
+    - Full control
+    - No vendor lock-in
+    - Potentially lower cost at scale
+
+    **Cons:**
+    - Manual setup and maintenance
+    - You manage backups and scaling
+    - Requires database expertise
+
+    **Best for:**
+    - Large deployments
+    - Teams with DevOps expertise
+    - On-premise requirements
+  </Tab>
+</Tabs>
+
+## Supabase Setup (Recommended)
+
+<Steps>
+  <Step title="Create Supabase Project">
+    1. Go to [supabase.com](https://supabase.com/)
+    2. Click **Start your project**
+    3. Sign in with GitHub (recommended)
+    4. Click **New project**
+    5. Fill in project details:
+       - **Name**: whatsapp-team-inbox
+       - **Database Password**: Generate a strong password (save it!)
+       - **Region**: Choose closest to your users
+       - **Pricing Plan**: Free (to start)
+    6. Click **Create new project**
+    7. Wait 2-3 minutes for provisioning
+  </Step>
+
+  <Step title="Get Database Credentials">
+    1. Go to **Project Settings** > **Database**
+    2. Find **Connection string** section
+    3. Copy the **URI** connection string:
+       ```
+       postgresql://postgres:[YOUR-PASSWORD]@db.xxxxx.supabase.co:5432/postgres
+       ```
+    4. Replace `[YOUR-PASSWORD]` with your actual password
+
+    Add to your `.env` file:
+    ```bash
+    DATABASE_URL=postgresql://postgres:your-password@db.xxxxx.supabase.co:5432/postgres
+    ```
+
+    <Warning>
+    Keep your database password secure! Never commit it to version control.
+    </Warning>
+  </Step>
+
+  <Step title="Enable Connection Pooling">
+    For production, enable connection pooling:
+
+    1. In Supabase dashboard, go to **Database** > **Connection Pooling**
+    2. Enable **Session Mode** or **Transaction Mode**
+    3. Copy the pooler connection string:
+       ```
+       postgresql://postgres.xxxxx:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+       ```
+
+    Update your `.env`:
+    ```bash
+    # Use pooler for production
+    DATABASE_URL=postgresql://postgres.xxxxx:your-password@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+    ```
+
+    <Info>
+    Connection pooling prevents "too many connections" errors under load.
+    </Info>
+  </Step>
+
+  <Step title="Configure Database Settings">
+    Optimize for Team Inbox workload:
+
+    1. Go to **Database** > **Settings**
+    2. Update these settings:
+       - **Statement timeout**: 30000ms (30 seconds)
+       - **Max connections**: 100 (free tier)
+       - **Shared buffers**: Default (managed by Supabase)
+
+    For Pro tier and above, consider:
+    - Increasing max connections to 200-500
+    - Enabling point-in-time recovery
+  </Step>
+
+  <Step title="Run Database Migrations">
+    Initialize the database schema:
+
+    ```bash
+    # Navigate to your project directory
+    cd /path/to/whatsapp-team-inbox
+
+    # Install dependencies if not already done
+    npm install
+
+    # Run migrations
+    npm run db:migrate
+
+    # Or using Prisma directly
+    npx prisma migrate deploy
+    ```
+
+    This creates all necessary tables:
+    - `users` - Team members
+    - `conversations` - WhatsApp conversations
+    - `messages` - Individual messages
+    - `contacts` - Customer contact information
+    - `assignments` - Conversation assignments
+    - `notifications` - User notifications
+    - `webhooks` - Webhook configurations
+  </Step>
+
+  <Step title="Seed Initial Data (Optional)">
+    Add sample data for testing:
+
+    ```bash
+    npm run db:seed
+    ```
+
+    This creates:
+    - Demo admin user
+    - Sample conversations
+    - Test contacts
+  </Step>
+</Steps>
+
+## Self-Hosted PostgreSQL Setup
+
+<Steps>
+  <Step title="Install PostgreSQL">
+    <Tabs>
+      <Tab title="Ubuntu/Debian">
+        ```bash
+        # Update package list
+        sudo apt update
+
+        # Install PostgreSQL
+        sudo apt install postgresql postgresql-contrib
+
+        # Start PostgreSQL service
+        sudo systemctl start postgresql
+        sudo systemctl enable postgresql
+
+        # Check status
+        sudo systemctl status postgresql
+        ```
+      </Tab>
+
+      <Tab title="macOS">
+        ```bash
+        # Using Homebrew
+        brew install postgresql@14
+
+        # Start PostgreSQL
+        brew services start postgresql@14
+
+        # Verify installation
+        psql --version
+        ```
+      </Tab>
+
+      <Tab title="Docker">
+        ```bash
+        # Create docker-compose.yml
+        cat > docker-compose.yml << EOF
+        version: '3.8'
+        services:
+          postgres:
+            image: postgres:14-alpine
+            restart: always
+            environment:
+              POSTGRES_USER: postgres
+              POSTGRES_PASSWORD: your_secure_password
+              POSTGRES_DB: team_inbox
+            ports:
+              - "5432:5432"
+            volumes:
+              - postgres_data:/var/lib/postgresql/data
+
+        volumes:
+          postgres_data:
+        EOF
+
+        # Start PostgreSQL
+        docker-compose up -d
+
+        # Check logs
+        docker-compose logs postgres
+        ```
+      </Tab>
+
+      <Tab title="Windows">
+        1. Download installer from [postgresql.org/download/windows](https://www.postgresql.org/download/windows/)
+        2. Run the installer
+        3. Follow setup wizard:
+           - Choose installation directory
+           - Select components (PostgreSQL Server, pgAdmin 4, Command Line Tools)
+           - Set password for postgres user
+           - Use default port 5432
+        4. Complete installation
+        5. PostgreSQL runs as a Windows service
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Create Database and User">
+    ```bash
+    # Connect to PostgreSQL as postgres user
+    sudo -u postgres psql
+
+    # In PostgreSQL prompt:
+    CREATE DATABASE team_inbox;
+    CREATE USER team_inbox_user WITH ENCRYPTED PASSWORD 'your_secure_password';
+    GRANT ALL PRIVILEGES ON DATABASE team_inbox TO team_inbox_user;
+
+    # For PostgreSQL 15+, also grant schema privileges
+    \c team_inbox
+    GRANT ALL ON SCHEMA public TO team_inbox_user;
+
+    # Exit
+    \q
+    ```
+
+    Configure your `.env`:
+    ```bash
+    DATABASE_URL=postgresql://team_inbox_user:your_secure_password@localhost:5432/team_inbox
+    ```
+  </Step>
+
+  <Step title="Configure PostgreSQL">
+    Edit PostgreSQL configuration for production:
+
+    ```bash
+    # Find config file location
+    sudo -u postgres psql -c 'SHOW config_file'
+
+    # Edit postgresql.conf
+    sudo nano /etc/postgresql/14/main/postgresql.conf
+    ```
+
+    Recommended settings:
+    ```conf
+    # Connection Settings
+    max_connections = 200
+    shared_buffers = 256MB
+    effective_cache_size = 1GB
+    maintenance_work_mem = 64MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 1310kB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+
+    # Logging
+    log_destination = 'stderr'
+    logging_collector = on
+    log_directory = 'log'
+    log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+    log_statement = 'ddl'
+    log_min_duration_statement = 1000  # Log queries slower than 1s
+    ```
+
+    Restart PostgreSQL:
+    ```bash
+    sudo systemctl restart postgresql
+    ```
+  </Step>
+
+  <Step title="Set Up Backups">
+    Create automated backup script:
+
+    ```bash
+    # Create backup directory
+    sudo mkdir -p /var/backups/postgresql
+
+    # Create backup script
+    sudo nano /usr/local/bin/backup-postgres.sh
+    ```
+
+    Add this content:
+    ```bash
+    #!/bin/bash
+    BACKUP_DIR="/var/backups/postgresql"
+    DB_NAME="team_inbox"
+    TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+    BACKUP_FILE="$BACKUP_DIR/$DB_NAME-$TIMESTAMP.sql.gz"
+
+    # Create backup
+    pg_dump -U team_inbox_user $DB_NAME | gzip > $BACKUP_FILE
+
+    # Keep only last 7 days of backups
+    find $BACKUP_DIR -name "*.sql.gz" -mtime +7 -delete
+
+    # Upload to S3 (optional)
+    # aws s3 cp $BACKUP_FILE s3://your-bucket/backups/
+    ```
+
+    Make executable and schedule:
+    ```bash
+    sudo chmod +x /usr/local/bin/backup-postgres.sh
+
+    # Add to crontab (daily at 2 AM)
+    sudo crontab -e
+    # Add this line:
+    0 2 * * * /usr/local/bin/backup-postgres.sh
+    ```
+  </Step>
+</Steps>
+
+## Database Schema
+
+The Team Inbox uses these main tables:
+
+### Users Table
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL, -- 'admin', 'agent', 'viewer'
+  avatar_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Conversations Table
+```sql
+CREATE TABLE conversations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  whatsapp_contact_id VARCHAR(255) NOT NULL,
+  contact_name VARCHAR(255),
+  contact_phone VARCHAR(50) NOT NULL,
+  status VARCHAR(50) DEFAULT 'open', -- 'open', 'closed', 'pending'
+  assigned_to UUID REFERENCES users(id),
+  last_message_at TIMESTAMP,
+  unread_count INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Messages Table
+```sql
+CREATE TABLE messages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+  whatsapp_message_id VARCHAR(255) UNIQUE,
+  sender_type VARCHAR(50) NOT NULL, -- 'customer', 'agent'
+  sender_id UUID REFERENCES users(id), -- NULL for customer messages
+  content TEXT NOT NULL,
+  message_type VARCHAR(50) DEFAULT 'text', -- 'text', 'image', 'audio', 'video', 'document'
+  media_url TEXT,
+  status VARCHAR(50) DEFAULT 'sent', -- 'sent', 'delivered', 'read', 'failed'
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Contacts Table
+```sql
+CREATE TABLE contacts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  phone VARCHAR(50) UNIQUE NOT NULL,
+  name VARCHAR(255),
+  email VARCHAR(255),
+  tags TEXT[],
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+## Database Migrations
+
+The application uses Prisma for database migrations:
+
+### Create a New Migration
+
+```bash
+# After changing prisma/schema.prisma
+npx prisma migrate dev --name add_new_feature
+```
+
+### Apply Migrations in Production
+
+```bash
+npx prisma migrate deploy
+```
+
+### Reset Database (Development Only)
+
+```bash
+# WARNING: This deletes all data!
+npx prisma migrate reset
+```
+
+### View Migration Status
+
+```bash
+npx prisma migrate status
+```
+
+## Performance Optimization
+
+<Steps>
+  <Step title="Add Database Indexes">
+    Critical indexes for Team Inbox:
+
+    ```sql
+    -- Speed up conversation queries
+    CREATE INDEX idx_conversations_assigned_to ON conversations(assigned_to);
+    CREATE INDEX idx_conversations_status ON conversations(status);
+    CREATE INDEX idx_conversations_last_message ON conversations(last_message_at DESC);
+
+    -- Speed up message queries
+    CREATE INDEX idx_messages_conversation ON messages(conversation_id, created_at DESC);
+    CREATE INDEX idx_messages_whatsapp_id ON messages(whatsapp_message_id);
+
+    -- Speed up contact lookups
+    CREATE INDEX idx_contacts_phone ON contacts(phone);
+    CREATE INDEX idx_contacts_email ON contacts(email);
+
+    -- Speed up user queries
+    CREATE INDEX idx_users_email ON users(email);
+    CREATE INDEX idx_users_active ON users(is_active);
+    ```
+  </Step>
+
+  <Step title="Enable Query Logging">
+    Monitor slow queries:
+
+    ```bash
+    # In .env file
+    DATABASE_LOGGING=true
+    DATABASE_LOG_SLOW_QUERIES=true
+    DATABASE_SLOW_QUERY_THRESHOLD=1000  # 1 second
+    ```
+  </Step>
+
+  <Step title="Configure Connection Pool">
+    Optimize database connections:
+
+    ```bash
+    # In .env file
+    DATABASE_POOL_MIN=2
+    DATABASE_POOL_MAX=10
+    DATABASE_POOL_IDLE_TIMEOUT=10000  # 10 seconds
+    DATABASE_POOL_CONNECTION_TIMEOUT=2000  # 2 seconds
+    ```
+  </Step>
+
+  <Step title="Implement Caching">
+    Use Redis for frequently accessed data:
+
+    ```bash
+    # Cache conversation lists
+    REDIS_URL=redis://localhost:6379
+    CACHE_ENABLED=true
+    CACHE_TTL=300  # 5 minutes
+    ```
+  </Step>
+</Steps>
+
+## Monitoring and Maintenance
+
+<CardGroup cols={2}>
+  <Card title="Monitor Connection Count" icon="link">
+    ```sql
+    SELECT count(*) FROM pg_stat_activity;
+    ```
+  </Card>
+  <Card title="Check Database Size" icon="database">
+    ```sql
+    SELECT pg_size_pretty(pg_database_size('team_inbox'));
+    ```
+  </Card>
+  <Card title="Find Slow Queries" icon="clock">
+    ```sql
+    SELECT query, mean_exec_time
+    FROM pg_stat_statements
+    ORDER BY mean_exec_time DESC
+    LIMIT 10;
+    ```
+  </Card>
+  <Card title="Vacuum Database" icon="broom">
+    ```sql
+    VACUUM ANALYZE;
+    ```
+  </Card>
+</CardGroup>
+
+## Backup and Recovery
+
+### Automated Backups (Supabase)
+
+Supabase provides automatic daily backups on Pro plan:
+
+1. Go to **Database** > **Backups**
+2. View available backups
+3. Restore from backup:
+   - Click **Restore** on desired backup
+   - Confirm restoration
+   - Wait for completion (5-10 minutes)
+
+### Manual Backup
+
+```bash
+# Create backup
+pg_dump -U team_inbox_user -h localhost team_inbox > backup.sql
+
+# Compress backup
+gzip backup.sql
+
+# Restore from backup
+gunzip backup.sql.gz
+psql -U team_inbox_user -h localhost team_inbox < backup.sql
+```
+
+### Backup to Cloud Storage
+
+```bash
+# Backup to AWS S3
+pg_dump team_inbox | gzip | aws s3 cp - s3://your-bucket/backups/team_inbox-$(date +%Y%m%d).sql.gz
+
+# Backup to Google Cloud Storage
+pg_dump team_inbox | gzip | gsutil cp - gs://your-bucket/backups/team_inbox-$(date +%Y%m%d).sql.gz
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Connection refused errors">
+    **Causes:**
+    - PostgreSQL not running
+    - Wrong host/port
+    - Firewall blocking connections
+
+    **Solutions:**
+    ```bash
+    # Check if PostgreSQL is running
+    sudo systemctl status postgresql
+
+    # Start PostgreSQL
+    sudo systemctl start postgresql
+
+    # Check port
+    sudo netstat -plnt | grep postgres
+
+    # Test connection
+    psql -U team_inbox_user -h localhost -d team_inbox
+    ```
+  </Accordion>
+
+  <Accordion title="Too many connections">
+    **Error:** `FATAL: sorry, too many clients already`
+
+    **Solutions:**
+    1. Enable connection pooling
+    2. Increase `max_connections` in postgresql.conf
+    3. Fix connection leaks in application code
+    4. Use PgBouncer for connection pooling
+
+    ```bash
+    # Check current connections
+    SELECT count(*) FROM pg_stat_activity;
+
+    # Kill idle connections
+    SELECT pg_terminate_backend(pid)
+    FROM pg_stat_activity
+    WHERE state = 'idle'
+    AND state_change < current_timestamp - INTERVAL '5 minutes';
+    ```
+  </Accordion>
+
+  <Accordion title="Slow query performance">
+    **Solutions:**
+    1. Add missing indexes
+    2. Analyze query execution plan
+    3. Optimize queries
+    4. Increase database resources
+
+    ```sql
+    -- Analyze query
+    EXPLAIN ANALYZE SELECT * FROM conversations WHERE assigned_to = 'user-id';
+
+    -- Find missing indexes
+    SELECT schemaname, tablename, attname, n_distinct, correlation
+    FROM pg_stats
+    WHERE schemaname = 'public'
+    ORDER BY abs(correlation) DESC;
+    ```
+  </Accordion>
+
+  <Accordion title="Disk space filling up">
+    **Solutions:**
+    1. Clean up old data
+    2. Archive old conversations
+    3. Run VACUUM
+    4. Increase disk size
+
+    ```sql
+    -- Check table sizes
+    SELECT
+      tablename,
+      pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size
+    FROM pg_tables
+    WHERE schemaname = 'public'
+    ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+
+    -- Archive old closed conversations
+    DELETE FROM conversations
+    WHERE status = 'closed'
+    AND updated_at < NOW() - INTERVAL '6 months';
+
+    -- Reclaim space
+    VACUUM FULL;
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use SSL Connections" icon="lock">
+    Enable SSL for database connections in production
+  </Card>
+  <Card title="Restrict Access" icon="shield">
+    Use firewall rules to limit database access
+  </Card>
+  <Card title="Regular Backups" icon="floppy-disk">
+    Automate daily backups with retention policy
+  </Card>
+  <Card title="Strong Passwords" icon="key">
+    Use long, complex passwords for database users
+  </Card>
+</CardGroup>
+
+```bash
+# Enable SSL in connection string
+DATABASE_URL=postgresql://user:pass@host:5432/db?sslmode=require
+
+# For self-signed certificates
+DATABASE_URL=postgresql://user:pass@host:5432/db?sslmode=require&sslcert=/path/to/cert
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environment Variables" icon="gear" href="/deployment/environment-variables">
+    Configure all application settings
+  </Card>
+  <Card title="Going Live" icon="rocket" href="/deployment/going-live">
+    Production deployment checklist
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Set up monitoring and alerts
+  </Card>
+  <Card title="Security Settings" icon="shield" href="/admin/security-settings">
+    Configure security and access control
+  </Card>
+</CardGroup>

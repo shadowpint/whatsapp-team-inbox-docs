@@ -1,0 +1,737 @@
+---
+title: 'Managing Conversations'
+description: 'Master conversation workflows and advanced features for efficient customer support'
+---
+
+## Overview
+
+Effective conversation management is key to providing excellent customer service. This guide covers advanced techniques for handling multiple conversations, prioritizing work, and resolving issues quickly.
+
+## Conversation Lifecycle
+
+Understanding the conversation flow helps you manage customer interactions effectively:
+
+```
+New Message → Open → Assigned → In Progress → Resolved → Closed → Archived
+                ↑                     ↓
+                └─────────────────────┘
+                  (if customer replies)
+```
+
+<Steps>
+  <Step title="New Conversation">
+    When a customer messages you:
+    - Conversation appears in inbox
+    - Notification sent to team
+    - Auto-assignment triggered (if enabled)
+    - Status set to "Open"
+  </Step>
+
+  <Step title="Assignment">
+    Assign to the right team member:
+    - Based on expertise
+    - Current workload
+    - Language skills
+    - Previous interactions
+  </Step>
+
+  <Step title="Active Handling">
+    Team member works on the conversation:
+    - Responds to customer
+    - Gathers information
+    - Resolves issue
+    - Updates status
+  </Step>
+
+  <Step title="Resolution">
+    Close the conversation when resolved:
+    - Mark as resolved
+    - Add resolution notes
+    - Tag appropriately
+    - Follow up if needed
+  </Step>
+</Steps>
+
+## Assignment Strategies
+
+### Manual Assignment
+
+<Tabs>
+  <Tab title="Direct Assignment">
+    Assign specific conversations to team members:
+
+    1. Open conversation
+    2. Click **Assign** button
+    3. Select team member from dropdown
+    4. (Optional) Add assignment note
+    5. Click **Assign**
+
+    **When to use:**
+    - Customer requests specific agent
+    - Specialized expertise needed
+    - Conversation continuation
+    - VIP customers
+  </Tab>
+
+  <Tab title="Self-Assignment">
+    Team members claim conversations:
+
+    1. Browse unassigned conversations
+    2. Click conversation to preview
+    3. Click **Assign to Me**
+    4. Start responding
+
+    **When to use:**
+    - Open queue system
+    - Team has balanced skills
+    - Flexible workload distribution
+  </Tab>
+
+  <Tab title="Reassignment">
+    Transfer conversation to another agent:
+
+    1. Open conversation
+    2. Click current assignee name
+    3. Select new team member
+    4. Add handoff note:
+       ```
+       Customer needs help with [specific issue].
+       Already tried: [attempted solutions]
+       Next step: [recommended action]
+       ```
+    5. Confirm transfer
+
+    **Best practice:** Always add context when reassigning.
+  </Tab>
+</Tabs>
+
+### Automatic Assignment
+
+Enable smart auto-assignment based on rules:
+
+<AccordionGroup>
+  <Accordion title="Round Robin">
+    Distribute conversations evenly across team:
+
+    **Configuration:**
+    ```javascript
+    {
+      "strategy": "round_robin",
+      "skip_offline": true,
+      "max_concurrent": 10
+    }
+    ```
+
+    **How it works:**
+    1. New conversation arrives
+    2. System checks next agent in rotation
+    3. Assigns if agent is available
+    4. Moves to next agent if unavailable
+    5. Repeats cycle
+  </Accordion>
+
+  <Accordion title="Load Balancing">
+    Assign to agent with fewest active conversations:
+
+    **Configuration:**
+    ```javascript
+    {
+      "strategy": "load_based",
+      "consider_priority": true,
+      "max_per_agent": 15
+    }
+    ```
+
+    **Factors considered:**
+    - Current conversation count
+    - Agent status (available, busy, away)
+    - Conversation priority
+    - Agent capacity limit
+  </Accordion>
+
+  <Accordion title="Skill-Based">
+    Route based on agent expertise:
+
+    **Configuration:**
+    ```javascript
+    {
+      "strategy": "skill_based",
+      "skills": {
+        "billing": ["alice@company.com", "bob@company.com"],
+        "technical": ["charlie@company.com"],
+        "sales": ["diana@company.com"]
+      },
+      "fallback": "round_robin"
+    }
+    ```
+
+    **Setup:**
+    1. Define skill categories
+    2. Tag agents with skills
+    3. Tag conversations with topics
+    4. System matches automatically
+  </Accordion>
+
+  <Accordion title="VIP Routing">
+    Prioritize high-value customers:
+
+    **Configuration:**
+    ```javascript
+    {
+      "strategy": "vip_routing",
+      "vip_tags": ["premium", "enterprise"],
+      "vip_agents": ["senior-agent@company.com"],
+      "priority_boost": true
+    }
+    ```
+
+    **How to mark VIP:**
+    1. Add "VIP" tag to contact
+    2. Set custom field: `customer_tier: "premium"`
+    3. System routes to designated agents
+  </Accordion>
+</AccordionGroup>
+
+## Prioritization
+
+### Priority Levels
+
+Organize conversations by urgency:
+
+| Priority | Description | SLA Target | Indicators |
+|----------|-------------|------------|------------|
+| 🔴 Urgent | Critical issues, VIP customers | <1 hour | Red badge, top of list |
+| 🟡 High | Important but not critical | <4 hours | Yellow badge, high position |
+| 🟢 Normal | Standard inquiries | <24 hours | No badge, standard position |
+| ⚪ Low | General questions | <48 hours | Gray badge, lower position |
+
+### Setting Priority
+
+<Tabs>
+  <Tab title="Manual Priority">
+    Set priority for individual conversations:
+
+    1. Open conversation
+    2. Click priority badge
+    3. Select level
+    4. Add priority reason (optional)
+
+    **Auto-escalation:**
+    Conversations automatically escalate if:
+    - No response within SLA window
+    - Customer sends multiple follow-ups
+    - Contains urgent keywords
+    - VIP customer
+  </Tab>
+
+  <Tab title="Smart Priority">
+    Enable AI-powered priority detection:
+
+    ```javascript
+    {
+      "auto_prioritize": true,
+      "urgent_keywords": ["urgent", "asap", "emergency", "broken"],
+      "sentiment_analysis": true,
+      "escalation_rules": {
+        "no_response_hours": 4,
+        "follow_up_count": 3
+      }
+    }
+    ```
+
+    System analyzes:
+    - Message content and keywords
+    - Customer sentiment
+    - Response time elapsed
+    - Previous interaction history
+  </Tab>
+</Tabs>
+
+### Priority Queue Management
+
+View and work through priority queues:
+
+```
+My Inbox
+├── 🔴 Urgent (3)
+│   ├── Server down - Customer A
+│   ├── Payment failed - VIP Customer
+│   └── Angry customer - refund issue
+├── 🟡 High Priority (7)
+├── 🟢 Normal (15)
+└── ⚪ Low Priority (5)
+```
+
+**Best practice:** Work top-down through priority levels.
+
+## Bulk Actions
+
+Manage multiple conversations simultaneously:
+
+<Steps>
+  <Step title="Select Conversations">
+    **Select individual:**
+    - Click checkbox next to conversation
+
+    **Select multiple:**
+    - Click first conversation
+    - Hold Shift
+    - Click last conversation
+
+    **Select all:**
+    - Click checkbox in list header
+    - Choose "Select all" or "Select all [filter]"
+  </Step>
+
+  <Step title="Apply Actions">
+    Available bulk actions:
+
+    <CardGroup cols={3}>
+      <Card title="Assign" icon="user-plus">
+        Assign all to team member
+      </Card>
+      <Card title="Tag" icon="tags">
+        Apply tags to all selected
+      </Card>
+      <Card title="Close" icon="check">
+        Mark all as resolved
+      </Card>
+      <Card title="Archive" icon="box-archive">
+        Archive old conversations
+      </Card>
+      <Card title="Priority" icon="exclamation">
+        Change priority level
+      </Card>
+      <Card title="Export" icon="download">
+        Download conversation data
+      </Card>
+    </CardGroup>
+  </Step>
+
+  <Step title="Confirm Changes">
+    Review summary before applying:
+    ```
+    Apply to 23 conversations:
+    ✓ Change status to "Closed"
+    ✓ Add tag "resolved-billing"
+    ✓ Notify customers with closing message
+
+    [Cancel] [Apply Changes]
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+Bulk actions cannot be undone. Always review the selection before confirming.
+</Warning>
+
+## Conversation Templates
+
+### Quick Reply Templates
+
+Create reusable message templates:
+
+<Tabs>
+  <Tab title="Creating Templates">
+    1. Go to **Settings** → **Quick Replies**
+    2. Click **New Template**
+    3. Configure template:
+
+    ```
+    Name: greeting_support
+    Shortcut: /hello
+    Category: Greetings
+
+    Message:
+    Hello [customer_name]! 👋
+
+    Thank you for contacting us. My name is [agent_name]
+    and I'm here to help you today.
+
+    How can I assist you?
+    ```
+
+    4. Save template
+  </Tab>
+
+  <Tab title="Variables">
+    Use dynamic variables in templates:
+
+    | Variable | Replaced With | Example |
+    |----------|---------------|---------|
+    | `[customer_name]` | Customer's name | "John" |
+    | `[agent_name]` | Your name | "Sarah" |
+    | `[company_name]` | Your company | "Acme Inc" |
+    | `[current_date]` | Today's date | "Nov 29, 2025" |
+    | `[order_id]` | Custom field | "#12345" |
+
+    **Custom variables:**
+    Add any contact field using bracket notation: `[field_name]`
+  </Tab>
+
+  <Tab title="Using Templates">
+    **Method 1: Shortcut**
+    ```
+    Type: /hello
+    Press: Tab or Enter
+    Template expands automatically
+    ```
+
+    **Method 2: Menu**
+    1. Click template icon 📋
+    2. Search or browse
+    3. Click to insert
+    4. Personalize if needed
+
+    **Method 3: Autocomplete**
+    ```
+    Type: /
+    See: List of matching templates
+    Select: Arrow keys + Enter
+    ```
+  </Tab>
+
+  <Tab title="Template Categories">
+    Organize templates by type:
+
+    **Greetings:**
+    - Initial response
+    - Follow-up greeting
+    - Returning customer
+
+    **Common Questions:**
+    - Shipping information
+    - Return policy
+    - Payment methods
+
+    **Resolution:**
+    - Issue resolved
+    - Partial resolution
+    - Escalation needed
+
+    **Closing:**
+    - Thank you message
+    - Feedback request
+    - Follow-up schedule
+  </Tab>
+</Tabs>
+
+### WhatsApp Business Templates
+
+Use approved templates for business-initiated messages:
+
+<Info>
+Required when messaging customers after 24-hour response window has passed.
+</Info>
+
+<Steps>
+  <Step title="View Approved Templates">
+    1. Click template icon with WhatsApp logo
+    2. See list of approved templates
+    3. Preview template content
+    4. Check approval status
+  </Step>
+
+  <Step title="Send Template Message">
+    1. Select approved template
+    2. Fill in required parameters:
+       ```
+       Template: order_shipped
+       Parameters:
+       - Order Number: 12345
+       - Tracking Link: https://track.example.com/12345
+       - Delivery Date: Dec 1, 2025
+       ```
+    3. Preview message
+    4. Send
+  </Step>
+
+  <Step title="Create New Templates">
+    1. Go to Meta Business Suite
+    2. Navigate to Message Templates
+    3. Create new template
+    4. Submit for approval (1-24 hours)
+    5. Use once approved
+
+    <Tip>
+    Create templates for common business needs: order updates, appointment reminders, shipping notifications.
+    </Tip>
+  </Step>
+</Steps>
+
+## Conversation Notes
+
+### Internal Notes
+
+Add private notes visible only to your team:
+
+<Tabs>
+  <Tab title="Adding Notes">
+    1. Open conversation
+    2. Click **Notes** tab in sidebar
+    3. Write note (supports markdown)
+    4. Mention team members: `@name`
+    5. Click **Save Note**
+
+    **Example:**
+    ```markdown
+    @alice Customer confirmed they received refund.
+
+    Next steps:
+    - [ ] Follow up in 3 days
+    - [ ] Update billing system
+    - [ ] Send satisfaction survey
+
+    Resolution: Billing error, manual refund processed
+    ```
+  </Tab>
+
+  <Tab title="Note Types">
+    Use notes for different purposes:
+
+    **Context Notes:**
+    - Customer background
+    - Previous issues
+    - Special requirements
+
+    **Action Items:**
+    - Tasks to complete
+    - Follow-up schedule
+    - Escalation steps
+
+    **Resolution Summary:**
+    - Issue description
+    - Solution applied
+    - Customer confirmation
+
+    **Call Logs:**
+    - Phone call summary
+    - Key discussion points
+    - Agreed actions
+  </Tab>
+
+  <Tab title="Searching Notes">
+    Find notes across conversations:
+
+    ```
+    Search: "billing error"
+    Filter: Notes only
+    Sort: Most recent
+
+    Results:
+    - 5 conversations with matching notes
+    - Highlights matching text
+    - Shows note context
+    ```
+  </Tab>
+</Tabs>
+
+### Note Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Be Specific" icon="bullseye">
+    Include details: what, when, who, why
+  </Card>
+  <Card title="Use Templates" icon="file-lines">
+    Create note templates for consistency
+  </Card>
+  <Card title="Mention Team" icon="at">
+    Tag relevant team members
+  </Card>
+  <Card title="Update Regularly" icon="clock">
+    Add notes after each interaction
+  </Card>
+</CardGroup>
+
+## Conversation Status Management
+
+### Status Workflow
+
+<Steps>
+  <Step title="Open">
+    **When:** New conversation or customer replies
+    **Actions:**
+    - Assign to team member
+    - Set priority
+    - Begin response
+    - Add initial notes
+  </Step>
+
+  <Step title="Pending">
+    **When:** Waiting for customer response or external action
+    **Actions:**
+    - Add note explaining what you're waiting for
+    - Set reminder for follow-up
+    - Notify customer of expected timeline
+
+    **Example:**
+    ```
+    Status: Pending
+    Reason: Waiting for customer to provide order number
+    Follow-up: In 24 hours if no response
+    ```
+  </Step>
+
+  <Step title="Resolved">
+    **When:** Issue is resolved
+    **Actions:**
+    - Add resolution summary
+    - Send closing message (optional)
+    - Tag with resolution type
+    - Request feedback
+
+    **Closing message template:**
+    ```
+    Great! I'm glad we could resolve this for you.
+
+    Is there anything else I can help you with today?
+
+    Have a wonderful day! 😊
+    ```
+  </Step>
+
+  <Step title="Closed">
+    **When:** Conversation completely finished
+    **Actions:**
+    - Automatic after X days in resolved (configurable)
+    - Manual closure for immediate close
+    - Reopens if customer replies
+
+    **Auto-close settings:**
+    ```javascript
+    {
+      "auto_close_after_hours": 48,
+      "send_closing_message": true,
+      "notify_customer": false
+    }
+    ```
+  </Step>
+</Steps>
+
+### Status Change Notifications
+
+Configure who gets notified:
+
+| Status Change | Notified | Message |
+|---------------|----------|---------|
+| Open → Assigned | Assigned agent | "You've been assigned a conversation" |
+| Any → Resolved | Customer (optional) | "Your issue has been resolved" |
+| Resolved → Closed | No one | Silent close |
+| Closed → Open | Previous assignee | "A closed conversation has reopened" |
+
+## Advanced Features
+
+<AccordionGroup>
+  <Accordion title="Conversation Merge">
+    Combine duplicate conversations:
+
+    1. Select first conversation
+    2. Click **More** → **Merge**
+    3. Search for duplicate
+    4. Preview merge
+    5. Confirm
+
+    **Merged conversation includes:**
+    - All messages chronologically
+    - Combined notes
+    - All tags
+    - Most recent assignment
+  </Accordion>
+
+  <Accordion title="Conversation Split">
+    Separate topics into new conversations:
+
+    1. Select message where new topic starts
+    2. Click **More** → **Split from here**
+    3. Name new conversation
+    4. Assign as needed
+
+    **Use when:**
+    - Customer raises multiple unrelated issues
+    - Different team members needed
+    - Tracking separate topics
+  </Accordion>
+
+  <Accordion title="Scheduled Messages">
+    Send messages at specific times:
+
+    1. Compose message
+    2. Click schedule icon 📅
+    3. Choose date and time
+    4. Confirm schedule
+
+    **Use cases:**
+    - Follow-ups during business hours
+    - Reminder messages
+    - Timezone considerations
+    - Delayed responses
+
+    <Warning>
+    Scheduled messages sent within 24-hour window are free. After 24 hours, template required.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Conversation Transfer">
+    Transfer to different channel or department:
+
+    1. Click **Transfer**
+    2. Select destination:
+       - Another team/department
+       - Different channel (email, phone)
+       - Escalation queue
+    3. Add transfer notes
+    4. Confirm
+
+    **Transfer checklist:**
+    - [ ] Add context in notes
+    - [ ] Notify customer
+    - [ ] Update tags
+    - [ ] Set priority
+  </Accordion>
+</AccordionGroup>
+
+## Metrics and Performance
+
+Track your conversation management effectiveness:
+
+### Personal Metrics
+
+```
+Your Performance Today
+━━━━━━━━━━━━━━━━━━━━
+Conversations Handled: 23
+Average Response Time: 4.2 min
+Resolution Rate: 87%
+Customer Satisfaction: 4.7/5
+━━━━━━━━━━━━━━━━━━━━
+
+Weekly Trends: ↗ +12% efficiency
+```
+
+### Team Metrics
+
+Monitor team performance:
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| First Response Time | <5 min | 3.8 min | ✅ |
+| Resolution Time | <2 hours | 1.5 hours | ✅ |
+| Customer Satisfaction | >4.5 | 4.6 | ✅ |
+| Conversations/Agent/Day | >20 | 18 | ⚠️ |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Collaboration" icon="users" href="/user-guide/team-collaboration">
+    Collaborate effectively with your team
+  </Card>
+  <Card title="Notifications" icon="bell" href="/user-guide/notifications">
+    Customize your notification preferences
+  </Card>
+  <Card title="Contacts" icon="address-book" href="/user-guide/contacts">
+    Manage customer information
+  </Card>
+  <Card title="Settings" icon="gear" href="/user-guide/settings">
+    Configure your personal settings
+  </Card>
+</CardGroup>

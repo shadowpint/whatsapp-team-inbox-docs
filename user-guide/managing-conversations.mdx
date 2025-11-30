@@ -1,0 +1,240 @@
+---
+title: 'Managing Conversations'
+description: 'Master conversation workflows and advanced features for efficient customer support'
+---
+
+## Overview
+
+Effective conversation management is key to providing excellent customer service. This guide covers advanced techniques for handling multiple conversations, prioritizing work, and resolving issues quickly.
+
+## Conversation Lifecycle
+
+Understanding the conversation flow helps you manage customer interactions effectively:
+
+**New Message → Open → Assigned → In Progress → Resolved → Closed → Archived**
+
+<Steps>
+  <Step title="New Conversation">
+    When a customer messages you, the conversation appears in your inbox with a notification sent to your team.
+  </Step>
+
+  <Step title="Assignment">
+    Assign conversations to the right team member based on expertise, workload, or previous interactions.
+  </Step>
+
+  <Step title="Active Handling">
+    Team members respond to customers, gather information, resolve issues, and update status.
+  </Step>
+
+  <Step title="Resolution">
+    Close the conversation when resolved by marking as complete and adding resolution notes.
+  </Step>
+</Steps>
+
+## Assignment Strategies
+
+### Manual Assignment
+
+Assign specific conversations to team members:
+
+1. Open conversation
+2. Click **Assign** button
+3. Select team member from dropdown
+4. Add assignment note (optional)
+5. Click **Assign**
+
+### Self-Assignment
+
+Team members can claim conversations from the unassigned queue:
+
+1. Browse unassigned conversations
+2. Click conversation to preview
+3. Click **Assign to Me**
+4. Start responding
+
+### Automatic Assignment
+
+Enable smart auto-assignment based on rules:
+
+- **Round Robin**: Distribute conversations evenly across team
+- **Load Balancing**: Assign to agent with fewest active conversations
+- **Skill-Based**: Route based on agent expertise
+- **VIP Routing**: Prioritize high-value customers
+
+## Prioritization
+
+### Priority Levels
+
+Organize conversations by urgency:
+
+| Priority | SLA Target | Description |
+|----------|------------|-------------|
+| Urgent | Less than 1 hour | Critical issues, VIP customers |
+| High | Less than 4 hours | Important but not critical |
+| Normal | Less than 24 hours | Standard inquiries |
+| Low | Less than 48 hours | General questions |
+
+### Setting Priority
+
+Set priority for individual conversations:
+
+1. Open conversation
+2. Click priority badge
+3. Select level
+4. Add priority reason (optional)
+
+Conversations automatically escalate if there's no response within SLA window or customer sends multiple follow-ups.
+
+## Bulk Actions
+
+Manage multiple conversations simultaneously:
+
+<Steps>
+  <Step title="Select Conversations">
+    Click checkboxes next to conversations or use Shift+Click to select multiple.
+  </Step>
+
+  <Step title="Apply Actions">
+    Available bulk actions include:
+    - Assign all to team member
+    - Apply tags to all selected
+    - Mark all as resolved
+    - Archive old conversations
+    - Change priority level
+    - Export conversation data
+  </Step>
+
+  <Step title="Confirm Changes">
+    Review summary before applying changes.
+  </Step>
+</Steps>
+
+<Warning>
+Bulk actions cannot be undone. Always review the selection before confirming.
+</Warning>
+
+## Quick Reply Templates
+
+Create reusable message templates:
+
+<Steps>
+  <Step title="Create Template">
+    Go to **Settings** → **Quick Replies** → **New Template**
+  </Step>
+
+  <Step title="Configure Template">
+    Set name, shortcut, category, and message content
+  </Step>
+
+  <Step title="Use Template">
+    Type shortcut (e.g., /hello) and press Tab to insert
+  </Step>
+</Steps>
+
+## Conversation Notes
+
+### Internal Notes
+
+Add private notes visible only to your team:
+
+1. Open conversation
+2. Click **Notes** tab in sidebar
+3. Write note (supports markdown)
+4. Mention team members with @name
+5. Click **Save Note**
+
+### Note Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Be Specific" icon="bullseye">
+    Include details: what, when, who, why
+  </Card>
+  <Card title="Use Templates" icon="file-lines">
+    Create note templates for consistency
+  </Card>
+  <Card title="Mention Team" icon="at">
+    Tag relevant team members
+  </Card>
+  <Card title="Update Regularly" icon="clock">
+    Add notes after each interaction
+  </Card>
+</CardGroup>
+
+## Conversation Status Management
+
+### Status Workflow
+
+<Steps>
+  <Step title="Open">
+    New conversation or customer replies. Assign to team member and set priority.
+  </Step>
+
+  <Step title="Pending">
+    Waiting for customer response or external action. Add note explaining what you're waiting for.
+  </Step>
+
+  <Step title="Resolved">
+    Issue is resolved. Add resolution summary and send closing message.
+  </Step>
+
+  <Step title="Closed">
+    Conversation completely finished. Auto-closes after configured time period.
+  </Step>
+</Steps>
+
+## Advanced Features
+
+<AccordionGroup>
+  <Accordion title="Conversation Merge">
+    Combine duplicate conversations by selecting the first conversation, clicking **Merge**, searching for duplicate, and confirming.
+  </Accordion>
+
+  <Accordion title="Conversation Split">
+    Separate topics into new conversations when customer raises multiple unrelated issues.
+  </Accordion>
+
+  <Accordion title="Scheduled Messages">
+    Send messages at specific times by composing message, clicking schedule icon, choosing date/time, and confirming.
+  </Accordion>
+
+  <Accordion title="Conversation Transfer">
+    Transfer to different channel or department by clicking **Transfer**, selecting destination, adding notes, and confirming.
+  </Accordion>
+</AccordionGroup>
+
+## Metrics and Performance
+
+Track your conversation management effectiveness:
+
+### Personal Metrics
+
+Monitor your daily performance:
+- Conversations handled
+- Average response time
+- Resolution rate
+- Customer satisfaction
+
+### Team Metrics
+
+Track team performance against targets:
+- First response time
+- Resolution time
+- Customer satisfaction
+- Conversations per agent per day
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Collaboration" icon="users" href="/user-guide/team-collaboration">
+    Collaborate effectively with your team
+  </Card>
+  <Card title="Notifications" icon="bell" href="/user-guide/notifications">
+    Customize your notification preferences
+  </Card>
+  <Card title="Contacts" icon="address-book" href="/user-guide/contacts">
+    Manage customer information
+  </Card>
+  <Card title="Settings" icon="gear" href="/user-guide/settings">
+    Configure your personal settings
+  </Card>
+</CardGroup>

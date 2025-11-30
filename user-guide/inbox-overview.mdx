@@ -1,0 +1,542 @@
+---
+title: 'Inbox Overview'
+description: 'Navigate and use the WhatsApp Team Inbox interface effectively'
+---
+
+## Welcome to Your Team Inbox
+
+The WhatsApp Team Inbox is designed to help your team manage customer conversations efficiently. This guide will walk you through the main interface and key features.
+
+<Info>
+New to Team Inbox? Start here to learn the basics of navigating the interface and managing conversations.
+</Info>
+
+## Interface Layout
+
+The Team Inbox interface is divided into three main sections:
+
+<CardGroup cols={3}>
+  <Card title="Conversation List" icon="list">
+    Left sidebar showing all conversations with filters and search
+  </Card>
+  <Card title="Message Thread" icon="messages">
+    Center panel displaying the selected conversation's messages
+  </Card>
+  <Card title="Contact Details" icon="user">
+    Right sidebar with customer information and conversation metadata
+  </Card>
+</CardGroup>
+
+## Conversation List
+
+### Understanding the List View
+
+Each conversation in the list displays:
+
+```
+┌─────────────────────────────────────┐
+│ 👤 Customer Name                  ●│ ← Unread indicator
+│    Last message preview...          │
+│    📎 Media  ⏰ 2m ago              │
+│                                     │
+│    [Status Badge] [Assignment]     │
+└─────────────────────────────────────┘
+```
+
+**Visual Indicators:**
+- **Green dot**: Unread messages
+- **Bold text**: Active conversation
+- **Gray text**: Closed/resolved conversation
+- **Blue badge**: Assigned to you
+- **Yellow badge**: Pending assignment
+
+### Filtering Conversations
+
+<Tabs>
+  <Tab title="By Status">
+    Use the status filter to view:
+    - **All**: Every conversation
+    - **Open**: Active conversations needing attention
+    - **Pending**: Awaiting assignment or response
+    - **Closed**: Resolved conversations
+
+    ```
+    Click: [All ▾] → Select status
+    ```
+  </Tab>
+
+  <Tab title="By Assignment">
+    Filter conversations by who they're assigned to:
+    - **My Conversations**: Assigned to you
+    - **Unassigned**: No assigned agent
+    - **Team**: All team conversations
+    - **Specific Team Member**: Filter by agent
+
+    ```
+    Click: [Assignment ▾] → Select filter
+    ```
+  </Tab>
+
+  <Tab title="By Date">
+    View conversations from specific time periods:
+    - **Today**: Conversations from last 24 hours
+    - **This Week**: Last 7 days
+    - **This Month**: Last 30 days
+    - **Custom Range**: Select specific dates
+
+    ```
+    Click: [Date ▾] → Choose range
+    ```
+  </Tab>
+
+  <Tab title="By Tags">
+    Filter using custom tags:
+    - Click tag icon
+    - Select one or more tags
+    - See only conversations with those tags
+
+    ```
+    Click: [🏷️ Tags] → Select tags
+    ```
+  </Tab>
+</Tabs>
+
+### Searching Conversations
+
+The search bar helps you find conversations quickly:
+
+<Steps>
+  <Step title="Basic Search">
+    ```
+    Type customer name, phone number, or message content
+    Results appear instantly as you type
+    ```
+  </Step>
+
+  <Step title="Advanced Search">
+    Use search operators for precise results:
+
+    | Operator | Example | Description |
+    |----------|---------|-------------|
+    | `from:` | `from:john` | Messages from specific customer |
+    | `tag:` | `tag:urgent` | Conversations with tag |
+    | `status:` | `status:open` | Filter by status |
+    | `assigned:` | `assigned:me` | Assigned conversations |
+    | `has:` | `has:media` | Contains media |
+
+    **Example:**
+    ```
+    tag:urgent status:open assigned:me
+    ```
+    Shows your urgent, open conversations.
+  </Step>
+
+  <Step title="Saved Searches">
+    Save frequently used searches:
+    1. Perform a search
+    2. Click **Save Search**
+    3. Name your search
+    4. Access from **Saved** dropdown
+  </Step>
+</Steps>
+
+## Message Thread
+
+The center panel displays the conversation's message history.
+
+### Message Types
+
+<Tabs>
+  <Tab title="Text Messages">
+    Standard text messages appear in chat bubbles:
+    - **Customer messages**: Left side, white background
+    - **Your replies**: Right side, green background
+    - **System messages**: Center, gray background
+
+    ```
+    Customer                          You
+    ┌──────────────┐        ┌──────────────┐
+    │ Hello, I need│        │ How can I    │
+    │ help with... │        │ help you?    │
+    └──────────────┘        └──────────────┘
+         10:30 AM                10:31 AM ✓✓
+    ```
+  </Tab>
+
+  <Tab title="Media Messages">
+    Images, videos, and files display with previews:
+
+    **Images**: Thumbnail preview, click to view full size
+    **Videos**: Thumbnail with play button
+    **Documents**: File icon with name and size
+    **Audio**: Play button with waveform
+
+    Click any media to:
+    - View full screen
+    - Download to your device
+    - Share or forward
+  </Tab>
+
+  <Tab title="Template Messages">
+    Pre-approved business messages appear with special formatting:
+
+    ```
+    ┌─────────────────────────────────┐
+    │  📋 Template Message            │
+    │                                 │
+    │  Your order #12345 has been     │
+    │  shipped! Track it here: [Link] │
+    │                                 │
+    │  ⓘ Business-initiated message   │
+    └─────────────────────────────────┘
+    ```
+  </Tab>
+
+  <Tab title="System Messages">
+    Automatic messages about conversation events:
+
+    - 🔄 **Assignment changes**: "Assigned to John"
+    - 🏷️ **Tag updates**: "Tagged as 'urgent'"
+    - ✅ **Status changes**: "Conversation closed"
+    - 📝 **Notes added**: "Internal note added"
+  </Tab>
+</Tabs>
+
+### Message Status Indicators
+
+Every message shows its delivery status:
+
+| Icon | Status | Meaning |
+|------|--------|---------|
+| ⏱️ | Sending | Message is being sent |
+| ✓ | Sent | Delivered to WhatsApp |
+| ✓✓ | Delivered | Received by customer |
+| ✓✓ (blue) | Read | Customer opened message |
+| ❌ | Failed | Message failed to send |
+
+### Composing Messages
+
+<Steps>
+  <Step title="Writing a Message">
+    1. Click the message input box at the bottom
+    2. Type your message
+    3. Press **Enter** to send (or **Shift+Enter** for new line)
+    4. Or click the send button ➤
+
+    **Formatting options:**
+    - **Bold**: `*text*` → **text**
+    - **Italic**: `_text_` → *text*
+    - **Strikethrough**: `~text~` → ~~text~~
+    - **Monospace**: `` `text` `` → `text`
+  </Step>
+
+  <Step title="Adding Media">
+    Click the attachment icon 📎 to send:
+
+    <Tabs>
+      <Tab title="Images">
+        - Supported: JPG, PNG, GIF
+        - Max size: 5 MB
+        - Add caption (optional)
+        - Preview before sending
+      </Tab>
+
+      <Tab title="Documents">
+        - Supported: PDF, DOC, XLS, etc.
+        - Max size: 100 MB
+        - File name preserved
+      </Tab>
+
+      <Tab title="Videos">
+        - Supported: MP4, 3GP
+        - Max size: 16 MB
+        - Auto-generate thumbnail
+      </Tab>
+
+      <Tab title="Audio">
+        - Supported: MP3, OGG, AMR
+        - Max size: 16 MB
+        - Or record voice message
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Using Quick Replies">
+    Speed up responses with canned replies:
+
+    1. Type `/` in the message box
+    2. Browse or search templates
+    3. Select a template
+    4. Personalize if needed
+    5. Send
+
+    **Example:**
+    ```
+    Type: /greeting
+    Expands to: "Hello! Thank you for contacting us.
+                 How can I help you today?"
+    ```
+  </Step>
+
+  <Step title="Mentioning Team Members">
+    Mention colleagues to notify them:
+
+    1. Type `@` in the message box
+    2. Select team member from list
+    3. They'll receive a notification
+
+    <Info>
+    Mentions are internal notes - customers don't see them.
+    </Info>
+  </Step>
+</Steps>
+
+### Message Actions
+
+Hover over any message to access quick actions:
+
+<CardGroup cols={3}>
+  <Card title="Reply" icon="reply">
+    Quote a specific message in your response
+  </Card>
+  <Card title="Forward" icon="share">
+    Send message to another conversation
+  </Card>
+  <Card title="Star" icon="star">
+    Mark important messages
+  </Card>
+  <Card title="Copy" icon="copy">
+    Copy message text to clipboard
+  </Card>
+  <Card title="Delete" icon="trash">
+    Remove message (both sides or just yours)
+  </Card>
+  <Card title="Info" icon="info-circle">
+    View message details and delivery status
+  </Card>
+</CardGroup>
+
+## Contact Details Panel
+
+The right sidebar shows customer information and conversation tools.
+
+### Customer Information
+
+<AccordionGroup>
+  <Accordion title="Basic Details">
+    - **Name**: Customer's display name
+    - **Phone**: WhatsApp phone number
+    - **Email**: Contact email (if available)
+    - **Tags**: Applied labels
+    - **First Contact**: When they first messaged
+    - **Last Active**: Most recent activity
+  </Accordion>
+
+  <Accordion title="Conversation History">
+    View past conversations with this customer:
+    - Total conversations
+    - Conversation timeline
+    - Quick links to previous chats
+    - Notes from past interactions
+  </Accordion>
+
+  <Accordion title="Custom Fields">
+    Add custom information:
+    - Company name
+    - Order number
+    - Customer ID
+    - Any custom fields you've configured
+
+    Click **Edit** to update fields.
+  </Accordion>
+</AccordionGroup>
+
+### Conversation Management
+
+<Tabs>
+  <Tab title="Assignment">
+    **Assign conversation to a team member:**
+
+    1. Click **Assign** button
+    2. Select team member
+    3. Add note explaining assignment (optional)
+    4. Click **Assign**
+
+    The assigned person receives a notification.
+
+    **Auto-assignment:**
+    Enable to automatically distribute new conversations based on:
+    - Round-robin
+    - Current workload
+    - Skill tags
+    - Custom rules
+  </Tab>
+
+  <Tab title="Status">
+    **Change conversation status:**
+
+    - **Open**: Active, needs attention
+    - **Pending**: Waiting for customer response
+    - **Resolved**: Issue resolved, conversation closed
+
+    Click status badge to change.
+
+    **Auto-close:**
+    Conversations automatically close after:
+    - No response for X days (configurable)
+    - Customer confirms resolution
+    - Manual closure
+  </Tab>
+
+  <Tab title="Tags">
+    **Organize with tags:**
+
+    1. Click **+ Tag**
+    2. Select existing tag or create new
+    3. Apply multiple tags
+    4. Use for filtering and reporting
+
+    **Common tag examples:**
+    - Priority: `urgent`, `normal`, `low`
+    - Type: `sales`, `support`, `billing`
+    - Status: `waiting-payment`, `escalated`
+    - Product: `product-a`, `product-b`
+  </Tab>
+
+  <Tab title="Internal Notes">
+    **Add private notes (not visible to customer):**
+
+    1. Click **Notes** tab
+    2. Write your note
+    3. Mention team members with `@`
+    4. Save note
+
+    **Use cases:**
+    - Document customer issues
+    - Share context with team
+    - Track action items
+    - Log call summaries
+  </Tab>
+</Tabs>
+
+## Keyboard Shortcuts
+
+Work faster with keyboard shortcuts:
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl/Cmd + K` | Quick search |
+| `Ctrl/Cmd + Enter` | Send message |
+| `Ctrl/Cmd + /` | Show shortcuts |
+| `↑` / `↓` | Navigate conversations |
+| `Escape` | Close conversation |
+| `N` | New conversation |
+| `A` | Assign conversation |
+| `C` | Close conversation |
+| `R` | Mark as read |
+| `U` | Mark as unread |
+| `/` | Quick replies |
+| `@` | Mention team member |
+
+<Tip>
+Press `Ctrl/Cmd + /` anytime to see all available shortcuts.
+</Tip>
+
+## Notification Settings
+
+Control when and how you're notified:
+
+<Steps>
+  <Step title="Desktop Notifications">
+    Enable browser notifications for:
+    - New messages
+    - Assignments
+    - Mentions
+    - Important updates
+
+    Click **Allow** when prompted by browser.
+  </Step>
+
+  <Step title="Email Notifications">
+    Configure email alerts:
+    - Real-time for urgent conversations
+    - Daily digest for all activity
+    - Weekly summary
+    - Custom schedule
+
+    Configure in **Settings** → **Notifications**
+  </Step>
+
+  <Step title="Sound Alerts">
+    Enable sounds for:
+    - New messages (customizable tone)
+    - Mentions
+    - Assignments
+
+    Adjust volume in settings.
+  </Step>
+</Steps>
+
+## Mobile Experience
+
+Access your inbox on mobile devices:
+
+<Tabs>
+  <Tab title="Mobile Web">
+    Access via mobile browser:
+    - Responsive design adapts to screen size
+    - Touch-optimized interface
+    - Swipe gestures for actions
+    - Full feature set
+
+    Visit: `https://yourdomain.com` on mobile
+  </Tab>
+
+  <Tab title="Progressive Web App">
+    Install as app:
+    1. Visit site in mobile browser
+    2. Tap "Add to Home Screen"
+    3. Use like native app
+    4. Offline support for viewing
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Response Times" icon="clock">
+    Aim to respond within 24 hours to avoid template message charges
+  </Card>
+  <Card title="Use Templates" icon="file-lines">
+    Create quick replies for common questions
+  </Card>
+  <Card title="Tag Consistently" icon="tags">
+    Use standardized tags for better organization
+  </Card>
+  <Card title="Add Notes" icon="note-sticky">
+    Document important details for your team
+  </Card>
+  <Card title="Keep It Professional" icon="user-tie">
+    Remember all conversations represent your brand
+  </Card>
+  <Card title="Follow Up" icon="check">
+    Set reminders for pending issues
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Managing Conversations" icon="comments" href="/user-guide/managing-conversations">
+    Learn advanced conversation management
+  </Card>
+  <Card title="Team Collaboration" icon="users" href="/user-guide/team-collaboration">
+    Work effectively with your team
+  </Card>
+  <Card title="Notifications" icon="bell" href="/user-guide/notifications">
+    Customize notification preferences
+  </Card>
+  <Card title="Contacts" icon="address-book" href="/user-guide/contacts">
+    Manage customer contact information
+  </Card>
+</CardGroup>

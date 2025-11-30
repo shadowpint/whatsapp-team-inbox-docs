@@ -1,0 +1,10 @@
+<svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- WhatsApp-style chat bubble icon -->
+  <circle cx="20" cy="20" r="18" fill="#25D366"/>
+
+  <!-- Phone icon inside bubble -->
+  <path d="M24 21C23.9 20.9 22 20.1 21.7 20C21.4 19.9 21.2 19.8 21 20.1C20.8 20.4 20.2 21.2 20 21.4C19.9 21.5 19.7 21.6 19.5 21.5C19.3 21.4 18.6 21.2 17.7 20.4C17 19.8 16.5 19.1 16.4 18.9C16.3 18.7 16.4 18.5 16.5 18.4C16.6 18.3 16.7 18.1 16.9 18C17 17.9 17.1 17.8 17.1 17.7C17.2 17.6 17.2 17.5 17.1 17.4C17.1 17.3 16.5 15.9 16.3 15.4C16.1 14.9 15.9 15 15.8 15H15.6C15.4 15 15.2 15 15 15.2C14.8 15.4 14.2 15.9 14.2 17C14.2 18.1 15 19.2 15.1 19.3C15.2 19.4 16.5 21.4 18.5 22.3C20.5 23.2 20.5 22.9 21 22.9C21.5 22.9 22.4 22.5 22.6 22C22.8 21.6 22.8 21.2 22.8 21.1C22.7 21.1 24.1 21 24 21Z" fill="white"/>
+
+  <!-- Text: Team Inbox (white for dark mode) -->
+  <text x="45" y="27" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="18" font-weight="600" fill="#ffffff">Team Inbox</text>
+</svg>

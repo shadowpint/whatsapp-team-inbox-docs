@@ -1,0 +1,436 @@
+---
+title: Deploy in 30 Minutes
+description: 'Step-by-step guide to get WhatsApp Team Inbox running quickly'
+---
+
+## Overview
+
+This guide will get Team Inbox deployed and operational in about 30 minutes. We'll use **Railway** for the simplest deployment experience.
+
+<Note>
+  **Prerequisites**:
+  - WhatsApp Business API credentials ready (or follow [WhatsApp Setup](/deployment/whatsapp-setup) first)
+  - GitHub account
+  - Credit card for Railway (charges after free tier)
+</Note>
+
+## Deployment Steps
+
+### Step 1: Fork the Repository
+
+<Steps>
+  <Step title="Go to GitHub Repository">
+    Navigate to: `https://github.com/yourusername/whatsapp-team-inbox`
+  </Step>
+
+  <Step title="Click Fork">
+    Click the "Fork" button in the top-right corner
+  </Step>
+
+  <Step title="Create Fork">
+    Keep default settings and click "Create fork"
+  </Step>
+</Steps>
+
+<Check>You now have your own copy of the code</Check>
+
+### Step 2: Deploy to Railway
+
+<Steps>
+  <Step title="Sign up for Railway">
+    Go to [railway.app](https://railway.app) and sign up with GitHub
+  </Step>
+
+  <Step title="Create New Project">
+    Click "New Project" → "Deploy from GitHub repo"
+  </Step>
+
+  <Step title="Select Your Fork">
+    Choose the `whatsapp-team-inbox` repository you just forked
+  </Step>
+
+  <Step title="Wait for Build">
+    Railway will automatically build and deploy. This takes 2-3 minutes.
+  </Step>
+</Steps>
+
+### Step 3: Add PostgreSQL Database
+
+<Steps>
+  <Step title="Add Database Service">
+    In your Railway project, click "New" → "Database" → "Add PostgreSQL"
+  </Step>
+
+  <Step title="Wait for Provisioning">
+    Database will be created automatically (30 seconds)
+  </Step>
+
+  <Step title="Copy Database URL">
+    Click on the PostgreSQL service → "Connect" → Copy the connection URL
+  </Step>
+</Steps>
+
+### Step 4: Configure Environment Variables
+
+<Steps>
+  <Step title="Open Backend Service">
+    In Railway, click on your backend service
+  </Step>
+
+  <Step title="Go to Variables Tab">
+    Click "Variables" in the top menu
+  </Step>
+
+  <Step title="Add Required Variables">
+    Add the following environment variables:
+  </Step>
+</Steps>
+
+#### Essential Variables
+
+```bash
+# Database
+DATABASE_URL=<paste-your-railway-postgresql-url>
+
+# WhatsApp Business API
+WHATSAPP_PHONE_NUMBER_ID=<your-phone-number-id>
+WHATSAPP_ACCESS_TOKEN=<your-whatsapp-access-token>
+WHATSAPP_BUSINESS_ACCOUNT_ID=<your-business-account-id>
+WHATSAPP_WEBHOOK_VERIFY_TOKEN=<create-random-string>
+
+# JWT Secret (generate random string)
+JWT_SECRET=<generate-random-secure-string>
+
+# App URLs
+BACKEND_URL=https://your-backend.railway.app
+FRONTEND_URL=https://your-frontend.railway.app
+
+# Email (Optional - use Resend)
+RESEND_API_KEY=<your-resend-api-key>
+EMAIL_FROM=noreply@yourdomain.com
+
+# Push Notifications (generate VAPID keys - see below)
+VAPID_PUBLIC_KEY=<your-vapid-public-key>
+VAPID_PRIVATE_KEY=<your-vapid-private-key>
+VAPID_SUBJECT=mailto:admin@yourdomain.com
+```
+
+<Accordion title="How to generate VAPID keys">
+  **Option 1: Online Generator**
+  ```bash
+  Visit: https://vapidkeys.com/
+  Click "Generate Keys"
+  Copy public and private keys
+  ```
+
+  **Option 2: Using web-push npm package**
+  ```bash
+  npm install -g web-push
+  web-push generate-vapid-keys
+  ```
+
+  **Option 3: Use existing Node.js**
+  ```bash
+  npx web-push generate-vapid-keys
+  ```
+</Accordion>
+
+<Accordion title="How to generate JWT_SECRET">
+  **Option 1: Command line**
+  ```bash
+  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+  ```
+
+  **Option 2: Online generator**
+  Visit: https://generate-secret.vercel.app/32
+</Accordion>
+
+<Accordion title="How to get WhatsApp credentials">
+  Don't have WhatsApp credentials yet?
+
+  Follow our detailed guide: [WhatsApp Business API Setup](/deployment/whatsapp-setup)
+
+  You'll need:
+  - Phone Number ID (from Meta Business Suite)
+  - Access Token (from App Dashboard)
+  - Business Account ID (from App Dashboard)
+  - Webhook Verify Token (create your own random string)
+</Accordion>
+
+### Step 5: Deploy Frontend
+
+<Steps>
+  <Step title="Add Frontend Service">
+    In Railway project, click "New" → "GitHub Repo" → Select your fork again
+  </Step>
+
+  <Step title="Configure Build">
+    Railway should auto-detect Next.js. If not:
+    - Build Command: `cd web && npm install && npm run build`
+    - Start Command: `cd web && npm start`
+  </Step>
+
+  <Step title="Add Frontend Environment Variables">
+    In frontend service Variables tab:
+    ```bash
+    NEXT_PUBLIC_API_URL=<your-backend-railway-url>
+    NEXT_PUBLIC_WS_URL=<your-backend-railway-url-with-ws-protocol>
+    ```
+  </Step>
+</Steps>
+
+### Step 6: Run Database Migrations
+
+<Steps>
+  <Step title="Access Backend Service Shell">
+    Click backend service → "..." menu → "Shell"
+  </Step>
+
+  <Step title="Run Prisma Migration">
+    ```bash
+    npx prisma migrate deploy
+    ```
+  </Step>
+
+  <Step title="Verify Success">
+    You should see: "All migrations have been successfully applied"
+  </Step>
+</Steps>
+
+### Step 7: Create Admin User
+
+<Steps>
+  <Step title="Generate Password Hash">
+    In backend shell, run:
+    ```bash
+    node -e "const bcrypt = require('bcrypt'); console.log(bcrypt.hashSync('your-password', 10))"
+    ```
+  </Step>
+
+  <Step title="Create User in Database">
+    In Railway PostgreSQL service, click "Query" tab:
+    ```sql
+    INSERT INTO "User" (id, email, name, password, role, "createdAt", "updatedAt")
+    VALUES (
+      gen_random_uuid(),
+      'admin@yourcompany.com',
+      'Admin User',
+      '<paste-hashed-password>',
+      'ADMIN',
+      NOW(),
+      NOW()
+    );
+    ```
+  </Step>
+</Steps>
+
+### Step 8: Configure WhatsApp Webhook
+
+<Steps>
+  <Step title="Get Your Backend URL">
+    Copy your Railway backend URL: `https://your-backend.railway.app`
+  </Step>
+
+  <Step title="Go to Meta App Dashboard">
+    Navigate to: developers.facebook.com/apps → Your App → WhatsApp → Configuration
+  </Step>
+
+  <Step title="Add Webhook">
+    - Callback URL: `https://your-backend.railway.app/api/webhook/whatsapp`
+    - Verify Token: (the same `WHATSAPP_WEBHOOK_VERIFY_TOKEN` you set earlier)
+    - Click "Verify and Save"
+  </Step>
+
+  <Step title="Subscribe to Messages">
+    Under "Webhook fields", enable:
+    - ✅ messages
+    - ✅ message_status
+  </Step>
+</Steps>
+
+### Step 9: Test Your Deployment
+
+<Steps>
+  <Step title="Open Frontend URL">
+    Visit your Railway frontend URL in browser
+  </Step>
+
+  <Step title="Log In">
+    Use the admin email and password you created
+  </Step>
+
+  <Step title="Send Test Message">
+    Send a WhatsApp message to your business number from your personal phone
+  </Step>
+
+  <Step title="Verify Message Appears">
+    Message should appear in Team Inbox within seconds
+  </Step>
+
+  <Step title="Reply from Inbox">
+    Type a reply in Team Inbox and send
+  </Step>
+
+  <Step title="Confirm Receipt">
+    Check your phone - you should receive the reply
+  </Step>
+</Steps>
+
+<Check>✅ Congratulations! Your Team Inbox is now live!</Check>
+
+## Quick Deployment Checklist
+
+<AccordionGroup>
+  <Accordion title="✅ Repository forked" icon="code-branch">
+    Your own copy of the code on GitHub
+  </Accordion>
+
+  <Accordion title="✅ Railway project created" icon="train">
+    Backend and frontend services deployed
+  </Accordion>
+
+  <Accordion title="✅ PostgreSQL provisioned" icon="database">
+    Database service running and connected
+  </Accordion>
+
+  <Accordion title="✅ Environment variables configured" icon="key">
+    All required credentials and secrets set
+  </Accordion>
+
+  <Accordion title="✅ Database migrated" icon="database">
+    Prisma migrations applied successfully
+  </Accordion>
+
+  <Accordion title="✅ Admin user created" icon="user">
+    First user account for logging in
+  </Accordion>
+
+  <Accordion title="✅ WhatsApp webhook configured" icon="webhook">
+    Meta sending messages to your backend
+  </Accordion>
+
+  <Accordion title="✅ Test message sent and received" icon="check">
+    End-to-end flow verified
+  </Accordion>
+</AccordionGroup>
+
+## Common Deployment Issues
+
+<Warning>
+  If something isn't working, check these common issues:
+</Warning>
+
+### Issue: "Database connection failed"
+
+**Solution**:
+- Verify `DATABASE_URL` is correctly set
+- Check PostgreSQL service is running in Railway
+- Ensure no typos in connection string
+
+### Issue: "WhatsApp webhook verification failed"
+
+**Solution**:
+- Verify `WHATSAPP_WEBHOOK_VERIFY_TOKEN` matches in both:
+  - Railway environment variables
+  - Meta App Dashboard webhook settings
+- Check backend service is accessible (visit backend URL in browser)
+
+### Issue: "Messages not appearing in inbox"
+
+**Solution**:
+- Check WhatsApp webhook is subscribed to "messages" field
+- Verify backend logs in Railway (look for webhook events)
+- Ensure `WHATSAPP_PHONE_NUMBER_ID` is correct
+- Check WebSocket connection (open browser dev tools → Network)
+
+### Issue: "Can't log in"
+
+**Solution**:
+- Verify admin user was created in database
+- Check password hash was generated correctly
+- Ensure `JWT_SECRET` is set in backend environment
+- Try creating user again with fresh password hash
+
+### Issue: "Push notifications not working"
+
+**Solution**:
+- Verify VAPID keys are correctly set
+- Check service worker is registered (browser dev tools → Application → Service Workers)
+- Ensure HTTPS is enabled (Railway provides this automatically)
+- Test notification permission in browser settings
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="First Setup Guide"
+    icon="rocket"
+    href="/getting-started/first-setup"
+  >
+    Configure your Team Inbox for daily use
+  </Card>
+
+  <Card
+    title="Invite Team Members"
+    icon="users"
+    href="/getting-started/invite-team"
+  >
+    Add your team to start collaborating
+  </Card>
+
+  <Card
+    title="User Guide"
+    icon="book"
+    href="/user-guide/inbox-overview"
+  >
+    Learn how to use Team Inbox effectively
+  </Card>
+
+  <Card
+    title="Troubleshooting"
+    icon="wrench"
+    href="/deployment/troubleshooting"
+  >
+    Solve common deployment issues
+  </Card>
+</CardGroup>
+
+## Alternative Deployment Options
+
+This guide used Railway for simplicity. For other deployment options:
+
+<CardGroup cols={3}>
+  <Card
+    title="Deploy to AWS"
+    icon="aws"
+    href="/deployment/introduction"
+  >
+    EC2 + RDS deployment guide
+  </Card>
+
+  <Card
+    title="Deploy to DigitalOcean"
+    icon="cloud"
+    href="/deployment/introduction"
+  >
+    Droplet + managed database
+  </Card>
+
+  <Card
+    title="Self-Hosted"
+    icon="server"
+    href="/deployment/introduction"
+  >
+    Deploy on your own servers
+  </Card>
+</CardGroup>
+
+## Get Help
+
+<Info>
+  Stuck on deployment? We're here to help!
+</Info>
+
+- **Community Support**: [GitHub Discussions](https://github.com/yourusername/whatsapp-team-inbox/discussions)
+- **Professional Deployment**: [Contact us](/support/contact) for paid deployment service
+- **FAQ**: [Common Questions](/support/faq)

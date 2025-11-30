@@ -1,0 +1,38 @@
+---
+title: 'Contacts API'
+description: 'Manage customer contacts'
+---
+
+## Create Contact
+
+```bash
+POST /api/v1/contacts
+```
+
+**Body:**
+```json
+{
+  "phone": "+1234567890",
+  "name": "John Smith",
+  "email": "john@example.com",
+  "tags": ["customer", "vip"]
+}
+```
+
+## List Contacts
+
+```bash
+GET /api/v1/contacts
+```
+
+## Update Contact
+
+```bash
+PATCH /api/v1/contacts/:id
+```
+
+## Delete Contact
+
+```bash
+DELETE /api/v1/contacts/:id
+```

@@ -1,0 +1,317 @@
+---
+title: 'Frequently Asked Questions'
+description: 'Common questions about WhatsApp Team Inbox'
+---
+
+## General Questions
+
+<AccordionGroup>
+  <Accordion title="What is WhatsApp Team Inbox?">
+    WhatsApp Team Inbox is an open-source, self-hosted solution for managing WhatsApp Business conversations with your team. It's a DIY alternative to expensive SaaS products like Intercom or Zendesk.
+
+    **Key benefits:**
+    - Own your data
+    - Lower monthly costs ($20-150/month vs $300+/month)
+    - Full customization
+    - No vendor lock-in
+  </Accordion>
+
+  <Accordion title="How is this different from WhatsApp Business App?">
+    **WhatsApp Business App:**
+    - Single user only
+    - Mobile app
+    - Free
+    - Limited features
+
+    **WhatsApp Team Inbox:**
+    - Multiple team members
+    - Web-based
+    - Self-hosted (infrastructure costs)
+    - Advanced features (assignment, analytics, integrations)
+  </Accordion>
+
+  <Accordion title="Do I need technical knowledge to set this up?">
+    **Basic setup:** 1-2 hours with our guides (no coding required)
+
+    **Requirements:**
+    - Ability to follow step-by-step instructions
+    - Access to cloud hosting (Railway, Render, AWS)
+    - WhatsApp Business API account
+
+    **Optional:** Developer for custom features
+  </Accordion>
+
+  <Accordion title="How much does it cost?">
+    **Small team (500 conversations/month):** $20-30/month
+    **Medium team (2,000 conversations):** $120-150/month
+    **Large team (10,000 conversations):** $450-500/month
+
+    **Costs include:**
+    - Server hosting
+    - Database
+    - Email service
+    - WhatsApp conversation fees
+
+    [Detailed cost breakdown →](/cost/monthly-costs)
+  </Accordion>
+
+  <Accordion title="Can I migrate from Intercom/Zendesk?">
+    Yes! We provide migration guides for:
+    - Exporting customer data
+    - Importing to Team Inbox
+    - Switching WhatsApp integration
+
+    [Migration guide →](/support/migration-guide)
+  </Accordion>
+</AccordionGroup>
+
+## Technical Questions
+
+<AccordionGroup>
+  <Accordion title="What are the system requirements?">
+    **Minimum (small team):**
+    - Server: 1 vCPU, 2GB RAM
+    - Database: PostgreSQL 14+
+    - Node.js 18+
+
+    **Recommended (medium team):**
+    - Server: 2 vCPU, 4GB RAM
+    - Database: PostgreSQL with 8GB storage
+    - Redis for caching
+
+    [Full requirements →](/getting-started/requirements)
+  </Accordion>
+
+  <Accordion title="Where should I host it?">
+    **Recommended for beginners:**
+    - Railway (easiest, $15-30/month)
+    - Render (simple, $7-25/month)
+
+    **For larger teams:**
+    - AWS (scalable, $50-200/month)
+    - DigitalOcean (predictable, $18-42/month)
+    - Your own server
+
+    [Deployment guide →](/deployment/introduction)
+  </Accordion>
+
+  <Accordion title="Is my data secure?">
+    Yes! Security features include:
+    - ✓ End-to-end encryption for WhatsApp messages
+    - ✓ AES-256 database encryption
+    - ✓ TLS 1.3 for all connections
+    - ✓ SOC 2, HIPAA, GDPR compliance options
+    - ✓ Regular security updates
+    - ✓ You control the infrastructure
+
+    [Security settings →](/admin/security-settings)
+  </Accordion>
+
+  <Accordion title="Can I customize it?">
+    Absolutely! It's open-source:
+    - Modify UI/UX
+    - Add custom features
+    - Integrate with any system
+    - White-label for clients
+    - No licensing restrictions (MIT license)
+  </Accordion>
+
+  <Accordion title="What if I need help?">
+    **Free support:**
+    - Documentation (comprehensive)
+    - GitHub issues
+    - Community forums
+
+    **Paid support:** Contact us for:
+    - Priority support
+    - Custom development
+    - Managed hosting
+  </Accordion>
+</AccordionGroup>
+
+## WhatsApp-Specific Questions
+
+<AccordionGroup>
+  <Accordion title="Do I need WhatsApp Business API?">
+    Yes. The standard WhatsApp Business **App** only supports a single user. You need WhatsApp Business **API** for multi-agent access.
+
+    **How to get API access:**
+    1. Create Meta Business Account
+    2. Apply for WhatsApp Business API
+    3. Get business verified
+    4. Register phone number
+
+    [WhatsApp setup guide →](/deployment/whatsapp-setup)
+  </Accordion>
+
+  <Accordion title="How much does WhatsApp charge?">
+    WhatsApp charges per conversation (not per message):
+
+    **User-initiated:** $0.0085-0.0158 per conversation
+    **Business-initiated:** $0.0110-0.0300 per conversation
+
+    **1 conversation = 24-hour window**
+
+    **Free conversations:**
+    - When customer messages you first
+    - If you respond within 24 hours
+
+    [WhatsApp pricing details →](/cost/monthly-costs)
+  </Accordion>
+
+  <Accordion title="Can customers message me first?">
+    Yes! Customers can initiate conversations by:
+    - Scanning QR code
+    - Clicking wa.me link
+    - Messaging your WhatsApp number directly
+    - From Facebook/Instagram (with integration)
+
+    Customer-initiated messages are FREE for 24 hours!
+  </Accordion>
+
+  <Accordion title="What are message templates?">
+    Templates are pre-approved messages for business-initiated conversations. Required when:
+    - You message customer first
+    - >24 hours since customer's last message
+
+    **Examples:**
+    - Order confirmations
+    - Shipping updates
+    - Appointment reminders
+
+    Approval takes 1-24 hours.
+
+    [Template guide →](/deployment/whatsapp-setup)
+  </Accordion>
+
+  <Accordion title="Are there message limits?">
+    **Messaging tier system:**
+    - Tier 1: 1,000 business-initiated conversations/day
+    - Tier 2: 10,000/day (auto-upgrade with good quality)
+    - Tier 3: 100,000/day
+    - Tier 4: Unlimited
+
+    **Quality matters:**
+    - Maintain &gt;50% reply rate
+    - Keep spam reports &lt;1%
+    - High quality = higher limits
+  </Accordion>
+</AccordionGroup>
+
+## Pricing & Billing
+
+<AccordionGroup>
+  <Accordion title="Is there a free tier?">
+    The software is free and open-source, but you pay for:
+    - Infrastructure (servers, database)
+    - WhatsApp conversation fees
+    - Optional services (email, monitoring)
+
+    **Free tiers available:**
+    - Database: Supabase (500 MB)
+    - Email: SendGrid (100/day)
+    - Monitoring: Uptime Robot (50 monitors)
+
+    **Estimated minimum:** $15-25/month for small team
+  </Accordion>
+
+  <Accordion title="How do I track costs?">
+    **Built-in cost tracking:**
+    - WhatsApp conversation counter
+    - Infrastructure dashboard
+    - Cost projection tools
+
+    **External tools:**
+    - AWS Cost Explorer
+    - Cloud provider billing dashboards
+    - Custom analytics
+
+    [Cost monitoring →](/admin/monitoring)
+  </Accordion>
+
+  <Accordion title="Can I reduce costs?">
+    Yes! Optimization tips:
+    - Respond within 24h (avoid paid messages)
+    - Right-size infrastructure
+    - Use free tier services
+    - Archive old data
+    - Optimize database queries
+
+    **Typical savings: 30-60%**
+
+    [Optimization guide →](/cost/optimization-tips)
+  </Accordion>
+</AccordionGroup>
+
+## Feature Questions
+
+<AccordionGroup>
+  <Accordion title="Can multiple agents access conversations?">
+    Yes! Features include:
+    - Unlimited team members
+    - Conversation assignment
+    - Load balancing
+    - Internal notes and chat
+    - Team analytics
+
+    [Team management →](/admin/team-management)
+  </Accordion>
+
+  <Accordion title="Does it support media (images, videos, documents)?">
+    Yes! Fully supports:
+    - Images (JPG, PNG, GIF)
+    - Videos (MP4)
+    - Documents (PDF, DOC, XLS, etc.)
+    - Audio messages
+    - Voice notes
+
+    Files are stored securely and can be downloaded.
+  </Accordion>
+
+  <Accordion title="Can I integrate with my CRM?">
+    Yes! Integration options:
+    - **Pre-built:** Salesforce, HubSpot, Pipedrive
+    - **API:** Custom integrations
+    - **Zapier:** 5000+ apps
+    - **Webhooks:** Real-time events
+
+    [Integrations →](/admin/integrations)
+  </Accordion>
+
+  <Accordion title="Does it have analytics?">
+    Yes! Analytics include:
+    - Response times
+    - Resolution rates
+    - Customer satisfaction (CSAT)
+    - Team performance
+    - Conversation volume
+    - Custom reports
+
+    [Monitoring →](/admin/monitoring)
+  </Accordion>
+
+  <Accordion title="Can I use it on mobile?">
+    Yes! Two options:
+    - **Mobile web:** Responsive design
+    - **PWA:** Install as app on phone
+
+    Full feature parity with desktop.
+  </Accordion>
+</AccordionGroup>
+
+## Still have questions?
+
+<CardGroup cols={2}>
+  <Card title="Common Issues" icon="wrench" href="/support/common-issues">
+    Troubleshooting guide
+  </Card>
+  <Card title="Contact Support" icon="headset" href="/support/contact">
+    Get help from our team
+  </Card>
+  <Card title="GitHub Discussions" icon="github" href="https://github.com/yourusername/whatsapp-team-inbox/discussions">
+    Community Q&A
+  </Card>
+  <Card title="Documentation" icon="book" href="/introduction">
+    Full documentation
+  </Card>
+</CardGroup>

@@ -1,0 +1,168 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "WhatsApp Team Inbox",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#25D366",
+    "light": "#34E677",
+    "dark": "#128C7E",
+    "anchors": {
+      "from": "#25D366",
+      "to": "#128C7E"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@reachbox.in"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Deploy Now",
+    "url": "/getting-started/deploy-in-30-minutes"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "Deployment",
+      "url": "deployment"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/shadowpint/whatsapp-team-inbox"
+    },
+    {
+      "name": "Live Demo",
+      "icon": "play",
+      "url": "https://hello.reachbox.in"
+    },
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://discord.gg/reachbox"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Overview",
+      "pages": [
+        "introduction",
+        "why-team-inbox",
+        "how-it-works",
+        "pricing-comparison"
+      ]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/requirements",
+        "getting-started/deploy-in-30-minutes",
+        "getting-started/first-setup",
+        "getting-started/invite-team"
+      ]
+    },
+    {
+      "group": "Deployment Guide",
+      "pages": [
+        "deployment/introduction",
+        "deployment/quick-start",
+        "deployment/whatsapp-setup",
+        "deployment/environment-variables",
+        "deployment/database-setup",
+        "deployment/email-setup",
+        "deployment/going-live",
+        "deployment/troubleshooting"
+      ]
+    },
+    {
+      "group": "Platform Deployments",
+      "pages": [
+        "deployment/railway",
+        "deployment/vercel",
+        "deployment/digitalocean"
+      ]
+    },
+    {
+      "group": "Using Team Inbox",
+      "pages": [
+        "user-guide/inbox-overview",
+        "user-guide/managing-conversations",
+        "user-guide/team-collaboration",
+        "user-guide/notifications",
+        "user-guide/contacts",
+        "user-guide/settings"
+      ]
+    },
+    {
+      "group": "Admin Guide",
+      "pages": [
+        "admin/team-management",
+        "admin/conversation-assignment",
+        "admin/integrations",
+        "admin/security-settings",
+        "admin/monitoring"
+      ]
+    },
+    {
+      "group": "Features",
+      "pages": [
+        "features/real-time-messaging",
+        "features/conversation-assignment",
+        "features/push-notifications",
+        "features/multi-language",
+        "features/webhooks"
+      ]
+    },
+    {
+      "group": "Cost & Scaling",
+      "pages": [
+        "cost/monthly-costs",
+        "cost/scaling-guide",
+        "cost/optimization-tips"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/authentication",
+        "api-reference/conversations",
+        "api-reference/contacts",
+        "api-reference/notifications",
+        "api-reference/webhooks"
+      ]
+    },
+    {
+      "group": "Support",
+      "pages": [
+        "support/faq",
+        "support/common-issues",
+        "support/migration-guide",
+        "support/contact"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/shadowpint/whatsapp-team-inbox",
+    "twitter": "https://twitter.com/reachbox_in",
+    "linkedin": "https://linkedin.com/company/reachbox"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "seo": {
+    "indexHiddenPages": false
+  }
+}

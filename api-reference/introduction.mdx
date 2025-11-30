@@ -1,0 +1,142 @@
+---
+title: 'API Introduction'
+description: 'RESTful API for programmatic access to WhatsApp Team Inbox'
+---
+
+## Overview
+
+The Team Inbox API allows you to build custom integrations, automate workflows, and extend functionality programmatically.
+
+**Base URL:** `https://your-domain.com/api/v1`
+
+## Quick Start
+
+```javascript
+const response = await fetch('https://your-domain.com/api/v1/conversations', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  }
+});
+
+const conversations = await response.json();
+```
+
+## Authentication
+
+All API requests require an API key:
+
+```bash
+curl https://your-domain.com/api/v1/conversations \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+[Learn more about authentication →](/api-reference/authentication)
+
+## Rate Limits
+
+- **1,000 requests/hour** per API key
+- **100 requests/minute** per IP address
+
+Rate limit headers:
+```
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1701234567
+```
+
+## Endpoints
+
+<CardGroup cols={2}>
+  <Card title="Conversations" icon="comments" href="/api-reference/conversations">
+    List, create, update conversations
+  </Card>
+  <Card title="Contacts" icon="address-book" href="/api-reference/contacts">
+    Manage customer contacts
+  </Card>
+  <Card title="Messages" icon="message" href="/api-reference/conversations">
+    Send and retrieve messages
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">
+    Real-time event notifications
+  </Card>
+</CardGroup>
+
+## Response Format
+
+All responses use JSON:
+
+```json
+{
+  "data": {
+    "id": "conv_123",
+    "status": "open",
+    "customer": {
+      "name": "John Smith",
+      "phone": "+1234567890"
+    }
+  },
+  "meta": {
+    "timestamp": "2025-11-29T10:30:00Z"
+  }
+}
+```
+
+## Error Handling
+
+Errors include status codes and messages:
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Phone number is required",
+    "field": "phone"
+  }
+}
+```
+
+| Status | Meaning |
+|--------|---------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 429 | Rate Limit Exceeded |
+| 500 | Server Error |
+
+## Pagination
+
+List endpoints support pagination:
+
+```bash
+GET /api/v1/conversations?page=2&limit=50
+```
+
+Response includes pagination meta:
+```json
+{
+  "data": [...],
+  "meta": {
+    "page": 2,
+    "limit": 50,
+    "total": 247,
+    "pages": 5
+  }
+}
+```
+
+## SDKs
+
+Official SDKs coming soon. Community SDKs:
+- JavaScript/TypeScript
+- Python
+- PHP
+- Ruby
+
+## Support
+
+- **Documentation:** You're reading it!
+- **GitHub:** Report issues
+- **Email:** api@your-company.com

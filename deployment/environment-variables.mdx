@@ -1,0 +1,502 @@
+---
+title: 'Environment Variables'
+description: 'Complete reference for all configuration options'
+icon: 'gear'
+---
+
+# Environment Variables Reference
+
+Complete guide to all environment variables needed to configure WhatsApp Team Inbox.
+
+## TL;DR - Essential Variables
+
+**Minimum required to run:**
+
+| Variable | Get From | Example |
+|----------|----------|---------|
+| `DATABASE_URL` | PostgreSQL | `postgresql://user:pass@host:5432/db` |
+| `WHATSAPP_ACCESS_TOKEN` | Meta Business Suite | `EAAxxxxx...` |
+| `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp API Setup | `123456789012345` |
+| `WHATSAPP_BUSINESS_ACCOUNT_ID` | WhatsApp Accounts | `123456789012345` |
+| `WHATSAPP_WEBHOOK_VERIFY_TOKEN` | You create | `openssl rand -hex 16` |
+| `JWT_SECRET` | Generate | `openssl rand -hex 32` |
+| `JWT_REFRESH_SECRET` | Generate | `openssl rand -hex 32` |
+| `ADMIN_EMAIL` | Your email | `admin@company.com` |
+| `ADMIN_PASSWORD` | Strong password | Min 8 chars |
+| `CORS_ORIGIN` | Frontend URL | `https://app.company.com` |
+| `NEXT_PUBLIC_API_BASE_URL` | Backend URL | `https://api.company.com` |
+| `NEXT_PUBLIC_WS_URL` | WebSocket URL | `wss://api.company.com` |
+
+**Quick generate secrets:**
+```bash
+openssl rand -hex 32  # For JWT secrets
+openssl rand -hex 16  # For webhook token
+```
+
+---
+
+## Quick Setup
+
+Copy the example file and customize:
+```bash
+cp .env.example .env
+```
+
+## Required Variables
+
+These variables **must** be set for the application to function:
+
+### Database Configuration
+
+<ParamField path="POSTGRES_USER" type="string" required>
+  PostgreSQL database username
+
+  **Default:** `postgres`
+</ParamField>
+
+<ParamField path="POSTGRES_PASSWORD" type="string" required>
+  PostgreSQL database password
+
+  **Security:** Use a strong password (16+ characters). Generate with:
+  ```bash
+  openssl rand -base64 32
+  ```
+</ParamField>
+
+<ParamField path="POSTGRES_DB" type="string" required>
+  PostgreSQL database name
+
+  **Default:** `whatsapp_inbox`
+</ParamField>
+
+<ParamField path="DATABASE_URL" type="string" required>
+  Full PostgreSQL connection URL
+
+  **Format:** `postgresql://user:password@host:port/database`
+
+  **Example:** `postgresql://postgres:secretpass@postgres:5432/whatsapp_inbox`
+</ParamField>
+
+### WhatsApp Business API
+
+Get these credentials from [Meta Business Suite](https://business.facebook.com). See [WhatsApp Setup Guide](/deployment/whatsapp-setup) for details.
+
+<ParamField path="WHATSAPP_API_URL" type="string" required>
+  WhatsApp API endpoint URL
+
+  **Default:** `https://graph.facebook.com/v21.0`
+
+  **Note:** v21.0 is the recommended version for 2025
+</ParamField>
+
+<ParamField path="WHATSAPP_ACCESS_TOKEN" type="string" required>
+  Permanent access token from Meta Business Suite
+
+  **How to get:**
+  1. Go to Meta Business Suite
+  2. Navigate to System Users
+  3. Generate a permanent token with `whatsapp_business_messaging` permission
+
+  **Security:** Never commit this to version control
+</ParamField>
+
+<ParamField path="WHATSAPP_PHONE_NUMBER_ID" type="string" required>
+  Your WhatsApp Business phone number ID
+
+  **Format:** 15-digit number (e.g., `123456789012345`)
+
+  **Location:** Meta Business Suite → WhatsApp → API Setup
+</ParamField>
+
+<ParamField path="WHATSAPP_BUSINESS_ACCOUNT_ID" type="string" required>
+  Your WhatsApp Business Account ID
+
+  **Format:** 15-digit number
+
+  **Location:** Meta Business Suite → Business Settings → WhatsApp Accounts
+</ParamField>
+
+<ParamField path="WHATSAPP_WEBHOOK_VERIFY_TOKEN" type="string" required>
+  Webhook verification token (you create this)
+
+  **Generate with:**
+  ```bash
+  openssl rand -hex 16
+  ```
+
+  **Usage:** Set the same token in Meta Business Suite webhook configuration
+</ParamField>
+
+### Security & Authentication
+
+<ParamField path="JWT_SECRET" type="string" required>
+  Secret key for signing JWT access tokens
+
+  **Generate with:**
+  ```bash
+  openssl rand -hex 32
+  ```
+
+  **Security:** Must be at least 32 characters, use cryptographically secure random generation
+</ParamField>
+
+<ParamField path="JWT_REFRESH_SECRET" type="string" required>
+  Secret key for signing JWT refresh tokens
+
+  **Generate with:**
+  ```bash
+  openssl rand -hex 32
+  ```
+
+  **Note:** Must be different from `JWT_SECRET`
+</ParamField>
+
+<ParamField path="JWT_EXPIRES_IN" type="string" default="7d">
+  Access token expiration time
+
+  **Format:** Use time units like `15m`, `1h`, `7d`, `30d`
+
+  **Recommended:** `7d` for web apps, `15m` for high-security apps
+</ParamField>
+
+<ParamField path="JWT_REFRESH_EXPIRES_IN" type="string" default="30d">
+  Refresh token expiration time
+
+  **Format:** Use time units like `7d`, `30d`, `90d`
+
+  **Recommended:** `30d`
+</ParamField>
+
+### Admin User
+
+These credentials are used to create the initial admin account on first deployment.
+
+<ParamField path="ADMIN_EMAIL" type="string" required>
+  Admin user email address
+
+  **Example:** `admin@yourcompany.com`
+
+  **Note:** Change password immediately after first login
+</ParamField>
+
+<ParamField path="ADMIN_PASSWORD" type="string" required>
+  Admin user initial password
+
+  **Requirements:** Minimum 8 characters (16+ recommended)
+
+  **Security:** Use a strong password generator
+</ParamField>
+
+<ParamField path="ADMIN_FIRST_NAME" type="string" default="System">
+  Admin user first name
+</ParamField>
+
+<ParamField path="ADMIN_LAST_NAME" type="string" default="Administrator">
+  Admin user last name
+</ParamField>
+
+### Application URLs
+
+<ParamField path="APP_URL" type="string" required>
+  Frontend application URL
+
+  **Development:** `http://localhost:3000`
+
+  **Production:** `https://your-domain.com`
+</ParamField>
+
+<ParamField path="CORS_ORIGIN" type="string" required>
+  Allowed CORS origins (comma-separated for multiple)
+
+  **Development:** `http://localhost:3000`
+
+  **Production:** `https://your-domain.com,https://app.your-domain.com`
+
+  **Security:** Never use `*` in production
+</ParamField>
+
+<ParamField path="NEXT_PUBLIC_API_BASE_URL" type="string" required>
+  Backend API URL (frontend environment variable)
+
+  **Development:** `http://localhost:4000`
+
+  **Production:** `https://api.your-domain.com`
+</ParamField>
+
+<ParamField path="NEXT_PUBLIC_WS_URL" type="string" required>
+  WebSocket server URL (frontend environment variable)
+
+  **Development:** `ws://localhost:4001`
+
+  **Production:** `wss://api.your-domain.com`
+</ParamField>
+
+## Optional Variables
+
+### Port Configuration
+
+<ParamField path="FRONTEND_PORT" type="number" default="3000">
+  Port for Next.js frontend server
+</ParamField>
+
+<ParamField path="BACKEND_PORT" type="number" default="4000">
+  Port for Express backend API
+</ParamField>
+
+<ParamField path="WS_PORT" type="number" default="4001">
+  Port for WebSocket server
+</ParamField>
+
+<ParamField path="POSTGRES_PORT" type="number" default="5432">
+  Port for PostgreSQL database
+</ParamField>
+
+<ParamField path="REDIS_PORT" type="number" default="6379">
+  Port for Redis (if enabled)
+</ParamField>
+
+### Email Configuration (Resend)
+
+Required for sending invitation emails, password resets, and notifications.
+
+<ParamField path="RESEND_API_KEY" type="string">
+  Resend API key for sending emails
+
+  **Get from:** [resend.com](https://resend.com) → Dashboard → API Keys
+
+  **Example:** `re_123abc456def789ghi012jkl345mno678`
+
+  **Note:** Free tier includes 100 emails/day (3,000/month)
+</ParamField>
+
+<ParamField path="FROM_EMAIL" type="string" default="onboarding@resend.dev">
+  Email address to send from
+
+  **Development:** Use default `onboarding@resend.dev`
+
+  **Production:** Use verified domain `noreply@yourdomain.com`
+
+  **Note:** Verify your domain in Resend dashboard for production use
+</ParamField>
+
+<ParamField path="FROM_NAME" type="string" default="Team Inbox">
+  Display name for email sender
+
+  **Example:** `WhatsApp Team Inbox` or `Your Company Name`
+</ParamField>
+
+### Push Notifications (Web Push)
+
+Required for browser push notifications.
+
+<ParamField path="VAPID_PUBLIC_KEY" type="string">
+  VAPID public key for Web Push
+
+  **Generate with:**
+  ```bash
+  npx web-push generate-vapid-keys
+  ```
+</ParamField>
+
+<ParamField path="VAPID_PRIVATE_KEY" type="string">
+  VAPID private key for Web Push
+
+  **Security:** Keep this secret, never expose to frontend
+</ParamField>
+
+<ParamField path="VAPID_SUBJECT" type="string">
+  Contact URL or email for VAPID
+
+  **Format:** `mailto:admin@your-domain.com` or `https://your-domain.com`
+</ParamField>
+
+### Redis (Optional)
+
+Enables caching and session storage for improved performance.
+
+<ParamField path="REDIS_URL" type="string">
+  Redis connection URL
+
+  **Docker Compose:** `redis://redis:6379`
+
+  **External:** `redis://username:password@host:port`
+</ParamField>
+
+<ParamField path="REDIS_PASSWORD" type="string">
+  Redis authentication password (if required)
+</ParamField>
+
+### Monitoring & Logging
+
+<ParamField path="NODE_ENV" type="string" default="production">
+  Application environment
+
+  **Options:** `development`, `production`, `test`
+</ParamField>
+
+<ParamField path="LOG_LEVEL" type="string" default="info">
+  Logging level
+
+  **Options:** `error`, `warn`, `info`, `debug`
+
+  **Production:** Use `info` or `warn`
+
+  **Development:** Use `debug`
+</ParamField>
+
+<ParamField path="SENTRY_DSN" type="string">
+  Sentry Data Source Name for error tracking
+
+  **Get from:** [Sentry.io](https://sentry.io) project settings
+</ParamField>
+
+## Environment-Specific Configuration
+
+### Development (.env.development)
+
+```bash
+NODE_ENV=development
+APP_URL=http://localhost:3000
+CORS_ORIGIN=http://localhost:3000
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+NEXT_PUBLIC_WS_URL=ws://localhost:4001
+LOG_LEVEL=debug
+```
+
+### Production (.env.production)
+
+```bash
+NODE_ENV=production
+APP_URL=https://your-domain.com
+CORS_ORIGIN=https://your-domain.com
+NEXT_PUBLIC_API_BASE_URL=https://api.your-domain.com
+NEXT_PUBLIC_WS_URL=wss://api.your-domain.com
+LOG_LEVEL=info
+```
+
+## Security Best Practices
+
+<Warning>
+**Never commit `.env` files to version control!**
+
+Add to `.gitignore`:
+```
+.env
+.env.local
+.env.production
+.env.*.local
+```
+</Warning>
+
+### Secret Generation
+
+Generate strong secrets:
+
+```bash
+# JWT secrets (256-bit)
+openssl rand -hex 32
+
+# Database password (base64)
+openssl rand -base64 32
+
+# Webhook verify token
+openssl rand -hex 16
+
+# VAPID keys
+npx web-push generate-vapid-keys
+```
+
+### Production Checklist
+
+<Check>All required variables are set</Check>
+<Check>Strong passwords (16+ characters)</Check>
+<Check>Unique JWT secrets for access and refresh tokens</Check>
+<Check>HTTPS URLs in production (https://, wss://)</Check>
+<Check>Specific CORS origins (no wildcards)</Check>
+<Check>Email service configured and verified</Check>
+<Check>Push notification keys generated</Check>
+<Check>Error tracking enabled (Sentry)</Check>
+<Check>Log level appropriate for environment</Check>
+
+## Validation
+
+Validate your environment configuration:
+
+```bash
+# Check all required variables are set
+docker-compose config
+
+# Test database connection
+docker-compose exec backend npm run db:check
+
+# Verify WhatsApp API credentials
+docker-compose exec backend npm run whatsapp:verify
+```
+
+## Platform-Specific Setup
+
+### Railway
+
+Environment variables are set in the Railway dashboard under Variables tab.
+
+### Vercel
+
+Set environment variables in Project Settings → Environment Variables.
+
+**Note:** Prefix client-side variables with `NEXT_PUBLIC_`
+
+### Docker Compose
+
+Variables are loaded from `.env` file in project root automatically.
+
+### Kubernetes
+
+Use ConfigMaps for non-sensitive data and Secrets for sensitive data:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: whatsapp-inbox-secrets
+type: Opaque
+stringData:
+  JWT_SECRET: your-secret-here
+  WHATSAPP_ACCESS_TOKEN: your-token-here
+```
+
+## Troubleshooting
+
+### Variables not loading
+
+1. Check file name is exactly `.env`
+2. Verify no spaces around `=` sign
+3. Restart Docker containers: `docker-compose restart`
+
+### Database connection failed
+
+1. Verify `DATABASE_URL` format is correct
+2. Check database credentials match
+3. Ensure database is running: `docker-compose ps postgres`
+
+### WhatsApp webhook not working
+
+1. Verify `WHATSAPP_WEBHOOK_VERIFY_TOKEN` matches Meta configuration
+2. Check `WHATSAPP_ACCESS_TOKEN` is valid
+3. Ensure webhook URL is publicly accessible
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="WhatsApp Setup" icon="whatsapp" href="/deployment/whatsapp-setup">
+    Configure WhatsApp Business API
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/deployment/quick-start">
+    Deploy with one-click installation
+  </Card>
+  <Card title="Going Live" icon="globe" href="/deployment/going-live">
+    Production deployment checklist
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/deployment/troubleshooting">
+    Common issues and solutions
+  </Card>
+</CardGroup>

@@ -1,0 +1,25 @@
+---
+title: 'Authentication'
+description: 'Authenticate API requests with API keys'
+---
+
+## API Keys
+
+Generate API keys in Settings → API → Create Key
+
+```bash
+curl https://your-domain.com/api/v1/conversations \
+  -H "Authorization: Bearer sk_live_abc123..."
+```
+
+## Key Types
+
+- **Live keys:** `sk_live_...` for production
+- **Test keys:** `sk_test_...` for development
+
+## Best Practices
+
+- Keep keys secret
+- Rotate keys quarterly
+- Use environment variables
+- Different keys per environment

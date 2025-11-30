@@ -1,0 +1,558 @@
+---
+title: 'Conversation Assignment'
+description: 'Configure automatic assignment rules and routing strategies for optimal conversation distribution'
+---
+
+## Overview
+
+Intelligent conversation assignment ensures customers get help quickly from the right team member. Configure assignment rules to balance workload and route conversations based on expertise, availability, and business logic.
+
+## Assignment Strategies
+
+<CardGroup cols={2}>
+  <Card title="Round Robin" icon="arrows-rotate">
+    Distribute conversations evenly across team
+  </Card>
+  <Card title="Load-Based" icon="scale-balanced">
+    Assign to agents with lowest workload
+  </Card>
+  <Card title="Skill-Based" icon="user-graduate">
+    Route based on expertise and tags
+  </Card>
+  <Card title="Priority-Based" icon="circle-exclamation">
+    VIP customers go to senior agents
+  </Card>
+</CardGroup>
+
+## Round Robin Assignment
+
+Evenly distribute conversations in rotation:
+
+```javascript
+{
+  "strategy": "round_robin",
+  "settings": {
+    "skip_offline": true,
+    "skip_at_capacity": true,
+    "max_concurrent_per_agent": 10,
+    "reset_on": "daily" // or "weekly", "monthly"
+  }
+}
+```
+
+**How it works:**
+1. New conversation arrives
+2. System checks next agent in rotation
+3. If agent is available and under capacity, assign
+4. Otherwise, move to next agent
+5. Cycle repeats
+
+**Best for:** Teams with similar skill levels handling general inquiries.
+
+## Load-Based Assignment
+
+Assign to the agent with the fewest active conversations:
+
+```javascript
+{
+  "strategy": "load_balanced",
+  "settings": {
+    "consider_priority": true,
+    "priority_weight": {
+      "urgent": 3,
+      "high": 2,
+      "normal": 1,
+      "low": 0.5
+    },
+    "max_per_agent": 15,
+    "rebalance_threshold": 5 // Reassign if difference >5
+  }
+}
+```
+
+**Calculation example:**
+```
+Agent   Active  Weighted Load  Next Assignment?
+Sarah   8       12 (6×2 high)  No
+John    5       5 (all normal) ✓ Yes (lowest)
+Alice   7       11 (4×2 + 3×1) No
+```
+
+**Best for:** Varying conversation complexity, keeping team balanced.
+
+## Skill-Based Routing
+
+Route based on agent expertise:
+
+<Steps>
+  <Step title="Define Skills">
+    ```
+    Skills Configuration
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Technical Support
+    ├─ Members: Alice, Bob, Charlie
+    └─ Auto-assign when tags: technical, bug, api
+
+    Billing
+    ├─ Members: Sarah, Diana
+    └─ Auto-assign when tags: billing, payment, refund
+
+    Sales
+    ├─ Members: John, Emma
+    └─ Auto-assign when tags: sales, demo, pricing
+
+    General Support (Fallback)
+    └─ All active agents
+    ```
+  </Step>
+
+  <Step title="Tag Conversations">
+    Tags trigger skill-based routing:
+    ```
+    Customer message: "My API integration is broken"
+
+    Auto-tagging detects: "technical", "api"
+    → Routes to Technical Support team
+    → Assigns to Alice (least busy technical agent)
+    ```
+  </Step>
+
+  <Step title="Configure Fallback">
+    ```javascript
+    {
+      "skill_routing": {
+        "enabled": true,
+        "fallback_strategy": "round_robin",
+        "fallback_after_seconds": 120,
+        "allow_cross_skill": true // If all specialists busy
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Priority-Based Assignment
+
+VIP customers get premium treatment:
+
+```javascript
+{
+  "priority_routing": {
+    "enabled": true,
+    "rules": [
+      {
+        "condition": {
+          "tags": ["VIP", "Enterprise"],
+          "or": true
+        },
+        "assign_to": {
+          "agents": ["senior-agent@company.com"],
+          "fallback_team": "Tier 2 Support",
+          "max_wait_seconds": 60
+        },
+        "notify": {
+          "method": ["desktop", "email", "sms"],
+          "message": "VIP customer needs assistance"
+        }
+      },
+      {
+        "condition": {
+          "priority": "urgent",
+          "unassigned_for_seconds": 300
+        },
+        "escalate_to": "team_lead",
+        "notify_manager": true
+      }
+    ]
+  }
+}
+```
+
+## Advanced Assignment Rules
+
+### Time-Based Routing
+
+Route based on time of day:
+
+```javascript
+{
+  "time_based_routing": {
+    "timezone": "America/New_York",
+    "rules": [
+      {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "hours": { "start": "09:00", "end": "17:00" },
+        "assign_to_team": "Day Shift",
+        "strategy": "load_balanced"
+      },
+      {
+        "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "hours": { "start": "17:00", "end": "21:00" },
+        "assign_to_team": "Evening Shift",
+        "strategy": "round_robin"
+      },
+      {
+        "days": ["Saturday", "Sunday"],
+        "hours": { "start": "10:00", "end": "18:00" },
+        "assign_to_team": "Weekend Support",
+        "max_per_agent": 5
+      }
+    ],
+    "fallback": {
+      "outside_hours": "create_ticket", // or "assign_to_on_call"
+      "auto_response": "We're currently offline. We'll respond when we're back."
+    }
+  }
+}
+```
+
+### Language-Based Routing
+
+Assign based on customer language:
+
+```javascript
+{
+  "language_routing": {
+    "enabled": true,
+    "detect_from": ["message_content", "contact_preference"],
+    "mappings": {
+      "es": {
+        "team": "Spanish Support",
+        "agents": ["maria@company.com", "carlos@company.com"]
+      },
+      "fr": {
+        "team": "French Support",
+        "fallback_to_english": true
+      },
+      "en": {
+        "team": "General Support"
+      }
+    },
+    "fallback": "General Support"
+  }
+}
+```
+
+### Customer History Routing
+
+Route to previous agent:
+
+```javascript
+{
+  "history_routing": {
+    "enabled": true,
+    "prefer_previous_agent": true,
+    "within_days": 30,
+    "conditions": {
+      "previous_csat": ">= 4", // Only if good experience
+      "agent_available": true,
+      "agent_under_capacity": true
+    },
+    "fallback": "load_balanced"
+  }
+}
+```
+
+## Manual Assignment
+
+Override automatic assignment:
+
+<Tabs>
+  <Tab title="Quick Assign">
+    ```
+    Conversation #12345
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Currently: Unassigned
+
+    Quick Assign:
+    ● Sarah Johnson (3 active) ✓ Available
+    ● John Smith (5 active) ✓ Available
+    ● Alice Brown (10 active) ⚠️ At capacity
+
+    [Assign] [Auto-Assign]
+    ```
+  </Tab>
+
+  <Tab title="Assign with Notes">
+    ```
+    Assign Conversation
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Assign to: [Sarah Johnson ▾]
+
+    Reason:
+    ⦿ Best expertise match
+    ○ Previous relationship
+    ○ Language preference
+    ○ VIP customer
+    ○ Other: [____________]
+
+    Notes for agent:
+    [Customer is escalated from tier 1.
+    Already tried basic troubleshooting.
+    Needs advanced technical support.]
+
+    Priority: [High ▾]
+
+    Notifications:
+    ☑ Desktop notification
+    ☑ Email alert
+    ☐ SMS (urgent only)
+
+    [Cancel] [Assign]
+    ```
+  </Tab>
+
+  <Tab title="Bulk Assign">
+    ```
+    Bulk Assignment
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Selected: 15 conversations
+
+    Assign to:
+    ⦿ Specific agent: [Sarah Johnson ▾]
+    ○ Team: [Support Team ▾]
+    ○ Distribute evenly across available agents
+
+    Filter:
+    ☑ Only unassigned
+    ☐ Include pending
+    ☐ Include all selected
+
+    [Cancel] [Assign Selected]
+    ```
+  </Tab>
+</Tabs>
+
+## Auto-Assignment Configuration
+
+### Global Settings
+
+```
+Auto-Assignment Settings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Status: ☑ Enabled globally
+
+Default Strategy: [Load Balanced ▾]
+
+Apply to:
+☑ New conversations
+☑ Unassigned >5 minutes
+☑ Reassigned conversations
+☐ Reopened conversations
+
+Exclusions:
+☑ Conversations manually assigned
+☑ Conversations with specific tags: [VIP ▾]
+☐ Conversations from specific sources
+
+Business Hours:
+⦿ Respect individual agent schedules
+○ Use team schedule
+○ Always assign (24/7)
+
+[Save Settings]
+```
+
+### Team-Specific Rules
+
+```
+Team: Support Team
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Override global settings: ☑
+
+Strategy: [Skill-Based ▾]
+├─ Primary: Skill match
+├─ Secondary: Load balanced
+└─ Tertiary: Round robin
+
+Capacity per Agent:
+Min: [2] concurrent conversations
+Max: [12] concurrent conversations
+Optimal: [8] (target before assigning to next)
+
+Priority Handling:
+Urgent: Assign immediately, notify via SMS
+High: Assign within 2 minutes
+Normal: Standard assignment
+Low: Batch assign every 15 minutes
+
+[Save Team Settings]
+```
+
+## Assignment Notifications
+
+Configure how agents are notified:
+
+```javascript
+{
+  "notifications": {
+    "new_assignment": {
+      "channels": ["desktop", "email"],
+      "urgent_channels": ["desktop", "email", "sms"],
+      "sound": true,
+      "template": "You've been assigned conversation #{{id}} from {{customer_name}}"
+    },
+    "reassignment": {
+      "notify_previous_agent": true,
+      "notify_new_agent": true,
+      "include_context": true
+    },
+    "batch_assignments": {
+      "enabled": true,
+      "group_within_minutes": 5,
+      "max_in_batch": 10
+    }
+  }
+}
+```
+
+## Assignment Analytics
+
+Track assignment effectiveness:
+
+```
+Assignment Performance
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Last 30 Days:
+
+Assignment Metrics:
+├─ Total Assignments: 1,247
+├─ Auto-Assigned: 1,089 (87%)
+├─ Manual Assignments: 158 (13%)
+├─ Reassignments: 64 (5%)
+└─ Average Time to Assign: 2.3 minutes
+
+Strategy Breakdown:
+├─ Load Balanced: 45%
+├─ Skill-Based: 30%
+├─ Priority-Based: 15%
+└─ Manual: 10%
+
+Performance by Strategy:
+                  Avg Response  Resolution Rate  CSAT
+Load Balanced     3.1 min       89%             4.6
+Skill-Based       2.8 min       94%             4.8
+Priority-Based    1.5 min       87%             4.7
+
+Optimization Opportunities:
+⚡ 12% of conversations reassigned - review initial routing
+⚡ Skill-based routing shows best CSAT - consider expanding
+✓ Load balancing working well
+```
+
+## Reassignment Rules
+
+Automatic reassignment triggers:
+
+```javascript
+{
+  "auto_reassignment": {
+    "enabled": true,
+    "triggers": [
+      {
+        "condition": "agent_no_response",
+        "timeout_minutes": 15,
+        "action": "reassign_to_available",
+        "notify_manager": true
+      },
+      {
+        "condition": "agent_goes_offline",
+        "action": "reassign_active_conversations",
+        "to": "team_members",
+        "max_to_reassign": 5
+      },
+      {
+        "condition": "conversation_unresolved",
+        "timeout_hours": 24,
+        "escalate_to": "senior_agent",
+        "increase_priority": true
+      },
+      {
+        "condition": "customer_requests_reassignment",
+        "action": "assign_to_team_lead",
+        "flag_for_review": true
+      }
+    ]
+  }
+}
+```
+
+## Testing Assignment Rules
+
+Simulate assignments before enabling:
+
+```
+Assignment Rule Tester
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Test Scenario:
+Customer: VIP customer from previous conversation
+Tags: technical, urgent
+Time: Monday 3:00 PM EST
+Language: English
+Priority: Urgent
+
+Current Team State:
+Sarah (Technical): 5 active, available
+John (General): 3 active, available
+Alice (Technical): 10 active, at capacity
+
+Test Result:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Would assign to: Sarah Johnson
+
+Reasoning:
+1. VIP + Urgent → Priority routing
+2. Technical tag → Skill-based routing
+3. Sarah: Technical skill + under capacity
+4. Assignment time: < 30 seconds
+
+[Run Test] [Save as Test Case]
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Simple" icon="seedling">
+    Begin with round robin, add complexity as needed
+  </Card>
+  <Card title="Monitor Metrics" icon="chart-line">
+    Track assignment effectiveness weekly
+  </Card>
+  <Card title="Balance Workload" icon="scale-balanced">
+    Ensure no agent consistently overloaded
+  </Card>
+  <Card title="Respect Expertise" icon="user-graduate">
+    Route specialized questions to experts
+  </Card>
+  <Card title="Set Capacity Limits" icon="gauge">
+    Prevent burnout with max concurrent limits
+  </Card>
+  <Card title="Test Before Deploy" icon="flask">
+    Simulate rules before enabling
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/admin/team-management">
+    Manage team members and permissions
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Monitor system performance
+  </Card>
+  <Card title="Integrations" icon="plug" href="/admin/integrations">
+    Connect external tools
+  </Card>
+  <Card title="Features: Assignment" icon="user-check" href="/features/conversation-assignment">
+    Learn more about assignment features
+  </Card>
+</CardGroup>

@@ -1,0 +1,211 @@
+---
+title: 'Migration Guide'
+description: 'Migrate from Intercom, Zendesk, or other platforms to WhatsApp Team Inbox'
+---
+
+## Overview
+
+Migrate your customer support to WhatsApp Team Inbox in a few hours with minimal disruption.
+
+<Steps>
+  <Step title="Export existing data" />
+  <Step title="Set up WhatsApp Team Inbox" />
+  <Step title="Import customers and history" />
+  <Step title="Train team" />
+  <Step title="Go live" />
+</Steps>
+
+## Migrating from Intercom
+
+<Steps>
+  <Step title="Export from Intercom">
+    **Export contacts:**
+    1. Intercom → Settings → Data export
+    2. Select "Contacts"
+    3. Download CSV
+
+    **Export conversations:**
+    1. Settings → Data export
+    2. Select "Conversations"
+    3. Download JSON
+  </Step>
+
+  <Step title="Prepare data">
+    Map Intercom fields to Team Inbox:
+    
+    | Intercom | Team Inbox |
+    |----------|------------|
+    | user.email | contact.email |
+    | user.phone | contact.phone |
+    | user.name | contact.name |
+    | tags | contact.tags |
+    | conversations | (import as notes) |
+  </Step>
+
+  <Step title="Import to Team Inbox">
+    ```bash
+    # Import contacts
+    npm run import:contacts intercom-contacts.csv
+
+    # Import conversation history as notes
+    npm run import:history intercom-conversations.json
+    ```
+  </Step>
+</Steps>
+
+## Migrating from Zendesk
+
+Similar process:
+
+1. **Export:** Zendesk → Admin → Data Export
+2. **Transform:** Use migration script
+3. **Import:** Contacts and ticket history
+
+[Contact us](/support/contact) for Zendesk migration assistance
+
+## Migrating WhatsApp Integration
+
+<Steps>
+  <Step title="Get WhatsApp Business API access">
+    If not already using WhatsApp Business API:
+    1. Apply through Meta
+    2. Get business verified
+    3. Register phone number
+
+    [WhatsApp setup →](/deployment/whatsapp-setup)
+  </Step>
+
+  <Step title="Update webhook URL">
+    Point WhatsApp webhook to Team Inbox:
+    
+    **Old:** `https://intercom.com/webhook/...`
+    **New:** `https://your-domain.com/api/webhooks/whatsapp`
+
+    Change in Meta Developer Console
+  </Step>
+
+  <Step title="Test thoroughly">
+    1. Send test messages
+    2. Verify receipt in Team Inbox
+    3. Reply and confirm delivery
+    4. Check all team members can access
+  </Step>
+
+  <Step title="Switch over">
+    **Gradual rollout recommended:**
+    - Week 1: Use both systems in parallel
+    - Week 2: Primary on Team Inbox, Intercom as backup
+    - Week 3: Fully on Team Inbox
+  </Step>
+</Steps>
+
+## Migration Checklist
+
+```
+Pre-Migration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☐ Export all customer data
+☐ Document current workflows
+☐ Set up Team Inbox infrastructure
+☐ Configure WhatsApp Business API
+☐ Import customer contacts
+☐ Train team on new system
+☐ Create quick reply templates
+☐ Set up integrations (CRM, etc.)
+
+During Migration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☐ Update webhook URLs
+☐ Test message sending/receiving
+☐ Monitor both systems initially
+☐ Have rollback plan ready
+
+Post-Migration
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+☐ Cancel old service (after 1-2 weeks)
+☐ Update customer-facing documentation
+☐ Announce to customers (if needed)
+☐ Gather team feedback
+☐ Optimize based on usage
+```
+
+## Common Migration Questions
+
+<AccordionGroup>
+  <Accordion title="Will I lose conversation history?">
+    **Conversation data:**
+    - Import as notes/context
+    - Maintain in old system for reference
+    - Export before canceling old service
+
+    **Going forward:**
+    - All new conversations in Team Inbox
+    - Full history preserved
+  </Accordion>
+
+  <Accordion title="How long does migration take?">
+    **Timeline:**
+    - Setup: 2-4 hours
+    - Data import: 1-2 hours
+    - Team training: 1-2 hours
+    - Testing: 1-2 hours
+    - **Total: 1 day for small team**
+
+    **Larger teams:** Plan 1-2 weeks for full migration
+  </Accordion>
+
+  <Accordion title="Can I run both systems in parallel?">
+    Yes! Recommended approach:
+    - Week 1: Parallel (both active)
+    - Week 2: Gradual shift (Team Inbox primary)
+    - Week 3: Team Inbox only
+
+    Allows team to adapt gradually
+  </Accordion>
+
+  <Accordion title="What about existing customer expectations?">
+    **Communicate change:**
+    - Send announcement before migration
+    - Update website/help docs
+    - Set auto-reply in old system
+
+    **Example message:**
+    ```
+    We've upgraded to faster WhatsApp support!
+    Please message us on WhatsApp: +1234567890
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Need Help?
+
+We offer migration assistance:
+
+<CardGroup cols={2}>
+  <Card title="Migration Support" icon="people-carry">
+    Guided migration with our team
+  </Card>
+  <Card title="Data Import Service" icon="file-import">
+    We'll handle the data import
+  </Card>
+  <Card title="Team Training" icon="chalkboard-user">
+    Live training sessions for your team
+  </Card>
+  <Card title="Custom Development" icon="code">
+    Custom migration scripts if needed
+  </Card>
+</CardGroup>
+
+[Contact us for migration help →](/support/contact)
+
+## Post-Migration
+
+After successful migration:
+
+- Monitor performance metrics
+- Gather team feedback
+- Optimize workflows
+- Cancel old service
+- Celebrate cost savings!
+
+**Typical savings: $100-300/month** 🎉

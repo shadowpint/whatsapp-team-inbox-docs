@@ -1,0 +1,284 @@
+---
+title: 'Integrations'
+description: 'Connect WhatsApp Team Inbox with your existing tools and workflows'
+---
+
+## Overview
+
+Extend Team Inbox functionality by integrating with CRM systems, help desks, analytics tools, and custom applications.
+
+<Info>
+Integrations sync data bidirectionally, automate workflows, and centralize customer information.
+</Info>
+
+## Available Integrations
+
+<CardGroup cols={3}>
+  <Card title="CRM Systems" icon="address-book">
+    Salesforce, HubSpot, Pipedrive
+  </Card>
+  <Card title="Help Desk" icon="ticket">
+    Zendesk, Freshdesk, Intercom
+  </Card>
+  <Card title="Communication" icon="comments">
+    Slack, Microsoft Teams, Discord
+  </Card>
+  <Card title="E-commerce" icon="cart-shopping">
+    Shopify, WooCommerce, Magento
+  </Card>
+  <Card title="Analytics" icon="chart-line">
+    Google Analytics, Mixpanel, Segment
+  </Card>
+  <Card title="Automation" icon="bolt">
+    Zapier, Make, n8n
+  </Card>
+</CardGroup>
+
+## Salesforce Integration
+
+<Steps>
+  <Step title="Connect Salesforce">
+    Navigate to Settings → Integrations → Salesforce
+
+    Click **Connect Salesforce**
+    
+    Authorize Team Inbox to access your Salesforce data
+  </Step>
+
+  <Step title="Configure Sync">
+    ```
+    Salesforce Sync Settings
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Sync Direction:
+    ⦿ Two-way (recommended)
+    ○ Team Inbox → Salesforce only
+    ○ Salesforce → Team Inbox only
+
+    Sync Frequency:
+    [Real-time ▾] (webhooks)
+
+    Object Mapping:
+    • Contacts → Leads/Contacts
+    • Conversations → Cases
+    • Messages → Case Comments
+    ```
+  </Step>
+
+  <Step title="Field Mapping">
+    Map fields between systems:
+    
+    | Team Inbox | Salesforce | Sync |
+    |------------|------------|------|
+    | Contact Name | Lead/Contact Name | ✓ |
+    | Phone | Mobile Phone | ✓ |
+    | Email | Email | ✓ |
+    | Tags | Contact Tags | ✓ |
+    | Conversation Status | Case Status | ✓ |
+  </Step>
+</Steps>
+
+## Slack Integration
+
+Real-time notifications in Slack:
+
+```
+Slack Notifications
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Workspace: acme-company.slack.com ✓ Connected
+
+Notification Channels:
+#support-alerts → New conversations
+#vip-customers → VIP customer messages
+@sarah → Personal assignments
+
+Message Format:
+⦿ Rich (with buttons)
+○ Simple text
+○ Custom template
+
+Actions from Slack:
+☑ Assign conversation
+☑ Reply to customer
+☑ Close conversation
+☑ Add internal note
+```
+
+## Zapier Integration
+
+Automate workflows with 5000+ apps:
+
+<Tabs>
+  <Tab title="Popular Zaps">
+    **New Contact → Google Sheets**
+    ```
+    Trigger: New contact in Team Inbox
+    Action: Add row to Google Sheet
+
+    Use case: Track all customers in spreadsheet
+    ```
+
+    **High Priority → Slack**
+    ```
+    Trigger: Conversation tagged "urgent"
+    Action: Send Slack DM to manager
+
+    Use case: Escalate urgent issues immediately
+    ```
+
+    **Resolved → Email**
+    ```
+    Trigger: Conversation closed
+    Action: Send summary email
+
+    Use case: Daily resolution digest
+    ```
+  </Tab>
+
+  <Tab title="Setup">
+    1. Visit zapier.com
+    2. Search "WhatsApp Team Inbox"
+    3. Choose trigger or action
+    4. Authenticate with API key
+    5. Configure zap
+    6. Test and enable
+  </Tab>
+</Tabs>
+
+## Custom API Integration
+
+Build custom integrations using our REST API:
+
+```javascript
+// Example: Create contact from external system
+const response = await fetch('https://your-inbox.com/api/v1/contacts', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    phone: '+1234567890',
+    name: 'John Smith',
+    email: 'john@example.com',
+    tags: ['customer', 'premium'],
+    customFields: {
+      accountType: 'enterprise',
+      customerSince: '2024-01-15'
+    }
+  })
+});
+```
+
+[View Full API Documentation](/api-reference/introduction)
+
+## Webhooks
+
+Receive real-time events from Team Inbox:
+
+<Steps>
+  <Step title="Create Webhook">
+    ```
+    Settings → Integrations → Webhooks → Add Webhook
+
+    Endpoint URL: [https://your-app.com/webhook]
+    Secret: [auto-generated]
+
+    Events:
+    ☑ conversation.created
+    ☑ conversation.assigned
+    ☑ message.received
+    ☑ message.sent
+    ☑ contact.updated
+    ☐ tag.applied
+    ```
+  </Step>
+
+  <Step title="Handle Events">
+    ```javascript
+    // Your webhook endpoint
+    app.post('/webhook', (req, res) => {
+      const event = req.body;
+      
+      switch(event.type) {
+        case 'message.received':
+          // Customer sent message
+          handleNewMessage(event.data);
+          break;
+        case 'conversation.assigned':
+          // Conversation assigned to agent
+          notifyAgent(event.data);
+          break;
+      }
+      
+      res.status(200).send('OK');
+    });
+    ```
+  </Step>
+
+  <Step title="Verify Signature">
+    ```javascript
+    const crypto = require('crypto');
+
+    function verifyWebhook(payload, signature, secret) {
+      const hmac = crypto.createHmac('sha256', secret);
+      const digest = hmac.update(payload).digest('hex');
+      return digest === signature;
+    }
+    ```
+  </Step>
+</Steps>
+
+## E-commerce Integrations
+
+### Shopify
+
+```
+Shopify Integration
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Store: acme-store.myshopify.com ✓
+
+Features:
+☑ Show customer order history in conversation
+☑ Create support tickets from WhatsApp
+☑ Send order updates via WhatsApp
+☑ Abandoned cart recovery messages
+
+Order Tracking:
+Customer asks: "Where's my order?"
+→ Auto-fetch from Shopify
+→ Reply with tracking link
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Test First" icon="flask">
+    Test integrations in staging before production
+  </Card>
+  <Card title="Monitor Health" icon="heart-pulse">
+    Check integration status regularly
+  </Card>
+  <Card title="Error Handling" icon="triangle-exclamation">
+    Configure error notifications
+  </Card>
+  <Card title="Data Privacy" icon="shield">
+    Only sync necessary customer data
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Complete API documentation
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/features/webhooks">
+    Learn about webhook events
+  </Card>
+  <Card title="Security" icon="lock" href="/admin/security-settings">
+    Secure your integrations
+  </Card>
+</CardGroup>

@@ -1,0 +1,346 @@
+---
+title: 'Cost Optimization Tips'
+description: 'Reduce your WhatsApp Team Inbox costs without sacrificing quality'
+---
+
+## Overview
+
+Smart optimizations can reduce your monthly costs by 30-60% while maintaining excellent customer service.
+
+## WhatsApp Cost Optimization
+
+<CardGroup cols={2}>
+  <Card title="Respond Within 24h" icon="clock">
+    **Save: $0.0075/conversation** (North America)
+    
+    User-initiated conversations are FREE for 24 hours. Respond quickly to avoid paid template messages.
+  </Card>
+
+  <Card title="Batch Notifications" icon="layer-group">
+    **Save: 50% of business-initiated messages**
+    
+    Send one update instead of multiple:
+    - Bad: "Order confirmed" + "Order shipped" + "Out for delivery"
+    - Good: "Order shipped and out for delivery"
+  </Card>
+
+  <Card title="Smart Templates" icon="file-lines">
+    **Save: 30-40% on templates**
+    
+    Use interactive templates instead of multiple follow-ups:
+    - Include action buttons
+    - Provide complete information
+    - Reduce back-and-forth
+  </Card>
+
+  <Card title="Avoid Spam" icon="ban">
+    **Save: Quality rating penalties**
+    
+    Poor quality = rate limits = lost revenue
+    - Only message engaged customers
+    - Honor opt-outs immediately
+    - Provide value in every message
+  </Card>
+</CardGroup>
+
+### WhatsApp Savings Calculator
+
+```
+Your Monthly WhatsApp Costs
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Current:
+• User-initiated: 1,500 (FREE)
+• Business-initiated: 500 × $0.016 = $8.00
+• Total: $8.00/month
+
+Optimized (respond faster, batch messages):
+• User-initiated: 1,800 (FREE)
+• Business-initiated: 200 × $0.016 = $3.20
+• Total: $3.20/month
+
+Monthly Savings: $4.80 (60% reduction)
+Annual Savings: $57.60
+```
+
+## Infrastructure Optimization
+
+### Server Costs
+
+<Tabs>
+  <Tab title="Right-Size Instances">
+    **Current:** t3.medium ($30/month)
+    - CPU usage: 35%
+    - Memory usage: 45%
+    - Conclusion: Over-provisioned
+
+    **Optimized:** t3.small ($15/month)
+    - CPU usage: 60-70%
+    - Memory usage: 75-80%
+    - **Savings: $15/month**
+
+    Monitor for 1 week before downgrading.
+  </Tab>
+
+  <Tab title="Use Spot Instances">
+    **Current:** On-demand t3.medium
+    - Cost: $30/month
+    - Availability: 100%
+
+    **Optimized:** Spot instance with fallback
+    - Cost: $6-9/month
+    - Availability: 95%+ (auto-fallback to on-demand)
+    - **Savings: $21-24/month**
+
+    Use for stateless workers, not main app.
+  </Tab>
+
+  <Tab title="Schedule Resources">
+    Turn off non-production environments:
+
+    ```javascript
+    // Dev/staging schedule
+    {
+      "weekdays": {
+        "start": "09:00",
+        "stop": "18:00"
+      },
+      "weekends": "off"
+    }
+    ```
+
+    **Savings:** ~70% on dev/staging costs
+  </Tab>
+</Tabs>
+
+### Database Optimization
+
+<AccordionGroup>
+  <Accordion title="Archive Old Data">
+    Move old conversations to cheaper storage:
+
+    ```sql
+    -- Move conversations >6 months old
+    INSERT INTO conversations_archive
+    SELECT * FROM conversations
+    WHERE updated_at < NOW() - INTERVAL '6 months';
+
+    DELETE FROM conversations
+    WHERE updated_at < NOW() - INTERVAL '6 months';
+    ```
+
+    **Impact:**
+    - Database size: -30-50%
+    - Cost: -30-50% on database
+    - Storage cost: $0.023/GB/month (S3) vs $0.115/GB/month (RDS)
+  </Accordion>
+
+  <Accordion title="Optimize Queries">
+    Reduce database compute costs:
+
+    **Before:** Full table scan
+    ```sql
+    SELECT * FROM conversations 
+    WHERE assigned_to = 'user-id';
+    -- 450ms, full scan
+    ```
+
+    **After:** Indexed query
+    ```sql
+    SELECT id, status, last_message_at 
+    FROM conversations 
+    WHERE assigned_to = 'user-id';
+    -- 12ms, index scan
+    -- Only fetch needed columns
+    ```
+
+    **Impact:** 97% faster, 90% less CPU
+  </Accordion>
+
+  <Accordion title="Enable Connection Pooling">
+    Reduce database instance size:
+
+    **Without pooling:**
+    - Need: db.t3.medium (100 connections)
+    - Cost: $56/month
+
+    **With PgBouncer:**
+    - Need: db.t3.small (25 actual connections)
+    - Cost: $28/month
+    - **Savings: $28/month**
+
+    PgBouncer: Free, &lt;1GB RAM
+  </Accordion>
+</AccordionGroup>
+
+### Email Optimization
+
+<Tabs>
+  <Tab title="Use Free Tiers">
+    **SendGrid Free:** 100 emails/day = 3,000/month
+
+    **Optimize to stay under limit:**
+    - Batch notifications (5 messages → 1 email)
+    - Daily digest instead of real-time
+    - SMS only for critical alerts
+
+    **Savings:** $20/month (vs Essentials plan)
+  </Tab>
+
+  <Tab title="Switch to AWS SES">
+    **SendGrid:** $20-90/month
+    **AWS SES:** $0.10 per 1,000 emails
+
+    **Calculation:**
+    - 10,000 emails/month
+    - SES cost: $1.00/month
+    - **Savings: $19-89/month**
+
+    (Requires AWS account and setup time)
+  </Tab>
+</Tabs>
+
+## Smart Caching
+
+Implement Redis caching to reduce database load:
+
+```javascript
+{
+  "cache": {
+    "enabled": true,
+    "ttl": {
+      "conversations": 300, // 5 minutes
+      "contacts": 3600, // 1 hour
+      "user_profile": 1800 // 30 minutes
+    }
+  }
+}
+```
+
+**Impact:**
+- Database queries: -60-80%
+- Response time: -40%
+- Database instance: Can downgrade
+- Redis cost: $10-25/month
+- Database savings: $30-50/month
+- **Net savings: $5-40/month**
+
+## Monitoring Optimization
+
+<Tabs>
+  <Tab title="Use Free Tiers">
+    **Free monitoring tools:**
+    - Uptime Robot: Free for 50 monitors
+    - Sentry: 5K errors/month free
+    - LogDNA/BetterStack: 1GB/month free
+
+    **vs Paid:**
+    - Datadog: $31+/month
+    - New Relic: $99+/month
+
+    **Savings: $31-99/month**
+  </Tab>
+
+  <Tab title="Sample, Don't Log Everything">
+    ```javascript
+    {
+      "logging": {
+        "sample_rate": {
+          "info": 0.1, // Log 10% of info
+          "warning": 0.5, // Log 50% of warnings
+          "error": 1.0 // Log all errors
+        }
+      }
+    }
+    ```
+
+    **Impact:**
+    - Log volume: -70%
+    - Log storage: -70%
+    - **Savings: $10-50/month**
+  </Tab>
+</Tabs>
+
+## Bandwidth Optimization
+
+<CardGroup cols={2}>
+  <Card title="Compress Images" icon="file-image">
+    ```javascript
+    {
+      "media": {
+        "compress": true,
+        "quality": 80,
+        "maxWidth": 1920
+      }
+    }
+    ```
+    **Savings:** 60-80% bandwidth
+  </Card>
+
+  <Card title="Use CDN" icon="network-wired">
+    CloudFront free tier: 1TB/month
+    
+    **Savings:** Faster delivery + reduced server bandwidth
+  </Card>
+</CardGroup>
+
+## Monthly Savings Summary
+
+| Optimization | Monthly Savings | Effort |
+|--------------|----------------|--------|
+| Respond within 24h to WhatsApp | $5-20 | Low |
+| Right-size server instances | $15-30 | Medium |
+| Archive old data | $10-20 | Medium |
+| Switch to AWS SES | $19-89 | Medium |
+| Use free monitoring tools | $31-99 | Low |
+| Enable Redis caching | $5-40 | High |
+| Connection pooling | $28 | Medium |
+| **Total Potential Savings** | **$113-318/month** | |
+
+## Automation Scripts
+
+Automated cost optimization:
+
+```bash
+#!/bin/bash
+# Daily optimization script
+
+# 1. Archive old conversations
+psql $DATABASE_URL -c "
+  INSERT INTO conversations_archive
+  SELECT * FROM conversations
+  WHERE updated_at < NOW() - INTERVAL '180 days'
+  ON CONFLICT DO NOTHING;
+"
+
+# 2. Vacuum database
+psql $DATABASE_URL -c "VACUUM ANALYZE;"
+
+# 3. Clear old logs
+find /var/log/app -type f -mtime +30 -delete
+
+# 4. Optimize images
+find /storage/media -name "*.jpg" -mtime -1 \
+  -exec jpegoptim --max=80 {} \;
+
+echo "Optimization complete"
+```
+
+Run daily via cron:
+```bash
+0 2 * * * /path/to/optimize.sh
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Monthly Costs" icon="dollar-sign" href="/cost/monthly-costs">
+    Review your cost breakdown
+  </Card>
+  <Card title="Scaling Guide" icon="chart-line" href="/cost/scaling-guide">
+    Plan for growth
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Track optimization impact
+  </Card>
+</CardGroup>

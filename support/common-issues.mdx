@@ -1,0 +1,267 @@
+---
+title: 'Common Issues'
+description: 'Solutions to frequently encountered problems'
+---
+
+## Installation & Setup Issues
+
+<AccordionGroup>
+  <Accordion title="Database connection failed">
+    **Error:** `ECONNREFUSED` or `Connection timeout`
+
+    **Solutions:**
+    1. Verify DATABASE_URL is correct
+    2. Check database is running
+    3. Ensure firewall allows connections
+    4. Test connection manually:
+       ```bash
+       psql $DATABASE_URL
+       ```
+
+    [Full troubleshooting →](/deployment/troubleshooting#database-issues)
+  </Accordion>
+
+  <Accordion title="WhatsApp webhook not receiving messages">
+    **Common causes:**
+    - HTTPS certificate invalid
+    - Webhook URL not accessible
+    - Wrong verify token
+    - Webhook not subscribed to message events
+
+    **Solutions:**
+    1. Test webhook manually
+    2. Check Meta Developer Console logs
+    3. Verify HTTPS is working
+    4. Ensure message field is subscribed
+
+    [WhatsApp setup guide →](/deployment/whatsapp-setup)
+  </Accordion>
+
+  <Accordion title="Application won't start">
+    **Check these:**
+    - All environment variables set?
+    - Dependencies installed? (`npm install`)
+    - Database migrations run? (`npm run db:migrate`)
+    - Port 3000 available?
+
+    **View logs:**
+    ```bash
+    pm2 logs team-inbox
+    # or
+    tail -f logs/error.log
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Message Delivery Issues
+
+<AccordionGroup>
+  <Accordion title="Messages not being delivered">
+    **Possible causes:**
+    1. **Rate limits exceeded** - Check Meta Business Suite
+    2. **Invalid access token** - Regenerate token
+    3. **24-hour window expired** - Use template message
+    4. **Low quality score** - Improve message quality
+
+    **Quick test:**
+    ```bash
+    curl -X POST "https://graph.facebook.com/v18.0/PHONE_ID/messages" \
+      -H "Authorization: Bearer $TOKEN" \
+      -H "Content-Type: application/json" \
+      -d '{"messaging_product":"whatsapp","to":"RECIPIENT","type":"template","template":{"name":"hello_world","language":{"code":"en"}}}'
+    ```
+  </Accordion>
+
+  <Accordion title="Messages delayed">
+    **Expected delivery:**
+    - Outbound: 1-3 seconds
+    - Inbound to inbox: &lt;2 seconds
+
+    **If slower:**
+    1. Check server CPU/memory usage
+    2. Review database query performance
+    3. Check WhatsApp API status
+    4. Verify webhook processing time
+
+    [Performance monitoring →](/admin/monitoring)
+  </Accordion>
+</AccordionGroup>
+
+## Performance Issues
+
+<AccordionGroup>
+  <Accordion title="Slow response times">
+    **Diagnose:**
+    ```sql
+    -- Find slow queries
+    SELECT query, mean_exec_time
+    FROM pg_stat_statements
+    ORDER BY mean_exec_time DESC
+    LIMIT 10;
+    ```
+
+    **Solutions:**
+    1. Add database indexes
+    2. Enable Redis caching
+    3. Optimize queries
+    4. Scale server resources
+
+    [Optimization guide →](/cost/optimization-tips)
+  </Accordion>
+
+  <Accordion title="High memory usage">
+    **Check for:**
+    - Memory leaks (event listeners not removed)
+    - Unbound cache growth
+    - Too many concurrent connections
+
+    **Monitor:**
+    ```bash
+    pm2 monit
+    ```
+
+    **Solutions:**
+    1. Restart application
+    2. Increase server RAM
+    3. Fix memory leaks in code
+    4. Set cache size limits
+  </Accordion>
+</AccordionGroup>
+
+## Email Issues
+
+<AccordionGroup>
+  <Accordion title="Emails not sending">
+    **SendGrid:**
+    - Verify API key is valid
+    - Check sender is verified
+    - Review SendGrid activity log
+
+    **AWS SES:**
+    - Ensure out of sandbox mode
+    - Verify sender email
+    - Check AWS credentials
+
+    **SMTP:**
+    - Test SMTP credentials
+    - Check port (587 for TLS)
+    - Verify firewall allows outbound SMTP
+  </Accordion>
+
+  <Accordion title="Emails going to spam">
+    **Improve deliverability:**
+    1. Set up SPF record
+    2. Configure DKIM
+    3. Add DMARC policy
+    4. Use business domain (not Gmail)
+    5. Avoid spam trigger words
+
+    [Email setup guide →](/deployment/email-setup)
+  </Accordion>
+</AccordionGroup>
+
+## Authentication Issues
+
+<AccordionGroup>
+  <Accordion title="Can't log in">
+    **Reset password:**
+    ```bash
+    npm run user:reset-password email@example.com
+    ```
+
+    **Check:**
+    - Email is verified
+    - Account is not deactivated
+    - 2FA codes are correct
+    - Browser cookies enabled
+  </Accordion>
+
+  <Accordion title="2FA not working">
+    **Solutions:**
+    1. Ensure time sync is correct on device
+    2. Try backup codes
+    3. Admin can disable 2FA:
+       ```bash
+       npm run user:disable-2fa email@example.com
+       ```
+  </Accordion>
+</AccordionGroup>
+
+## Integration Issues
+
+<AccordionGroup>
+  <Accordion title="Salesforce sync failing">
+    **Check:**
+    - OAuth token not expired
+    - Field mappings are correct
+    - API limits not exceeded
+    - Required permissions granted
+
+    **Re-authenticate:**
+    Settings → Integrations → Salesforce → Reconnect
+  </Accordion>
+
+  <Accordion title="Webhooks not being received">
+    **Verify:**
+    1. Endpoint URL is accessible
+    2. Returning 200 OK within 5 seconds
+    3. Signature verification passing
+    4. Events are subscribed
+
+    **Test webhook:**
+    ```bash
+    curl -X POST https://your-app.com/webhook \
+      -H "Content-Type: application/json" \
+      -H "X-Webhook-Signature: test" \
+      -d '{"type":"test","data":{}}'
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Data & Privacy
+
+<AccordionGroup>
+  <Accordion title="GDPR data export request">
+    **Process:**
+    1. Contact → Actions → Export Data
+    2. Verify identity
+    3. Generate export (JSON/CSV)
+    4. Provide to customer within 30 days
+
+    **Includes:**
+    - Profile information
+    - All conversation history
+    - Custom fields
+    - Notes (optional)
+  </Accordion>
+
+  <Accordion title="Delete customer data">
+    **Right to be forgotten:**
+    1. Contact → Actions → Delete
+    2. Choose: Delete or Anonymize
+    3. Confirm action
+    4. Data removed immediately
+
+    **Legal holds:**
+    Retain for 30 days in case of mistakes
+  </Accordion>
+</AccordionGroup>
+
+## Getting More Help
+
+If your issue isn't listed here:
+
+<CardGroup cols={2}>
+  <Card title="Troubleshooting Guide" icon="wrench" href="/deployment/troubleshooting">
+    Detailed technical troubleshooting
+  </Card>
+  <Card title="FAQ" icon="circle-question" href="/support/faq">
+    Frequently asked questions
+  </Card>
+  <Card title="Contact Support" icon="headset" href="/support/contact">
+    Get personalized help
+  </Card>
+  <Card title="GitHub Issues" icon="github" href="https://github.com/yourusername/whatsapp-team-inbox/issues">
+    Report bugs or request features
+  </Card>
+</CardGroup>

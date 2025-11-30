@@ -1,0 +1,456 @@
+---
+title: 'Security Settings'
+description: 'Configure security, compliance, and data protection for your Team Inbox'
+---
+
+## Overview
+
+Protect customer data and ensure compliance with security best practices, data protection regulations, and industry standards.
+
+## Authentication & Access
+
+### Two-Factor Authentication (2FA)
+
+<Steps>
+  <Step title="Enable 2FA Requirement">
+    ```
+    Security → Authentication
+
+    ☑ Require 2FA for all users
+    ☑ Enforce within: [7 days ▾]
+    ☑ Allow SMS backup codes
+    ☑ Allow authenticator apps (recommended)
+    ```
+  </Step>
+
+  <Step title="Supported 2FA Methods">
+    - Authenticator apps (Google Authenticator, Authy)
+    - SMS codes
+    - Hardware keys (YubiKey, Titan)
+    - Backup codes
+  </Step>
+</Steps>
+
+### Session Management
+
+```
+Session Security
+━━━━━━━━━━━━━━━━━━━━━━
+
+Session Duration:
+Active session timeout: [8 hours ▾]
+Idle timeout: [30 minutes ▾]
+
+Concurrent Sessions:
+Max per user: [3 ▾]
+Action when exceeded: [Log out oldest ▾]
+
+Security:
+☑ Require re-authentication for sensitive actions
+☑ IP-based session validation
+☑ Device fingerprinting
+☑ Log all session activity
+```
+
+### IP Allowlisting
+
+```
+IP Access Control
+━━━━━━━━━━━━━━━━━━━━━━
+
+Mode:
+○ Allow all IPs
+⦿ Allowlist only
+○ Blocklist
+
+Allowed IP Ranges:
+• 192.168.1.0/24 (Office Network)
+• 10.0.0.5 (VPN Gateway)
+[+ Add IP range]
+
+⚠️ Be careful - this may lock out remote users
+```
+
+## Data Protection
+
+### Encryption
+
+<CardGroup cols={2}>
+  <Card title="At Rest" icon="database">
+    AES-256 encryption for all stored data
+  </Card>
+  <Card title="In Transit" icon="arrows-left-right">
+    TLS 1.3 for all API communications
+  </Card>
+  <Card title="Backups" icon="floppy-disk">
+    Encrypted backups with separate keys
+  </Card>
+  <Card title="Media Files" icon="file">
+    End-to-end encryption for attachments
+  </Card>
+</CardGroup>
+
+### Data Retention
+
+```
+Data Retention Policies
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Conversations:
+Keep for: [365 days ▾]
+After expiry: ⦿ Archive ○ Delete
+
+Messages:
+Keep for: [365 days ▾]
+Media attachments: [180 days ▾]
+
+Logs:
+Activity logs: [90 days ▾]
+Audit logs: [7 years ▾] (compliance)
+Error logs: [30 days ▾]
+
+Deleted Data:
+Hard delete after: [30 days ▾]
+☑ Allow data recovery within retention period
+```
+
+### GDPR Compliance
+
+```
+GDPR Settings
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Data Processing:
+☑ Log basis for data processing
+☑ Require consent for marketing
+☑ Honor "Do Not Contact" requests
+
+Data Subject Rights:
+☑ Self-service data export
+☑ Automated data deletion requests
+☑ Data portability (JSON/CSV)
+
+Privacy:
+☑ Pseudonymize personal data in logs
+☑ Encrypt PII at rest
+☑ Automatic data minimization
+
+DPO Contact: [dpo@company.com]
+```
+
+## Audit & Compliance
+
+### Audit Logging
+
+```
+Audit Log Configuration
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Log Events:
+☑ User authentication (login/logout)
+☑ Permission changes
+☑ Data access (conversations, contacts)
+☑ Data exports
+☑ Configuration changes
+☑ API calls
+☑ Integration activity
+
+Storage:
+Location: [Amazon S3 ▾]
+Retention: [7 years ▾]
+☑ Tamper-proof logging
+☑ Real-time replication
+
+Alerts:
+☑ Suspicious activity detected
+☑ Multiple failed logins
+☑ Unauthorized access attempts
+☑ Large data exports
+```
+
+### Compliance Standards
+
+<Tabs>
+  <Tab title="SOC 2">
+    ```
+    SOC 2 Type II Compliance
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    Status: ✓ Compliant
+    
+    Last Audit: November 2025
+    Next Audit: May 2026
+    
+    Auditor: [Deloitte]
+    Report: [View Report]
+    
+    Controls:
+    ✓ Access controls
+    ✓ Encryption
+    ✓ Change management
+    ✓ Risk assessment
+    ✓ Incident response
+    ```
+  </Tab>
+
+  <Tab title="HIPAA">
+    ```
+    HIPAA Compliance
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    ☑ Enable HIPAA mode
+    
+    Features:
+    ☑ BAA required for all users
+    ☑ PHI encryption
+    ☑ Access logging
+    ☑ Automatic session timeout (15 min)
+    ☑ No message preview in notifications
+    
+    Training:
+    ☑ Require HIPAA training completion
+    Last completed: [View records]
+    ```
+  </Tab>
+
+  <Tab title="PCI DSS">
+    ```
+    PCI DSS Compliance
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    Card Data Handling:
+    ☑ Never store full card numbers
+    ☑ Mask card numbers in logs
+    ☑ Tokenize payment information
+    
+    Access:
+    ☑ Restrict access to cardholder data
+    ☑ Log all access to payment data
+    ☑ Quarterly access reviews
+    
+    Certification: PCI DSS Level 1
+    Valid until: December 2026
+    ```
+  </Tab>
+</Tabs>
+
+## Access Control
+
+### Role-Based Permissions
+
+```
+Permission Management
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Principle: Least Privilege Access
+
+Review Cycle: ⦿ Quarterly ○ Annually
+
+Permissions by Role:
+
+Admin:
+✓ Full system access
+✓ User management
+✓ Security configuration
+✓ Billing access
+
+Manager:
+✓ Team oversight
+✓ Analytics and reports
+✓ Conversation management
+✗ Security settings
+✗ Billing access
+
+Agent:
+✓ Assigned conversations
+✓ Contact management
+✗ Team analytics
+✗ System settings
+
+Viewer:
+✓ Read-only access
+✗ Respond to conversations
+✗ Edit contacts
+✗ Access settings
+```
+
+## Security Monitoring
+
+### Threat Detection
+
+```
+Security Monitoring
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Active Threats: 0
+
+Detection Rules:
+☑ Brute force login attempts (>5 fails/hour)
+☑ Impossible travel (login from different locations)
+☑ Unusual API usage patterns
+☑ Large data exports
+☑ Off-hours access from new devices
+
+Response Actions:
+⦿ Alert security team
+☑ Auto-block suspicious IPs
+☑ Require 2FA re-verification
+☑ Force password reset
+
+Alert Channels:
+☑ Email: security@company.com
+☑ Slack: #security-alerts
+☑ PagerDuty: On-call team
+```
+
+### Vulnerability Management
+
+```
+Security Posture
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Last Security Scan: 2 days ago
+Next Scan: In 5 days
+
+Findings:
+✓ 0 Critical
+✓ 0 High
+⚠️ 2 Medium (remediation in progress)
+⚠️ 5 Low
+
+Patch Management:
+☑ Auto-apply security patches
+☑ Test in staging first
+Emergency patches: Applied immediately
+
+Penetration Testing:
+Last test: October 2025
+Next test: April 2026
+Vendor: [Cobalt Security]
+```
+
+## Incident Response
+
+### Security Incidents
+
+```
+Incident Response Plan
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Incident Levels:
+
+P1 - Critical (< 1 hour response)
+• Data breach
+• System compromise
+• Ransomware
+
+P2 - High (< 4 hours response)
+• Account compromise
+• DDoS attack
+• Major vulnerability
+
+P3 - Medium (< 24 hours response)
+• Suspicious activity
+• Minor vulnerability
+• Policy violation
+
+Response Team:
+• Security Lead: security@company.com
+• CTO: cto@company.com
+• Legal: legal@company.com
+• External IR: [Rapid7]
+
+[View Full Incident Response Playbook]
+```
+
+## Data Privacy
+
+### Customer Data Access
+
+```
+Data Access Requests
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Self-Service Portal:
+☑ Customers can request data export
+☑ Customers can request data deletion
+☑ Automated fulfillment (within 30 days)
+
+Verification:
+⦿ Require identity verification
+Method: [Email verification ▾]
+Additional: [Phone verification ▾]
+
+Retention after deletion:
+Legal hold: [30 days ▾]
+Compliance logs: [Kept indefinitely]
+```
+
+## API Security
+
+```
+API Security Settings
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Authentication:
+⦿ API Keys
+☑ OAuth 2.0
+☑ JWT tokens
+
+Rate Limiting:
+Per API key: [1000 ▾] requests/hour
+Per IP: [100 ▾] requests/minute
+
+Allowed Origins (CORS):
+• https://app.company.com
+• https://dashboard.company.com
+[+ Add origin]
+
+Security Headers:
+☑ Content-Security-Policy
+☑ X-Frame-Options
+☑ X-Content-Type-Options
+☑ Strict-Transport-Security
+
+API Key Management:
+☑ Require key rotation every [90 days ▾]
+☑ Revoke on suspicious activity
+☑ Log all API calls
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Regular Audits" icon="magnifying-glass">
+    Review security settings and access monthly
+  </Card>
+  <Card title="Least Privilege" icon="key">
+    Grant minimum necessary permissions
+  </Card>
+  <Card title="Monitor Logs" icon="list">
+    Review audit logs for anomalies weekly
+  </Card>
+  <Card title="Update Regularly" icon="arrows-rotate">
+    Keep systems and dependencies current
+  </Card>
+  <Card title="Train Team" icon="graduation-cap">
+    Security awareness training quarterly
+  </Card>
+  <Card title="Incident Drills" icon="fire">
+    Practice incident response annually
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Team Management" icon="users" href="/admin/team-management">
+    Manage user access and roles
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Monitor system health and performance
+  </Card>
+  <Card title="Compliance" icon="certificate" href="/support/faq">
+    Common compliance questions
+  </Card>
+</CardGroup>

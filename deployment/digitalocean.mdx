@@ -1,0 +1,756 @@
+---
+title: 'Deploy to DigitalOcean'
+description: 'Deploy to DigitalOcean App Platform with managed database and automatic scaling'
+icon: 'water'
+---
+
+# Deploy to DigitalOcean App Platform
+
+Deploy WhatsApp Team Inbox to DigitalOcean App Platform with managed PostgreSQL and automatic scaling.
+
+## TL;DR - Quick Deploy
+
+<Steps>
+  <Step title="Create App">
+    [DigitalOcean Apps](https://cloud.digitalocean.com/apps) → Create App → GitHub → Select repo
+  </Step>
+  <Step title="Configure Services">
+    Deploy as Docker Compose OR separate backend + frontend services
+  </Step>
+  <Step title="Add PostgreSQL">
+    Add Database → PostgreSQL 16 → Basic plan ($15/month)
+  </Step>
+  <Step title="Set Variables">
+    Add WhatsApp credentials, JWT secrets, admin credentials
+  </Step>
+</Steps>
+
+**Total time:** ~15 minutes | **Cost:** $32/month (app + database)
+
+---
+
+## Why DigitalOcean App Platform?
+
+<CardGroup cols={2}>
+  <Card title="Simple Pricing" icon="dollar-sign">
+    Predictable pricing starting at $12/month
+  </Card>
+  <Card title="Managed Database" icon="database">
+    Fully managed PostgreSQL with backups
+  </Card>
+  <Card title="Auto Scaling" icon="arrows-maximize">
+    Automatic horizontal and vertical scaling
+  </Card>
+  <Card title="Global CDN" icon="globe">
+    Built-in CDN for static assets
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+<Check>DigitalOcean account (sign up at digitalocean.com)</Check>
+<Check>GitHub account</Check>
+<Check>WhatsApp Business API credentials</Check>
+<Check>Credit card for DigitalOcean billing</Check>
+
+## Deployment Options
+
+### Option 1: Docker Compose (Recommended)
+
+Deploy entire stack as a single Docker app:
+
+<Steps>
+  <Step title="Fork Repository">
+    Fork the [WhatsApp Team Inbox](https://github.com/your-org/whatsapp-team-inbox) repository
+  </Step>
+
+  <Step title="Create App">
+    1. Go to [DigitalOcean Apps](https://cloud.digitalocean.com/apps)
+    2. Click **Create App**
+    3. Select **GitHub** as source
+    4. Choose your forked repository
+    5. Select branch: `main`
+  </Step>
+
+  <Step title="Configure as Docker App">
+    **Type:** Docker Compose
+
+    **Dockerfile Path:** `docker-compose.yml`
+
+    DigitalOcean will detect docker-compose.yml automatically
+  </Step>
+
+  <Step title="Add PostgreSQL Database">
+    1. Click **Add Resource** → **Database**
+    2. Select **PostgreSQL 16**
+    3. Choose plan:
+       - **Basic**: $15/month (1GB RAM, 10GB storage)
+       - **Professional**: $55/month (4GB RAM, 38GB storage)
+  </Step>
+
+  <Step title="Configure Environment Variables">
+    Add required environment variables (see below)
+  </Step>
+
+  <Step title="Deploy">
+    Click **Create Resources** to start deployment
+  </Step>
+</Steps>
+
+### Option 2: Separate Services
+
+Deploy frontend and backend as separate apps:
+
+<Steps>
+  <Step title="Create Backend App">
+    1. **Create App** → **GitHub**
+    2. Select repository
+    3. **Type:** Dockerfile
+    4. **Source Directory:** `/backend`
+    5. **Dockerfile Path:** `backend/Dockerfile`
+    6. **HTTP Port:** 4000
+  </Step>
+
+  <Step title="Create Frontend App">
+    1. **Create App** → **GitHub**
+    2. Select same repository
+    3. **Type:** Node.js
+    4. **Source Directory:** `/web`
+    5. **Build Command:** `npm run build`
+    6. **Run Command:** `npm start`
+  </Step>
+
+  <Step title="Create Database">
+    1. Go to **Databases** in DigitalOcean
+    2. **Create Database Cluster**
+    3. Select PostgreSQL 16
+    4. Choose datacenter region
+    5. Select plan size
+  </Step>
+
+  <Step title="Connect Database to App">
+    1. Open your backend app
+    2. Go to **Settings** → **App-Level Environment Variables**
+    3. Add `DATABASE_URL` with connection string from database
+  </Step>
+</Steps>
+
+## Environment Variables
+
+Configure in App Platform → **Settings** → **Environment Variables**:
+
+### Backend Variables
+
+<AccordionGroup>
+  <Accordion title="Database (Required)">
+    ```bash
+    # DigitalOcean provides this automatically if using managed database
+    DATABASE_URL=${db.DATABASE_URL}
+    ```
+  </Accordion>
+
+  <Accordion title="WhatsApp API (Required)">
+    ```bash
+    WHATSAPP_API_URL=https://graph.facebook.com/v21.0
+    WHATSAPP_ACCESS_TOKEN=your_permanent_access_token
+    WHATSAPP_PHONE_NUMBER_ID=123456789012345
+    WHATSAPP_BUSINESS_ACCOUNT_ID=123456789012345
+    WHATSAPP_WEBHOOK_VERIFY_TOKEN=generate_random_token
+    ```
+
+    Generate verify token:
+    ```bash
+    openssl rand -hex 16
+    ```
+  </Accordion>
+
+  <Accordion title="Security (Required)">
+    ```bash
+    JWT_SECRET=generate_with_openssl_rand_hex_32
+    JWT_REFRESH_SECRET=generate_different_secret
+    JWT_EXPIRES_IN=7d
+    JWT_REFRESH_EXPIRES_IN=30d
+    ```
+
+    Generate secrets:
+    ```bash
+    openssl rand -hex 32
+    ```
+  </Accordion>
+
+  <Accordion title="Admin User (Required)">
+    ```bash
+    ADMIN_EMAIL=admin@yourcompany.com
+    ADMIN_PASSWORD=strong_password_here
+    ADMIN_FIRST_NAME=System
+    ADMIN_LAST_NAME=Administrator
+    ```
+  </Accordion>
+
+  <Accordion title="Application URLs">
+    ```bash
+    NODE_ENV=production
+    PORT=4000
+    WS_PORT=4001
+    CORS_ORIGIN=${APP_URL}
+    ```
+
+    `${APP_URL}` automatically resolves to your app's URL
+  </Accordion>
+</AccordionGroup>
+
+### Frontend Variables
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=${backend.PUBLIC_URL}
+NEXT_PUBLIC_WS_URL=wss://${backend.PUBLIC_URL}
+```
+
+<Info>
+DigitalOcean automatically replaces `${service.VARIABLE}` with actual service values
+</Info>
+
+## Database Setup
+
+### Managed PostgreSQL
+
+<Steps>
+  <Step title="Create Database Cluster">
+    1. Go to **Databases** in DigitalOcean control panel
+    2. Click **Create Database Cluster**
+    3. Select **PostgreSQL** version 16
+  </Step>
+
+  <Step title="Choose Configuration">
+    **Basic Plan:**
+    - 1 GB RAM / 1 vCPU / 10 GB Disk: $15/month
+    - 2 GB RAM / 1 vCPU / 25 GB Disk: $30/month
+    - 4 GB RAM / 2 vCPU / 38 GB Disk: $55/month
+
+    **Professional Plan (HA):**
+    - Automatic failover
+    - Standby nodes
+    - Higher performance
+  </Step>
+
+  <Step title="Select Region">
+    Choose region closest to your users:
+    - New York (NYC)
+    - San Francisco (SFO)
+    - Amsterdam (AMS)
+    - Singapore (SGP)
+    - London (LON)
+  </Step>
+
+  <Step title="Configure Security">
+    1. Enable **Trusted Sources**
+    2. Add your App Platform app
+    3. Optionally add your IP for database access
+  </Step>
+
+  <Step title="Create Database">
+    1. Database name: `whatsapp_inbox`
+    2. Click **Create Database Cluster**
+  </Step>
+</Steps>
+
+### Connection Pooling
+
+Enable connection pooling for better performance:
+
+<Steps>
+  <Step title="Access Database Settings">
+    Database → **Settings** → **Connection Pools**
+  </Step>
+
+  <Step title="Create Pool">
+    - **Name:** whatsapp-pool
+    - **Database:** whatsapp_inbox
+    - **Mode:** Transaction
+    - **Size:** 25
+  </Step>
+
+  <Step title="Use Pool Connection String">
+    Update `DATABASE_URL` to use pool connection string instead of direct connection
+  </Step>
+</Steps>
+
+## Custom Domain
+
+### Add Custom Domain
+
+<Steps>
+  <Step title="Access Domain Settings">
+    App → **Settings** → **Domains**
+  </Step>
+
+  <Step title="Add Domain">
+    Click **Add Domain** and enter:
+    - Frontend: `app.your-domain.com`
+    - Backend: `api.your-domain.com`
+  </Step>
+
+  <Step title="Configure DNS">
+    Add CNAME records at your domain registrar:
+
+    ```
+    Type: CNAME
+    Name: app
+    Value: your-app.ondigitalocean.app
+    TTL: 3600
+    ```
+
+    ```
+    Type: CNAME
+    Name: api
+    Value: your-api.ondigitalocean.app
+    TTL: 3600
+    ```
+  </Step>
+
+  <Step title="Verify Domain">
+    DigitalOcean will verify domain and issue SSL certificate automatically
+
+    Usually takes 5-10 minutes
+  </Step>
+
+  <Step title="Update Environment Variables">
+    Update CORS and frontend URLs to use custom domain:
+
+    ```bash
+    # Backend
+    CORS_ORIGIN=https://app.your-domain.com
+
+    # Frontend
+    NEXT_PUBLIC_API_BASE_URL=https://api.your-domain.com
+    ```
+  </Step>
+</Steps>
+
+## Monitoring
+
+### Built-in Monitoring
+
+DigitalOcean App Platform provides monitoring out of the box:
+
+<CardGroup cols={2}>
+  <Card title="Metrics" icon="chart-line">
+    - CPU usage
+    - Memory usage
+    - Request count
+    - Response time
+  </Card>
+  <Card title="Logs" icon="file-lines">
+    - Application logs
+    - Build logs
+    - Deploy logs
+    - Real-time streaming
+  </Card>
+  <Card title="Alerts" icon="bell">
+    - Resource usage alerts
+    - Deployment alerts
+    - Custom metrics
+  </Card>
+  <Card title="Health Checks" icon="heart-pulse">
+    - HTTP health checks
+    - Auto-restart on failure
+    - Configurable intervals
+  </Card>
+</CardGroup>
+
+### Configure Health Checks
+
+<Steps>
+  <Step title="Access Health Check Settings">
+    App → **Settings** → **Health Checks**
+  </Step>
+
+  <Step title="Configure Backend Health Check">
+    - **Path:** `/health`
+    - **Port:** 4000
+    - **Initial Delay:** 30 seconds
+    - **Period:** 10 seconds
+    - **Timeout:** 5 seconds
+    - **Success Threshold:** 1
+    - **Failure Threshold:** 3
+  </Step>
+
+  <Step title="Configure Frontend Health Check">
+    - **Path:** `/`
+    - **Port:** 3000
+    - **Initial Delay:** 30 seconds
+  </Step>
+</Steps>
+
+### Set Up Alerts
+
+<Steps>
+  <Step title="Create Alert Policy">
+    App → **Settings** → **Alerts**
+  </Step>
+
+  <Step title="Configure Alerts">
+    Enable alerts for:
+    - ✅ Deployment failures
+    - ✅ High CPU usage (>80%)
+    - ✅ High memory usage (>90%)
+    - ✅ Health check failures
+    - ✅ Crash loop detected
+  </Step>
+
+  <Step title="Add Notification Channels">
+    - Email notifications
+    - Slack webhook
+    - PagerDuty integration
+  </Step>
+</Steps>
+
+## Scaling
+
+### Vertical Scaling
+
+Upgrade resources for better performance:
+
+<Steps>
+  <Step title="Access Scaling Settings">
+    App → **Settings** → **Resources & Scaling**
+  </Step>
+
+  <Step title="Choose Container Size">
+    **Basic:**
+    - 512 MB / 0.5 vCPU: $5/month
+    - 1 GB / 1 vCPU: $12/month
+    - 2 GB / 1 vCPU: $24/month
+
+    **Professional:**
+    - 4 GB / 2 vCPU: $48/month
+    - 8 GB / 4 vCPU: $96/month
+  </Step>
+
+  <Step title="Apply Changes">
+    Click **Save** - App will redeploy with new resources
+  </Step>
+</Steps>
+
+### Horizontal Scaling
+
+Scale to multiple containers for high availability:
+
+<Steps>
+  <Step title="Enable Auto-Scaling">
+    App → **Settings** → **Auto Scaling**
+  </Step>
+
+  <Step title="Configure Rules">
+    - **Minimum Instances:** 2
+    - **Maximum Instances:** 10
+    - **CPU Threshold:** 70%
+    - **Memory Threshold:** 80%
+  </Step>
+
+  <Step title="Load Balancing">
+    DigitalOcean automatically load balances across instances
+  </Step>
+</Steps>
+
+## Backups
+
+### Database Backups
+
+Automatic backups are included:
+
+<Info>
+**Retention:**
+- Daily backups: 7 days
+- Weekly backups: 4 weeks
+- Monthly backups: 3 months
+</Info>
+
+### Manual Backup
+
+<Steps>
+  <Step title="Create Manual Backup">
+    Database → **Backups** → **Create Backup**
+  </Step>
+
+  <Step title="Download Backup">
+    Click on backup → **Download**
+  </Step>
+
+  <Step title="Restore from Backup">
+    Database → **Backups** → Select backup → **Restore**
+  </Step>
+</Steps>
+
+### Application Backups
+
+Backup your application configuration:
+
+```bash
+# Install doctl (DigitalOcean CLI)
+brew install doctl  # macOS
+snap install doctl  # Linux
+
+# Authenticate
+doctl auth init
+
+# Export app spec
+doctl apps spec get YOUR_APP_ID > app-spec.yaml
+
+# Later, restore from spec
+doctl apps create --spec app-spec.yaml
+```
+
+## CI/CD
+
+### Automatic Deployments
+
+App Platform automatically deploys on git push:
+
+<Steps>
+  <Step title="Configure Auto-Deploy">
+    App → **Settings** → **Source**
+
+    ✅ **Autodeploy** - Enable auto-deploy on push to main
+  </Step>
+
+  <Step title="Push to GitHub">
+    ```bash
+    git add .
+    git commit -m "Update feature"
+    git push origin main
+    ```
+
+    DigitalOcean detects push and deploys automatically
+  </Step>
+
+  <Step title="Monitor Deployment">
+    Watch deployment progress in App Platform dashboard
+  </Step>
+</Steps>
+
+### Deploy Specific Branch
+
+<Steps>
+  <Step title="Change Source Branch">
+    App → **Settings** → **Source** → **Branch**
+  </Step>
+
+  <Step title="Select Branch">
+    Choose branch to deploy:
+    - `main` - Production
+    - `staging` - Staging environment
+    - `develop` - Development
+  </Step>
+
+  <Step title="Trigger Deployment">
+    Click **Force Rebuild and Deploy**
+  </Step>
+</Steps>
+
+## Cost Optimization
+
+### Estimate Monthly Costs
+
+Example small team setup:
+
+| Service | Size | Cost |
+|---------|------|------|
+| Backend App | 1GB RAM | $12/month |
+| Frontend App | 512MB RAM | $5/month |
+| PostgreSQL | 1GB/10GB | $15/month |
+| **Total** | | **$32/month** |
+
+### Tips to Reduce Costs
+
+<AccordionGroup>
+  <Accordion title="Start Small, Scale Up">
+    Begin with Basic plans and upgrade when needed based on metrics
+  </Accordion>
+
+  <Accordion title="Use Connection Pooling">
+    Reduce database costs by using connection pooling instead of multiple connections
+  </Accordion>
+
+  <Accordion title="Optimize Docker Images">
+    - Use multi-stage builds
+    - Remove unused dependencies
+    - Use Alpine base images
+  </Accordion>
+
+  <Accordion title="Enable CDN">
+    Use DigitalOcean's built-in CDN for static assets to reduce bandwidth costs
+  </Accordion>
+
+  <Accordion title="Schedule Backups Wisely">
+    Adjust backup frequency based on your data change rate
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Build Failed">
+    **Common causes:**
+    - Dockerfile errors
+    - Missing dependencies
+    - Build timeout
+
+    **Solutions:**
+    1. Check build logs in deployment history
+    2. Test Docker build locally: `docker build -f backend/Dockerfile .`
+    3. Verify all dependencies in package.json
+    4. Increase build timeout in settings
+  </Accordion>
+
+  <Accordion title="Database Connection Failed">
+    **Causes:**
+    - Trusted sources not configured
+    - DATABASE_URL incorrect
+    - Connection limit reached
+
+    **Solutions:**
+    1. Add app to database trusted sources
+    2. Verify DATABASE_URL in environment variables
+    3. Enable connection pooling
+    4. Check database logs for errors
+  </Accordion>
+
+  <Accordion title="App Crashing">
+    **Causes:**
+    - Insufficient memory
+    - Application error
+    - Missing environment variables
+
+    **Solutions:**
+    1. Check runtime logs for errors
+    2. Increase container size
+    3. Verify all required env vars are set
+    4. Test locally with same environment
+  </Accordion>
+
+  <Accordion title="Slow Performance">
+    **Causes:**
+    - Undersized resources
+    - Database not optimized
+    - No CDN for assets
+
+    **Solutions:**
+    1. Monitor metrics and scale up if needed
+    2. Add database indexes
+    3. Enable CDN for static assets
+    4. Use connection pooling
+  </Accordion>
+</AccordionGroup>
+
+## Production Checklist
+
+<Check>All environment variables configured</Check>
+<Check>Database backups enabled</Check>
+<Check>Health checks configured</Check>
+<Check>Custom domain added</Check>
+<Check>SSL certificates active</Check>
+<Check>Monitoring and alerts set up</Check>
+<Check>Auto-scaling configured</Check>
+<Check>WhatsApp webhook tested</Check>
+<Check>Connection pooling enabled</Check>
+<Check>CDN enabled for static assets</Check>
+
+## DigitalOcean CLI
+
+For advanced users, use `doctl`:
+
+### Installation
+
+```bash
+# macOS
+brew install doctl
+
+# Linux
+snap install doctl
+
+# Windows
+scoop install doctl
+```
+
+### Common Commands
+
+```bash
+# Authenticate
+doctl auth init
+
+# List apps
+doctl apps list
+
+# Get app info
+doctl apps get YOUR_APP_ID
+
+# View logs
+doctl apps logs YOUR_APP_ID --follow
+
+# Create deployment
+doctl apps create-deployment YOUR_APP_ID
+
+# List databases
+doctl databases list
+
+# Database connection info
+doctl databases connection YOUR_DB_ID
+```
+
+## Migration from Other Platforms
+
+### From Heroku
+
+<Steps>
+  <Step title="Export Heroku Data">
+    ```bash
+    # Export database
+    heroku pg:backups:capture -a your-app
+    heroku pg:backups:download -a your-app
+
+    # Export environment variables
+    heroku config -a your-app > heroku-config.txt
+    ```
+  </Step>
+
+  <Step title="Import to DigitalOcean">
+    1. Create DigitalOcean database
+    2. Restore backup:
+       ```bash
+       pg_restore -d DATABASE_URL latest.dump
+       ```
+    3. Copy environment variables to App Platform
+  </Step>
+
+  <Step title="Update DNS">
+    Point your domain to DigitalOcean:
+    ```
+    CNAME: your-app.ondigitalocean.app
+    ```
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="WhatsApp Setup" icon="whatsapp" href="/deployment/whatsapp-setup">
+    Configure WhatsApp Business API
+  </Card>
+  <Card title="Environment Variables" icon="gear" href="/deployment/environment-variables">
+    Complete environment reference
+  </Card>
+  <Card title="Going Live" icon="globe" href="/deployment/going-live">
+    Production deployment checklist
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Set up monitoring and alerts
+  </Card>
+</CardGroup>
+
+## Resources
+
+- [DigitalOcean App Platform Docs](https://docs.digitalocean.com/products/app-platform/)
+- [DigitalOcean Community](https://www.digitalocean.com/community)
+- [App Platform Pricing](https://www.digitalocean.com/pricing/app-platform)
+- [doctl CLI Reference](https://docs.digitalocean.com/reference/doctl/)

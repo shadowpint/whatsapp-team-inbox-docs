@@ -1,0 +1,534 @@
+---
+title: Invite Team Members
+description: 'Add your team to Team Inbox and configure roles and permissions'
+---
+
+## Overview
+
+Once Team Inbox is deployed and configured, you can invite team members to start collaborating on customer conversations.
+
+<Info>
+  Team Inbox supports unlimited team members at no additional cost. Add as many agents as you need!
+</Info>
+
+## User Roles
+
+Team Inbox has three user roles with different permissions:
+
+<CardGroup cols={3}>
+  <Card title="Admin" icon="user-crown">
+    **Full Access**
+
+    - All agent permissions
+    - Add/remove users
+    - Configure settings
+    - View all conversations
+    - Manage integrations
+    - Access analytics
+  </Card>
+
+  <Card title="Agent" icon="headset">
+    **Customer Support**
+
+    - View assigned conversations
+    - Reply to messages
+    - Assign conversations
+    - Add conversation notes
+    - Access contacts
+    - Basic settings only
+  </Card>
+
+  <Card title="Viewer" icon="eye">
+    **Read-Only**
+
+    - View conversations
+    - View contacts
+    - Cannot send messages
+    - Cannot assign
+    - No settings access
+    - For monitoring only
+  </Card>
+</CardGroup>
+
+## Adding Team Members
+
+### Option 1: Direct Database Insert (For Initial Setup)
+
+<Steps>
+  <Step title="Generate Password Hash">
+    In your backend service shell (Railway → Backend → Shell):
+    ```bash
+    node -e "const bcrypt = require('bcrypt'); console.log(bcrypt.hashSync('temporary-password', 10))"
+    ```
+    Copy the output hash
+  </Step>
+
+  <Step title="Open Database Query Interface">
+    Railway → PostgreSQL → "Query" tab
+  </Step>
+
+  <Step title="Insert New User">
+    ```sql
+    INSERT INTO "User" (id, email, name, password, role, "createdAt", "updatedAt")
+    VALUES (
+      gen_random_uuid(),
+      'teammate@yourcompany.com',
+      'Team Member Name',
+      '<paste-hashed-password>',
+      'AGENT',  -- or 'ADMIN' or 'VIEWER'
+      NOW(),
+      NOW()
+    );
+    ```
+  </Step>
+
+  <Step title="Send Credentials">
+    Email your team member:
+    - Login URL: `https://your-app.railway.app`
+    - Email: `teammate@yourcompany.com`
+    - Temporary password: `temporary-password`
+    - Ask them to change password immediately
+  </Step>
+</Steps>
+
+<Warning>
+  Users should change their password on first login for security
+</Warning>
+
+### Option 2: Using Admin Panel (If Implemented)
+
+<Steps>
+  <Step title="Go to Admin → Team">
+    Click "Team Management" in settings
+  </Step>
+
+  <Step title="Click Add Team Member">
+    Fill in the form:
+    - Email
+    - Full Name
+    - Role (Admin/Agent/Viewer)
+  </Step>
+
+  <Step title="Send Invitation">
+    System will:
+    - Create user account
+    - Generate temporary password
+    - Send invitation email (if email configured)
+  </Step>
+</Steps>
+
+## Bulk Adding Team Members
+
+For adding multiple team members at once:
+
+<Steps>
+  <Step title="Prepare SQL Script">
+    Create file `add-team-members.sql`:
+    ```sql
+    -- Generate hashes first, then replace in script
+
+    INSERT INTO "User" (id, email, name, password, role, "createdAt", "updatedAt")
+    VALUES
+      (gen_random_uuid(), 'agent1@company.com', 'Agent One', '<hash1>', 'AGENT', NOW(), NOW()),
+      (gen_random_uuid(), 'agent2@company.com', 'Agent Two', '<hash2>', 'AGENT', NOW(), NOW()),
+      (gen_random_uuid(), 'manager@company.com', 'Manager Name', '<hash3>', 'ADMIN', NOW(), NOW());
+    ```
+  </Step>
+
+  <Step title="Execute in Database">
+    Run the script in Railway PostgreSQL Query tab
+  </Step>
+
+  <Step title="Share Credentials">
+    Send each team member their login details
+  </Step>
+</Steps>
+
+## Configuring Team Member Permissions
+
+### Agent Permissions
+
+Agents can:
+- ✅ View and reply to assigned conversations
+- ✅ View unassigned conversations in inbox
+- ✅ Assign conversations to themselves or others
+- ✅ Add notes to conversations
+- ✅ Access contact information
+- ✅ Update their own profile
+
+Agents cannot:
+- ❌ Add or remove team members
+- ❌ Access system settings
+- ❌ View admin analytics
+- ❌ Configure integrations
+
+### Admin Permissions
+
+Admins can do everything agents can, plus:
+- ✅ Add and remove team members
+- ✅ Configure system settings
+- ✅ Set up integrations
+- ✅ View all conversations (even if assigned to others)
+- ✅ Access analytics and reports
+- ✅ Manage webhooks and API access
+
+### Viewer Permissions
+
+Viewers have read-only access:
+- ✅ View all conversations
+- ✅ View contact information
+- ✅ Search and filter
+
+Viewers cannot:
+- ❌ Send messages
+- ❌ Assign conversations
+- ❌ Modify any data
+
+<Tip>
+  Use Viewer role for managers or QA who need to monitor but not respond
+</Tip>
+
+## Setting Up Team Workflows
+
+### Conversation Assignment Strategies
+
+<Tabs>
+  <Tab title="Manual Assignment">
+    **Best for**: Small teams (2-5 people)
+
+    **How it works**:
+    1. New conversation appears in shared inbox
+    2. Team member manually assigns to themselves
+    3. They handle until resolved
+
+    **Pros**:
+    - ✅ Simple and flexible
+    - ✅ Team members choose based on availability
+    - ✅ Works well with specialized knowledge
+
+    **Cons**:
+    - ⚠️ Can lead to cherry-picking
+    - ⚠️ May have uneven distribution
+  </Tab>
+
+  <Tab title="Round-Robin">
+    **Best for**: Medium teams (5-15 people)
+
+    **How it works**:
+    1. New conversation arrives
+    2. System automatically assigns to next agent in rotation
+    3. Agent receives notification
+
+    **Pros**:
+    - ✅ Even distribution of workload
+    - ✅ Fair for all team members
+    - ✅ No conversations missed
+
+    **Cons**:
+    - ⚠️ Doesn't account for agent expertise
+    - ⚠️ Doesn't consider current workload
+  </Tab>
+
+  <Tab title="Skills-Based">
+    **Best for**: Large teams (15+ people) with specializations
+
+    **How it works**:
+    1. Tag conversation by type (Sales, Support, etc.)
+    2. Route to team members with that skill
+    3. Round-robin within skill group
+
+    **Pros**:
+    - ✅ Right expert handles each conversation
+    - ✅ Better customer experience
+    - ✅ Faster resolution times
+
+    **Cons**:
+    - ⚠️ Requires tagging setup
+    - ⚠️ More complex configuration
+  </Tab>
+</Tabs>
+
+### Team Collaboration Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Internal Notes" icon="note-sticky">
+    Leave context for teammates:
+    - Customer history
+    - Previous issues
+    - Special instructions
+    - Follow-up needed
+  </Card>
+
+  <Card title="Tag Conversations" icon="tags">
+    Organize by:
+    - Priority (Urgent, Normal, Low)
+    - Type (Sales, Support, Billing)
+    - Status (Waiting, In Progress, Resolved)
+  </Card>
+
+  <Card title="Set Status Updates" icon="circle-dot">
+    Keep team informed:
+    - "Investigating issue"
+    - "Waiting on customer"
+    - "Escalated to tech team"
+    - "Resolved - awaiting feedback"
+  </Card>
+
+  <Card title="Use Quick Replies" icon="bolt">
+    Create shared templates for:
+    - Common questions
+    - Policy explanations
+    - Troubleshooting steps
+    - Follow-up messages
+  </Card>
+</CardGroup>
+
+## Team Member Onboarding
+
+### Onboarding Checklist for New Team Members
+
+<Steps>
+  <Step title="Send Welcome Email">
+    Include:
+    - Login URL
+    - Temporary password
+    - Team Inbox user guide link
+    - Team communication channels (Slack, etc.)
+  </Step>
+
+  <Step title="First Login Setup">
+    Have them:
+    - Change password
+    - Update profile name
+    - Enable push notifications
+    - Set language preference
+  </Step>
+
+  <Step title="Review User Guide">
+    Walk through:
+    - Inbox navigation
+    - How to reply to messages
+    - Assigning conversations
+    - Using quick replies
+    - Adding notes
+  </Step>
+
+  <Step title="Shadow Experienced Agent">
+    For first few hours:
+    - Watch how conversations are handled
+    - Ask questions
+    - Practice with test conversations
+  </Step>
+
+  <Step title="Supervised Practice">
+    Have them handle conversations with oversight:
+    - Assign them easier conversations
+    - Review their responses
+    - Provide feedback
+  </Step>
+
+  <Step title="Independent Work">
+    After 1-2 days, let them work independently:
+    - Monitor quality
+    - Check in regularly
+    - Provide ongoing coaching
+  </Step>
+</Steps>
+
+### Training Resources
+
+Create these for your team:
+
+<CardGroup cols={2}>
+  <Card title="Team Inbox User Guide" icon="book">
+    - How to use the interface
+    - Keyboard shortcuts
+    - Best practices
+    - Common scenarios
+  </Card>
+
+  <Card title="Company Policies" icon="file-contract">
+    - Response time goals
+    - Tone and voice guidelines
+    - Escalation procedures
+    - Privacy policies
+  </Card>
+
+  <Card title="FAQ Answers" icon="circle-question">
+    - Common customer questions
+    - Approved responses
+    - Where to find information
+    - When to escalate
+  </Card>
+
+  <Card title="WhatsApp Guidelines" icon="whatsapp">
+    - WhatsApp-specific etiquette
+    - Formatting messages
+    - Sending media
+    - Template messages
+  </Card>
+</CardGroup>
+
+## Managing Team Performance
+
+### Set Clear Expectations
+
+<Accordion title="Response Time Goals">
+  Define SLAs for your team:
+  - **First response**: Within 5 minutes during business hours
+  - **Resolution**: Within 24 hours for most issues
+  - **Complex issues**: Within 48 hours
+</Accordion>
+
+<Accordion title="Quality Standards">
+  - Friendly, professional tone
+  - Complete sentences and proper grammar
+  - Personalize responses (use customer name)
+  - Verify issue is resolved before closing
+  - Ask if customer needs anything else
+</Accordion>
+
+<Accordion title="Daily Workload">
+  - Handle assigned conversations first
+  - Check for unassigned conversations in shared inbox
+  - Follow up on pending conversations
+  - Update conversation notes
+  - Keep conversations organized
+</Accordion>
+
+### Monitor Team Activity
+
+Track these metrics:
+
+<CardGroup cols={3}>
+  <Card title="Response Time" icon="clock">
+    Average time to first response and resolution
+  </Card>
+
+  <Card title="Conversation Load" icon="messages">
+    Number of active and closed conversations per agent
+  </Card>
+
+  <Card title="Customer Satisfaction" icon="star">
+    Feedback and ratings (if implemented)
+  </Card>
+</CardGroup>
+
+## Team Communication
+
+### Daily Team Practices
+
+<Steps>
+  <Step title="Morning Check-In">
+    - Review overnight messages
+    - Assign urgent conversations
+    - Set priorities for the day
+  </Step>
+
+  <Step title="Mid-Day Sync">
+    - Quick status update
+    - Escalate any blockers
+    - Redistribute workload if needed
+  </Step>
+
+  <Step title="End-of-Day Wrap">
+    - Resolve or hand off open conversations
+    - Add notes for next shift
+    - Flag anything urgent for tomorrow
+  </Step>
+</Steps>
+
+### Team Communication Channels
+
+Besides Team Inbox, set up:
+
+<CardGroup cols={2}>
+  <Card title="Slack/Discord Channel" icon="slack">
+    For quick team questions and updates
+  </Card>
+
+  <Card title="Weekly Team Meeting" icon="users">
+    Review metrics, share learnings, discuss improvements
+  </Card>
+
+  <Card title="Knowledge Base" icon="book-bookmark">
+    Document solutions to common issues
+  </Card>
+
+  <Card title="Escalation Process" icon="arrow-up">
+    Clear path for complex issues
+  </Card>
+</CardGroup>
+
+## Removing Team Members
+
+When someone leaves the team:
+
+<Steps>
+  <Step title="Reassign Their Conversations">
+    Before removing:
+    ```sql
+    -- Find their conversations
+    SELECT * FROM "Conversation" WHERE "assignedToId" = '<user-id>';
+
+    -- Reassign to another team member
+    UPDATE "Conversation"
+    SET "assignedToId" = '<new-user-id>'
+    WHERE "assignedToId" = '<old-user-id>';
+    ```
+  </Step>
+
+  <Step title="Disable or Delete Account">
+    **Option 1: Disable** (recommended - preserves history)
+    ```sql
+    UPDATE "User"
+    SET "isActive" = false
+    WHERE id = '<user-id>';
+    ```
+
+    **Option 2: Delete** (removes all traces)
+    ```sql
+    DELETE FROM "User" WHERE id = '<user-id>';
+    ```
+  </Step>
+
+  <Step title="Revoke Access">
+    They will no longer be able to log in
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="User Guide: Team Collaboration"
+    icon="users"
+    href="/user-guide/team-collaboration"
+  >
+    Learn collaboration features in detail
+  </Card>
+
+  <Card
+    title="Admin: Team Management"
+    icon="user-gear"
+    href="/admin/team-management"
+  >
+    Advanced team management settings
+  </Card>
+
+  <Card
+    title="Admin: Conversation Assignment"
+    icon="arrows-turn-right"
+    href="/admin/conversation-assignment"
+  >
+    Configure automatic assignment rules
+  </Card>
+
+  <Card
+    title="Admin: Monitoring"
+    icon="chart-line"
+    href="/admin/monitoring"
+  >
+    Track team performance metrics
+  </Card>
+</CardGroup>

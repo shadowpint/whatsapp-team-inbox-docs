@@ -1,0 +1,557 @@
+---
+title: 'Team Collaboration'
+description: 'Work effectively with your team to provide seamless customer support'
+---
+
+## Overview
+
+Team collaboration features help your support team work together seamlessly, share knowledge, and provide consistent customer experiences.
+
+<Info>
+Effective teamwork reduces response times and improves customer satisfaction.
+</Info>
+
+## Internal Communication
+
+### Mentioning Team Members
+
+Tag colleagues to get their attention:
+
+<Steps>
+  <Step title="In Conversation Notes">
+    ```markdown
+    @john Can you help with this technical issue?
+    Customer is experiencing database timeout errors.
+
+    @sarah FYI - this is the third report this week
+    ```
+
+    Mentioned team members receive instant notifications.
+  </Step>
+
+  <Step title="In Comments">
+    Add comments on specific messages:
+    1. Hover over customer message
+    2. Click comment icon 💬
+    3. Write comment with @mentions
+    4. Only team sees comments
+
+    **Example:**
+    ```
+    @alice This looks like the billing bug you fixed last week.
+    Can you verify the customer is on the latest version?
+    ```
+  </Step>
+</Steps>
+
+### Team Chat
+
+Quick discussions without cluttering conversation notes:
+
+<Tabs>
+  <Tab title="Conversation Chat">
+    Chat about specific conversations:
+
+    ```
+    Team Chat (3 members)
+    ━━━━━━━━━━━━━━━━━━━━
+    Sarah: Do we have a solution for this?
+    John: Yes, KB article #245
+    Alice: I'll send it to the customer
+    ```
+
+    **Access:** Click chat icon in conversation sidebar
+  </Tab>
+
+  <Tab title="General Team Chat">
+    Team-wide communication channel:
+
+    **Use for:**
+    - Quick questions
+    - Sharing updates
+    - Coordinating breaks
+    - General announcements
+
+    **Access:** Click team chat in left sidebar
+  </Tab>
+</Tabs>
+
+## Knowledge Sharing
+
+### Internal Knowledge Base
+
+Build a shared knowledge repository:
+
+<AccordionGroup>
+  <Accordion title="Creating Articles">
+    Document solutions for common issues:
+
+    1. Go to **Knowledge Base**
+    2. Click **New Article**
+    3. Fill in details:
+       ```markdown
+       Title: How to Process Refunds
+       Category: Billing
+       Tags: refund, payment, billing
+
+       ## Steps
+       1. Verify order number
+       2. Check refund eligibility
+       3. Process in admin panel
+       4. Confirm with customer
+
+       ## Common Issues
+       - Refund not showing: Takes 5-7 days
+       - Partial refund: Document reason
+       ```
+    4. Add attachments/screenshots
+    5. Publish
+  </Accordion>
+
+  <Accordion title="Searching Knowledge Base">
+    Quick access during conversations:
+
+    **In-conversation search:**
+    ```
+    Click 🔍 KB icon
+    Type: "refund policy"
+    Results appear instantly
+    Click to insert into message
+    ```
+
+    **Smart suggestions:**
+    System suggests relevant articles based on customer question.
+  </Accordion>
+
+  <Accordion title="Article Management">
+    Keep knowledge base current:
+
+    **Review cycle:**
+    - Monthly review of all articles
+    - Update outdated information
+    - Archive obsolete articles
+    - Add new discoveries
+
+    **Version control:**
+    - Track changes to articles
+    - See who edited what
+    - Revert to previous versions
+  </Accordion>
+</AccordionGroup>
+
+### Shared Quick Replies
+
+Create team-wide response templates:
+
+```javascript
+// Team Template
+Name: refund_standard
+Visibility: All team members
+Category: Billing
+
+Message:
+I've processed your refund of {{amount}}.
+You should see it in your account within 5-7 business days.
+
+Is there anything else I can help you with?
+```
+
+**Template permissions:**
+- **Personal:** Only you can use
+- **Team:** Your department can use
+- **Company:** Everyone can use
+
+## Conversation Handoffs
+
+### Transferring Conversations
+
+Pass conversations smoothly between team members:
+
+<Steps>
+  <Step title="Prepare Handoff">
+    Add comprehensive notes:
+    ```markdown
+    ## Handoff to @john
+
+    **Customer Issue:**
+    Payment gateway error during checkout
+
+    **Already Tried:**
+    - Cleared browser cache
+    - Different payment method
+    - Verified card details
+
+    **Next Steps:**
+    - Check payment gateway logs
+    - Verify merchant account status
+    - Possibly need dev team involvement
+
+    **Customer Info:**
+    - Premium customer (respond ASAP)
+    - Timezone: EST (available 9am-5pm)
+    - Prefers technical details
+    ```
+  </Step>
+
+  <Step title="Assign to Team Member">
+    1. Click **Reassign**
+    2. Select team member
+    3. Choose notification method:
+       - 🔔 Desktop notification
+       - 📧 Email
+       - 📱 SMS (urgent only)
+    4. Add handoff message (optional)
+  </Step>
+
+  <Step title="Notify Customer">
+    Keep customer informed:
+    ```
+    I'm transferring you to John, our technical specialist,
+    who can better assist with this payment issue.
+    He'll be with you shortly.
+    ```
+  </Step>
+</Steps>
+
+### Team Availability
+
+See who's available to help:
+
+```
+Team Status
+━━━━━━━━━━━━━━━━━━━━
+🟢 Sarah    Active     (5 conversations)
+🟢 John     Active     (3 conversations)
+🟡 Alice    Away       (2 conversations)
+🔴 Bob      Offline    (0 conversations)
+⏸️  Emma    On Break   (1 conversation)
+```
+
+**Status indicators:**
+- 🟢 **Active:** Available for new assignments
+- 🟡 **Away:** Temporarily unavailable
+- 🔴 **Offline:** Not working
+- ⏸️ **On Break:** Will return soon
+- 🔵 **Busy:** At capacity, avoid new assignments
+
+### Set Your Status
+
+Update your availability:
+
+<Tabs>
+  <Tab title="Manual Status">
+    ```
+    Click your avatar → Set status
+
+    ○ Available
+    ○ Away (auto-return in: [15 min ▾])
+    ○ Do Not Disturb
+    ○ Custom: [In meeting...]
+    ```
+  </Tab>
+
+  <Tab title="Auto Status">
+    Automatic status updates:
+
+    **Triggers:**
+    - No activity for 10 min → Away
+    - Calendar shows meeting → Busy
+    - Outside work hours → Offline
+    - Screen lock detected → Away
+
+    **Configure:** Settings → Availability
+  </Tab>
+</Tabs>
+
+## Collaborative Features
+
+### Multi-Agent Conversations
+
+Multiple team members working on same conversation:
+
+<AccordionGroup>
+  <Accordion title="Live Presence">
+    See who else is viewing:
+    ```
+    👁️ Sarah is viewing this conversation
+    ✍️ John is typing a response...
+    ```
+
+    **Prevents:**
+    - Duplicate responses
+    - Conflicting information
+    - Wasted effort
+  </Accordion>
+
+  <Accordion title="Response Coordination">
+    Coordinate responses:
+
+    **Draft mode:**
+    1. Start composing message
+    2. Click **Save as Draft**
+    3. Team members can see draft
+    4. Get approval before sending
+
+    **Quick claim:**
+    ```
+    Alice: I'll handle this
+    [Take Over] button appears for others
+    ```
+  </Accordion>
+
+  <Accordion title="Conversation Locking">
+    Prevent conflicts on active conversations:
+
+    **Soft lock (default):**
+    - Warning if someone else responding
+    - Can override if needed
+
+    **Hard lock (optional):**
+    - Only assigned agent can respond
+    - Others can view and comment
+    - Admin can always override
+  </Accordion>
+</AccordionGroup>
+
+### Team Inbox Views
+
+Share filtered views with team:
+
+<Tabs>
+  <Tab title="Create Shared View">
+    1. Apply filters to inbox
+    2. Click **Save View**
+    3. Name: "Urgent Billing Issues"
+    4. Share with: Billing Team
+    5. Set as default (optional)
+
+    Team members see view in their sidebar.
+  </Tab>
+
+  <Tab title="Common Shared Views">
+    **Recommended team views:**
+
+    **Unassigned Queue:**
+    - Status: Open
+    - Assigned: None
+    - Sort: Oldest first
+
+    **Escalations:**
+    - Priority: Urgent
+    - Status: Open
+    - No response &gt;2 hours
+
+    **Pending Closure:**
+    - Status: Resolved
+    - Last message: &gt;24 hours
+    - Assigned: Any team member
+
+    **VIP Customers:**
+    - Tags: VIP, Premium
+    - Status: Any
+    - Sort: Most recent
+  </Tab>
+</Tabs>
+
+## Team Performance
+
+### Workload Distribution
+
+Monitor team capacity:
+
+```
+Workload Dashboard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sarah  ████████░░  8/10  ✓ Balanced
+John   ███░░░░░░░  3/10  ⚠️ Underutilized
+Alice  ██████████ 10/10  ⚠️ At capacity
+Bob    ██░░░░░░░░  2/10  ✓ Available
+```
+
+**Actions for managers:**
+- Reassign conversations from overloaded agents
+- Temporarily adjust auto-assignment weights
+- Add team members if consistently at capacity
+
+### Team Metrics
+
+Track collaborative performance:
+
+| Metric | Value | Trend |
+|--------|-------|-------|
+| Avg First Response | 3.2 min | ↓ 15% |
+| Handoff Rate | 12% | ↔ Stable |
+| Collaboration Score | 87/100 | ↑ 5pts |
+| Knowledge Base Usage | 45 searches/day | ↑ 20% |
+| Team Satisfaction | 4.6/5 | ↑ 0.2 |
+
+**Collaboration score based on:**
+- Internal communication frequency
+- Knowledge sharing
+- Smooth handoffs
+- Peer assistance
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Document Everything" icon="file-lines">
+    Add notes for every handoff and key decision
+  </Card>
+  <Card title="Update Your Status" icon="signal">
+    Keep availability current for better coordination
+  </Card>
+  <Card title="Share Knowledge" icon="book">
+    Contribute to knowledge base regularly
+  </Card>
+  <Card title="Help Your Team" icon="handshake">
+    Jump in when colleagues need assistance
+  </Card>
+  <Card title="Use @Mentions" icon="at">
+    Tag the right people for quick answers
+  </Card>
+  <Card title="Standardize Responses" icon="clone">
+    Use shared templates for consistency
+  </Card>
+</CardGroup>
+
+## Communication Guidelines
+
+### Response Time Expectations
+
+Set clear expectations:
+
+| Mention Type | Expected Response | Example |
+|--------------|------------------|---------|
+| Urgent @mention | &lt;15 minutes | @john URGENT: VIP customer issue |
+| Normal @mention | &lt;2 hours | @sarah Can you review this? |
+| FYI mention | No response needed | @team FYI: System maintenance tonight |
+
+### Handoff Protocol
+
+Standard process for conversation transfers:
+
+1. **Add context** in notes
+2. **@Mention** new agent
+3. **Wait for acknowledgment** (or escalate if urgent)
+4. **Notify customer** about transfer
+5. **Monitor** until new agent responds
+
+### Escalation Path
+
+When to escalate and to whom:
+
+```
+Level 1: Team Lead
+├─ Can't resolve in 30 min
+├─ Customer requesting manager
+└─ Policy exceptions needed
+
+Level 2: Department Manager
+├─ Complex technical issues
+├─ Billing disputes >$X
+└─ Legal concerns
+
+Level 3: Executive Team
+├─ PR/reputation issues
+├─ Large account problems
+└─ System-wide failures
+```
+
+## Team Roles
+
+### Role-Based Permissions
+
+Different access levels for team members:
+
+<Tabs>
+  <Tab title="Agent">
+    **Can:**
+    - View assigned conversations
+    - Respond to customers
+    - Add notes and tags
+    - Search knowledge base
+    - Update own profile
+
+    **Cannot:**
+    - View all conversations
+    - Modify templates
+    - Access admin settings
+    - View reports
+  </Tab>
+
+  <Tab title="Team Lead">
+    **Agent permissions plus:**
+    - View team conversations
+    - Reassign conversations
+    - Create shared templates
+    - View team metrics
+    - Manage team schedule
+    - Approve escalations
+  </Tab>
+
+  <Tab title="Manager">
+    **Team Lead permissions plus:**
+    - Access all conversations
+    - Configure automations
+    - Manage knowledge base
+    - View full analytics
+    - Export data
+    - Manage integrations
+  </Tab>
+
+  <Tab title="Admin">
+    **Full access:**
+    - All manager permissions
+    - User management
+    - Billing access
+    - Security settings
+    - API configuration
+    - System settings
+  </Tab>
+</Tabs>
+
+## Notifications for Teams
+
+Configure team-wide alerts:
+
+### Notification Rules
+
+**New conversation alerts:**
+```javascript
+{
+  "trigger": "new_unassigned_conversation",
+  "notify": ["team-lead@company.com"],
+  "channel": "desktop",
+  "conditions": {
+    "tags": ["urgent", "vip"]
+  }
+}
+```
+
+**SLA breach warnings:**
+```javascript
+{
+  "trigger": "sla_approaching",
+  "notify": "assigned_agent",
+  "escalate_to": "team_lead",
+  "escalate_after_minutes": 15,
+  "channel": ["desktop", "email"]
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Notifications" icon="bell" href="/user-guide/notifications">
+    Configure your notification preferences
+  </Card>
+  <Card title="Team Management" icon="users-gear" href="/admin/team-management">
+    Admin guide for managing teams
+  </Card>
+  <Card title="Conversation Assignment" icon="user-check" href="/admin/conversation-assignment">
+    Configure assignment rules
+  </Card>
+  <Card title="Settings" icon="gear" href="/user-guide/settings">
+    Personal settings and preferences
+  </Card>
+</CardGroup>

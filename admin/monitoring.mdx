@@ -1,0 +1,480 @@
+---
+title: 'System Monitoring'
+description: 'Monitor performance, uptime, and system health for your WhatsApp Team Inbox'
+---
+
+## Overview
+
+Comprehensive monitoring ensures your Team Inbox runs smoothly, helps identify issues early, and provides insights for optimization.
+
+## Dashboard Overview
+
+```
+System Health Dashboard
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Status: ✓ All Systems Operational
+
+Uptime: 99.98% (Last 30 days)
+Response Time: 245ms avg
+Active Users: 12/15
+Active Conversations: 47
+
+Quick Metrics (Last Hour):
+├─ Messages Received: 234
+├─ Messages Sent: 198
+├─ Avg Response Time: 3.2 min
+└─ Error Rate: 0.02%
+
+[View Detailed Metrics] [Download Report]
+```
+
+## Performance Metrics
+
+<CardGroup cols={2}>
+  <Card title="Response Time" icon="gauge-high">
+    API and application response times
+  </Card>
+  <Card title="Throughput" icon="chart-line">
+    Messages processed per minute
+  </Card>
+  <Card title="Error Rate" icon="triangle-exclamation">
+    Failed requests and exceptions
+  </Card>
+  <Card title="Resource Usage" icon="server">
+    CPU, memory, and disk usage
+  </Card>
+</CardGroup>
+
+### Response Time Monitoring
+
+```
+API Response Times
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Endpoint                 P50    P95    P99
+/api/conversations      120ms  280ms  450ms ✓
+/api/messages           95ms   210ms  380ms ✓
+/api/contacts           85ms   180ms  320ms ✓
+/webhooks/whatsapp      180ms  420ms  890ms ⚠️
+
+⚠️ Webhook processing above target (P99 >500ms)
+
+[View Detailed Breakdown] [Set Alert]
+```
+
+### System Resources
+
+```
+Resource Utilization
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CPU Usage:        ████████░░ 42% ✓
+Memory Usage:     ██████████ 68% ⚠️
+Disk Usage:       ████░░░░░░ 23% ✓
+Network I/O:      ███░░░░░░░ 15% ✓
+
+Database:
+├─ Connections:   45/100 ✓
+├─ Query Time:    85ms avg ✓
+└─ Slow Queries:  12/hour ⚠️
+
+Redis Cache:
+├─ Hit Rate:      94% ✓
+├─ Memory:        1.2 GB/2 GB ✓
+└─ Evictions:     0/min ✓
+
+Recommendations:
+⚡ Memory usage high - consider scaling
+⚡ Optimize slow database queries
+```
+
+## Uptime Monitoring
+
+```
+Uptime Status
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Current Status: ✓ Operational
+
+Last 24 Hours:    100.00% uptime
+Last 7 Days:      99.95% uptime  
+Last 30 Days:     99.98% uptime
+
+Incidents (Last 30 Days):
+• Nov 15, 2025 - 5 min outage
+  Cause: Database maintenance
+  Impact: Limited
+
+• Nov 3, 2025 - 12 min degraded
+  Cause: High traffic spike
+  Impact: Slow responses
+
+SLA Target: 99.9%
+Current: 99.98% ✓ Above target
+
+[View Incident History] [Status Page]
+```
+
+## Alerting
+
+### Alert Configuration
+
+```
+Alert Rules
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Critical Alerts:
+☑ System down (check every 1 min)
+☑ Error rate >5% (5 min window)
+☑ Database connection failed
+☑ Webhook delivery failing >80%
+
+Warning Alerts:
+☑ Response time >1s (P95, 15 min window)
+☑ CPU usage >80% (sustained 10 min)
+☑ Memory usage >85%
+☑ Disk usage >90%
+
+Notification Channels:
+☑ Email: ops@company.com
+☑ Slack: #alerts
+☑ PagerDuty: On-call team (critical only)
+☑ SMS: +1234567890 (critical only)
+
+[Add Alert Rule] [Test Alerts]
+```
+
+### Recent Alerts
+
+```
+Alert History
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Today:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10:23 AM - ⚠️ WARNING Resolved
+   High memory usage (87%)
+   Duration: 12 minutes
+   Action: Auto-scaled instance
+   
+9:45 AM - 🔴 CRITICAL Resolved
+   WhatsApp webhook timeout
+   Duration: 3 minutes
+   Action: Restarted webhook processor
+
+Yesterday:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+No alerts
+
+[View All] [Export]
+```
+
+## Application Logs
+
+```
+Log Management
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Log Levels:
+☑ Error    (Always logged)
+☑ Warning  (Always logged)
+☑ Info     (Logged in production)
+☐ Debug    (Development only)
+☐ Trace    (Development only)
+
+Log Aggregation:
+Service: [Datadog ▾]
+Retention: [30 days ▾]
+Index: team-inbox-production
+
+Recent Errors (Last Hour):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10:45 AM - WhatsAppAPIError
+   Message: Rate limit exceeded
+   Count: 3 occurrences
+   [View Stack Trace]
+
+10:23 AM - DatabaseConnectionError
+   Message: Connection timeout
+   Count: 1 occurrence
+   [View Stack Trace]
+
+[Search Logs] [Download]
+```
+
+## Performance Analytics
+
+### Conversation Metrics
+
+```
+Conversation Analytics
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Last 7 Days:
+
+Volume:
+Total Conversations: 1,247
+├─ New: 423
+├─ Ongoing: 389
+├─ Resolved: 435
+└─ Avg per day: 178
+
+Response Times:
+First Response: 3.2 min avg (↓ 12%)
+Resolution Time: 45 min avg (↓ 8%)
+
+Quality:
+CSAT Score: 4.7/5 (↑ 0.2)
+Response Rate: 98.5%
+SLA Compliance: 94%
+
+Peak Hours:
+Busiest: 2-4 PM EST (45 conversations/hour)
+Slowest: 6-8 AM EST (8 conversations/hour)
+
+[Detailed Report] [Export Data]
+```
+
+### Team Performance
+
+```
+Team Metrics
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Active Agents: 12
+Total Conversations Handled: 1,247
+Avg per Agent: 104
+
+Top Performers:
+1. Sarah Johnson   145 conversations, 2.1 min avg
+2. Alice Brown     128 conversations, 2.8 min avg
+3. John Smith      119 conversations, 3.1 min avg
+
+Team Efficiency:
+Productivity: 87% (time in conversations)
+Concurrent Handling: 6.5 avg
+Multitasking Score: 82/100
+
+Areas for Improvement:
+⚠️ 3 agents below 4.5 CSAT - training needed
+⚡ High reassignment rate (12%) - review routing
+```
+
+## Third-Party Monitoring
+
+### WhatsApp API Health
+
+```
+WhatsApp Business API
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Status: ✓ Operational
+
+API Performance:
+Send Success Rate: 99.2%
+Delivery Rate: 98.7%
+Avg Send Time: 1.2s
+
+Webhook Status:
+Messages Received: 234/hour
+Processing Time: 180ms avg
+Failed Deliveries: 0
+
+Rate Limits:
+Messages: 450/1000 per second
+API Calls: 2,100/5,000 per hour
+
+Quota Usage:
+Conversations this month: 3,247
+Estimated cost: $89.45
+
+[View WhatsApp Logs] [Meta Business Suite →]
+```
+
+### Email Service Health
+
+```
+Email Service (SendGrid)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Status: ✓ Operational
+
+Delivery Stats (Last 24h):
+Sent: 1,289 emails
+Delivered: 1,267 (98.3%)
+Bounced: 15 (1.2%)
+Spam Reports: 2 (0.2%)
+Opens: 847 (66.8%)
+
+Reputation Score: 98/100 ✓
+
+Quota:
+Used: 1,289/50,000 (2.6%)
+Reset: In 29 days
+
+[View SendGrid Dashboard →]
+```
+
+## Database Monitoring
+
+```
+Database Performance
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Connection Pool:
+Active: 45
+Idle: 15
+Max: 100
+Wait Time: 0ms ✓
+
+Query Performance:
+Avg Query Time: 85ms
+Slow Queries (>1s): 12/hour
+Deadlocks: 0
+Cache Hit Rate: 94%
+
+Top Slow Queries:
+1. SELECT * FROM conversations WHERE... (1.2s)
+   Executions: 45/hour
+   [Optimize] [View Execution Plan]
+
+2. UPDATE messages SET status... (950ms)
+   Executions: 23/hour
+   [Optimize]
+
+Database Size:
+Total: 12.3 GB
+Growth: +180 MB/day
+Estimated full: In 245 days
+
+[Run VACUUM] [View Query Stats]
+```
+
+## Custom Dashboards
+
+Create custom monitoring views:
+
+```
+Custom Dashboard: Support Operations
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Widgets:
+┌──────────────┬──────────────┬──────────────┐
+│ Active Conv  │ Waiting Time │  Agent Load  │
+│     47       │   2.3 min    │  ████████░░  │
+└──────────────┴──────────────┴──────────────┘
+┌──────────────────────────────────────────────┐
+│        Conversation Volume (24h)             │
+│                                              │
+│   📊 [Line chart showing hourly volume]      │
+│                                              │
+└──────────────────────────────────────────────┘
+┌────────────────────┬─────────────────────────┐
+│  Top Issues Today  │  Team Availability      │
+│  1. Billing (23)   │  🟢 Available: 8        │
+│  2. Technical (19) │  🟡 Busy: 3             │
+│  3. Shipping (15)  │  🔴 Offline: 4          │
+└────────────────────┴─────────────────────────┘
+
+[Edit Dashboard] [Share] [Export]
+```
+
+## Scheduled Reports
+
+```
+Automated Reports
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Daily Report:
+📧 Email to: ops@company.com
+⏰ Time: 9:00 AM EST
+📊 Includes: Yesterday's metrics, alerts, top issues
+✓ Enabled
+
+Weekly Report:
+📧 Email to: management@company.com
+⏰ Time: Monday 9:00 AM EST
+📊 Includes: Week summary, team performance, trends
+✓ Enabled
+
+Monthly Report:
+📧 Email to: executives@company.com  
+⏰ Time: 1st of month, 9:00 AM EST
+📊 Includes: Full analytics, cost analysis, insights
+✓ Enabled
+
+[Configure Reports] [Send Test]
+```
+
+## Incident Management
+
+```
+Incident Tracking
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Open Incidents: 0
+Resolved (Last 30 Days): 2
+
+Recent Incidents:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INC-0045 - Nov 15, 2025
+   Type: Planned Maintenance
+   Duration: 5 minutes
+   Impact: Limited service availability
+   Status: Resolved
+   [View Post-Mortem]
+
+INC-0044 - Nov 3, 2025
+   Type: Performance Degradation
+   Duration: 12 minutes
+   Impact: Slow response times
+   Root Cause: Traffic spike + inefficient query
+   Status: Resolved
+   [View Post-Mortem]
+
+MTTR (Mean Time To Resolve): 8.5 minutes
+MTBF (Mean Time Between Failures): 12 days
+
+[Create Incident] [View All]
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Set Baselines" icon="chart-line">
+    Establish normal performance metrics
+  </Card>
+  <Card title="Proactive Monitoring" icon="eye">
+    Monitor trends, not just thresholds
+  </Card>
+  <Card title="Alert Fatigue" icon="bell-slash">
+    Tune alerts to reduce false positives
+  </Card>
+  <Card title="Regular Reviews" icon="calendar-check">
+    Weekly review of metrics and trends
+  </Card>
+  <Card title="Document Issues" icon="file-lines">
+    Create post-mortems for incidents
+  </Card>
+  <Card title="Continuous Improvement" icon="arrows-rotate">
+    Use metrics to drive optimization
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Security Settings" icon="shield" href="/admin/security-settings">
+    Configure security monitoring
+  </Card>
+  <Card title="Team Management" icon="users" href="/admin/team-management">
+    Monitor team performance
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/deployment/troubleshooting">
+    Diagnose and fix issues
+  </Card>
+  <Card title="Going Live" icon="rocket" href="/deployment/going-live">
+    Production readiness checklist
+  </Card>
+</CardGroup>

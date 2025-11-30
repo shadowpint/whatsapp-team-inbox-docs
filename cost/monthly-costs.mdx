@@ -1,0 +1,256 @@
+---
+title: 'Monthly Cost Breakdown'
+description: 'Understand your monthly costs for running WhatsApp Team Inbox'
+---
+
+## Overview
+
+WhatsApp Team Inbox costs consist of infrastructure, WhatsApp conversation fees, and optional services. Here's a complete breakdown.
+
+## Cost Components
+
+<CardGroup cols={3}>
+  <Card title="Infrastructure" icon="server">
+    Server, database, email services
+  </Card>
+  <Card title="WhatsApp" icon="whatsapp">
+    Conversation fees (pay-per-conversation)
+  </Card>
+  <Card title="Optional" icon="plus">
+    Monitoring, support, integrations
+  </Card>
+</CardGroup>
+
+## Sample Monthly Costs
+
+### Small Team (500 conversations/month)
+
+| Service | Provider | Cost |
+|---------|----------|------|
+| **Server** | Railway/Render | $5-15 |
+| **Database** | Supabase Free | $0 |
+| **Email** | SendGrid Free | $0 |
+| **WhatsApp** | Meta (500 conv) | $8 |
+| **Monitoring** | Free tier | $0 |
+| **Total** | | **$13-23/month** |
+
+**vs. Intercom:** $39/month (basic) = **Save $16-26/month**
+
+### Medium Team (2,000 conversations/month)
+
+| Service | Provider | Cost |
+|---------|----------|------|
+| **Server** | Railway/Render | $20-30 |
+| **Database** | Supabase Pro | $25 |
+| **Email** | SendGrid Essentials | $20 |
+| **WhatsApp** | Meta (2,000 conv) | $32 |
+| **Monitoring** | Sentry Team | $26 |
+| **Total** | | **$123-133/month** |
+
+**vs. Zendesk:** $49/agent × 3 = $147/month = **Save $14-24/month**
+
+### Large Team (10,000 conversations/month)
+
+| Service | Provider | Cost |
+|---------|----------|------|
+| **Server** | AWS EC2 t3.large | $60 |
+| **Database** | AWS RDS | $80 |
+| **Email** | SendGrid Pro | $90 |
+| **WhatsApp** | Meta (10,000 conv) | $160 |
+| **Redis Cache** | AWS ElastiCache | $25 |
+| **Monitoring** | Datadog | $31 |
+| **Backup** | AWS S3 | $15 |
+| **Total** | | **$461/month** |
+
+**vs. Intercom:** $99/month + overages = $300+/month  
+**Potential savings:** Variable, but infrastructure is yours
+
+## WhatsApp Conversation Pricing
+
+WhatsApp charges per conversation (24-hour window):
+
+### By Region
+
+| Region | User-Initiated | Business-Initiated |
+|--------|---------------|-------------------|
+| North America | $0.0085/conv | $0.0160/conv |
+| Western Europe | $0.0158/conv | $0.0298/conv |
+| India | $0.0040/conv | $0.0110/conv |
+| Latin America | $0.0095/conv | $0.0300/conv |
+| Rest of World | Varies | Varies |
+
+**Example calculation (North America):**
+- 1,000 user-initiated conversations × $0.0085 = $8.50
+- 500 business-initiated conversations × $0.0160 = $8.00
+- **Total: $16.50/month**
+
+### Cost Optimization
+
+**Free conversations:**
+- Respond within 24 hours to user-initiated messages
+- Each 24-hour window is FREE if customer messaged first
+
+**Paid conversations:**
+- Business-initiated messages (you contact first)
+- Template messages after 24-hour window
+
+[Learn to optimize →](/cost/optimization-tips)
+
+## Infrastructure Costs
+
+### Server Hosting
+
+<Tabs>
+  <Tab title="Railway">
+    **Pricing:**
+    - Free: $5 credit/month
+    - Pro: $5 base + usage
+    - Typical: $15-30/month
+
+    **Best for:** Small to medium teams
+  </Tab>
+
+  <Tab title="Render">
+    **Pricing:**
+    - Free: Limited
+    - Starter: $7/month
+    - Standard: $25/month
+
+    **Best for:** Getting started
+  </Tab>
+
+  <Tab title="AWS">
+    **Pricing:**
+    - t3.small: $15/month
+    - t3.medium: $30/month
+    - t3.large: $60/month
+
+    **Best for:** Large teams, full control
+  </Tab>
+
+  <Tab title="DigitalOcean">
+    **Pricing:**
+    - Basic: $6/month
+    - General Purpose: $18/month
+    - CPU-Optimized: $42/month
+
+    **Best for:** Predictable pricing
+  </Tab>
+</Tabs>
+
+### Database
+
+<Tabs>
+  <Tab title="Supabase">
+    - Free: 500 MB
+    - Pro: $25/month (8 GB)
+    - Team: $599/month (unlimited projects)
+  </Tab>
+
+  <Tab title="Neon">
+    - Free: 0.5 GB
+    - Pro: $19/month
+  </Tab>
+
+  <Tab title="Railway PostgreSQL">
+    - $0.000463/GB-hour (~$10-20/month typical)
+  </Tab>
+
+  <Tab title="AWS RDS">
+    - db.t3.micro: $14/month
+    - db.t3.small: $28/month
+    - db.t3.medium: $56/month
+  </Tab>
+</Tabs>
+
+### Email Service
+
+| Provider | Free Tier | Paid Plans |
+|----------|-----------|------------|
+| **SendGrid** | 100/day | $20-90/month |
+| **AWS SES** | 62,000/month (with EC2) | $0.10/1,000 emails |
+| **Mailgun** | 5,000/month (3mo) | $35+/month |
+| **Postmark** | 100/month | $15+/month |
+
+## Cost Comparison
+
+### DIY Team Inbox vs. SaaS
+
+**Your Total Costs (Medium Team):**
+- Infrastructure: $65-85/month
+- WhatsApp: $30-50/month (2,000 conversations)
+- **Total: $95-135/month**
+
+**SaaS Alternatives:**
+
+| Provider | Cost | Features |
+|----------|------|----------|
+| **Intercom** | $74/month + $18/agent | Limited WhatsApp |
+| **Zendesk** | $49/agent (min 5) | $245/month |
+| **Freshdesk** | $15-49/agent | Limited features |
+| **WhatsApp Business** | $0 | Single user only |
+
+**Your Savings: $110-200/month** 🎉
+
+## Hidden Costs to Consider
+
+<AccordionGroup>
+  <Accordion title="Development Time">
+    **Initial Setup:** 4-8 hours
+    **Customization:** 2-10 hours (optional)
+    **Maintenance:** 1-2 hours/month
+
+    **Time Value:** Depends on your hourly rate
+    **One-time investment** vs. ongoing SaaS fees
+  </Accordion>
+
+  <Accordion title="Learning Curve">
+    **Team Training:** 1-2 hours
+    **Documentation:** Free and comprehensive
+    **Support:** Community + GitHub issues
+
+    **Compared to SaaS:** Similar learning time
+  </Accordion>
+
+  <Accordion title="Scaling Costs">
+    **Linear scaling:**
+    - More conversations → Higher WhatsApp fees
+    - More data → Larger database → Higher DB costs
+    - More traffic → Bigger server → Higher hosting
+
+    **Still cheaper than per-agent pricing**
+  </Accordion>
+</AccordionGroup>
+
+## Billing Alerts
+
+Set up alerts to avoid surprises:
+
+```javascript
+{
+  "alerts": {
+    "whatsapp_monthly": {
+      "threshold": 100, // dollars
+      "action": "email_admin"
+    },
+    "infrastructure_monthly": {
+      "threshold": 200,
+      "action": "email_billing_team"
+    }
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Scaling Guide" icon="chart-line" href="/cost/scaling-guide">
+    Plan for growth and scale economically
+  </Card>
+  <Card title="Optimization Tips" icon="lightbulb" href="/cost/optimization-tips">
+    Reduce costs without sacrificing quality
+  </Card>
+  <Card title="Deployment" icon="rocket" href="/deployment/introduction">
+    Get started with deployment
+  </Card>
+</CardGroup>

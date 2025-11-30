@@ -1,0 +1,718 @@
+---
+title: 'Team Management'
+description: 'Manage team members, roles, and permissions effectively'
+---
+
+## Overview
+
+As an admin, you control team access, assign roles, manage permissions, and monitor team performance.
+
+<Info>
+Proper team management ensures security, efficiency, and accountability in your Team Inbox.
+</Info>
+
+## User Roles
+
+<CardGroup cols={3}>
+  <Card title="Admin" icon="user-shield">
+    Full system access and configuration
+  </Card>
+  <Card title="Manager" icon="user-tie">
+    Team oversight and reporting
+  </Card>
+  <Card title="Agent" icon="user-headset">
+    Handle customer conversations
+  </Card>
+  <Card title="Viewer" icon="user">
+    Read-only access to conversations
+  </Card>
+</CardGroup>
+
+### Role Permissions Matrix
+
+| Permission | Admin | Manager | Agent | Viewer |
+|------------|-------|---------|-------|--------|
+| View all conversations | ✓ | ✓ | Assigned only | ✓ |
+| Respond to customers | ✓ | ✓ | ✓ | ✗ |
+| Assign conversations | ✓ | ✓ | Own only | ✗ |
+| Manage team members | ✓ | ✗ | ✗ | ✗ |
+| View analytics | ✓ | ✓ | Own only | ✓ |
+| Configure integrations | ✓ | ✗ | ✗ | ✗ |
+| Manage billing | ✓ | ✗ | ✗ | ✗ |
+| Security settings | ✓ | ✗ | ✗ | ✗ |
+| API access | ✓ | ✓ | ✗ | ✗ |
+| Export data | ✓ | ✓ | Own only | ✗ |
+
+## Adding Team Members
+
+<Steps>
+  <Step title="Send Invitation">
+    ```
+    Team → Add Member
+
+    Email: [new-agent@company.com]
+    Name: [John Smith]
+    Role: [Agent ▾]
+
+    Teams/Groups:
+    ☑ Support Team
+    ☐ Sales Team
+    ☐ Technical Support
+
+    Send invitation email: ☑
+
+    [Send Invitation]
+    ```
+  </Step>
+
+  <Step title="Set Permissions">
+    Configure role-specific access:
+
+    ```javascript
+    {
+      "role": "agent",
+      "permissions": {
+        "conversations": {
+          "view": "assigned",
+          "respond": true,
+          "assign": "self_only",
+          "close": true
+        },
+        "contacts": {
+          "view": true,
+          "edit": true,
+          "delete": false
+        },
+        "analytics": {
+          "view": "own_metrics",
+          "export": false
+        }
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Configure Availability">
+    ```
+    Work Schedule
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Timezone: [America/New_York ▾]
+
+    Working Hours:
+    Mon-Fri: 9:00 AM - 6:00 PM
+    Sat-Sun: Off
+
+    Capacity:
+    Max concurrent conversations: [10 ▾]
+
+    Auto-assignment: ☑ Enabled
+    ```
+  </Step>
+
+  <Step title="Welcome & Onboarding">
+    New team member receives:
+    - Welcome email with login link
+    - Setup guide
+    - Training materials
+    - First assignment (optional)
+  </Step>
+</Steps>
+
+## Team Organization
+
+### Teams and Groups
+
+Organize members into teams:
+
+```
+Team Structure
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Support Team (12 members)
+├─ Tier 1 Support (8)
+│  ├─ Sarah Johnson (Team Lead)
+│  ├─ John Smith
+│  └─ ...
+├─ Tier 2 Support (3)
+│  ├─ Alice Brown (Specialist)
+│  └─ ...
+└─ Weekend Support (1)
+
+Sales Team (5 members)
+├─ Inbound Sales (3)
+└─ Account Management (2)
+
+Technical Team (4 members)
+└─ Engineering Support (4)
+```
+
+**Team benefits:**
+- Assign conversations to teams
+- Team-specific analytics
+- Shared resources (templates, tags)
+- Team notifications
+
+### Creating Teams
+
+<Steps>
+  <Step title="Create Team">
+    ```
+    New Team
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Name: [Tier 1 Support]
+    Description: [First-line customer support team]
+
+    Team Lead: [Sarah Johnson ▾]
+    Department: [Support ▾]
+
+    Members (8):
+    [+ Add members...]
+    ```
+  </Step>
+
+  <Step title="Configure Team Settings">
+    ```
+    Team Settings
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Auto-Assignment:
+    ☑ Enable for this team
+    Strategy: [Round Robin ▾]
+
+    Working Hours:
+    ☑ Use team schedule
+    Hours: Mon-Fri 8 AM - 8 PM EST
+
+    Max Load per Agent:
+    [15 ▾] concurrent conversations
+
+    Escalation:
+    Escalate to: [Tier 2 Support ▾]
+    After: [30 ▾] minutes unresolved
+    ```
+  </Step>
+
+  <Step title="Team Permissions">
+    ```
+    Team-Level Access
+    ━━━━━━━━━━━━━━━━━━━━
+
+    Can view:
+    ⦿ Only assigned conversations
+    ○ All team conversations
+    ○ All conversations
+
+    Can access:
+    ☑ Shared knowledge base
+    ☑ Team analytics
+    ☑ Contact database
+    ☐ Billing information
+    ```
+  </Step>
+</Steps>
+
+## Managing Existing Members
+
+### Editing User Profiles
+
+```
+User: John Smith
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Basic Information:
+Email: john@company.com
+Name: John Smith
+Role: Agent → [Agent ▾]
+Status: ● Active
+
+Teams:
+• Support Team
+• Weekend Support
+[+ Add to team...]
+
+Performance:
+Conversations/day: 23
+Avg response time: 3.5 min
+CSAT: 4.6/5
+
+[Edit] [Deactivate] [Delete]
+```
+
+### Changing Roles
+
+<Warning>
+Changing roles immediately updates permissions. Review implications before changing.
+</Warning>
+
+```
+Change Role: John Smith
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Current: Agent
+New: [Manager ▾]
+
+This will grant:
+✓ View all team conversations
+✓ Reassign conversations
+✓ Access team analytics
+✓ Manage team schedule
+
+This will revoke:
+(No permissions removed)
+
+Notify user of role change: ☑
+
+[Cancel] [Change Role]
+```
+
+### Deactivating Users
+
+Temporarily disable access:
+
+```
+Deactivate User: John Smith
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Reason:
+⦿ On leave
+○ Performance review
+○ Security concern
+○ Other: [____________]
+
+Expected return: [12/15/2025]
+
+During deactivation:
+☑ Reassign active conversations
+   Assign to: [Sarah Johnson ▾]
+☑ Disable login access
+☑ Keep historical data
+☐ Notify team members
+
+[Cancel] [Deactivate]
+```
+
+### Removing Users
+
+Permanently remove team members:
+
+<Warning>
+This action permanently removes access. Historical data is preserved for audit purposes.
+</Warning>
+
+```
+Remove User: John Smith
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ This will permanently remove access
+
+Before removing:
+1. Reassign active conversations: [Sarah ▾]
+2. Transfer ownership of:
+   • 23 saved searches
+   • 15 quick reply templates
+   • 5 contact segments
+   To: [Sarah Johnson ▾]
+
+Historical data:
+⦿ Anonymize (keep metrics, remove identity)
+○ Delete completely (GDPR compliance)
+○ Keep as-is (departed employee record)
+
+[Cancel] [Remove User]
+```
+
+## Bulk User Management
+
+Manage multiple users at once:
+
+<Tabs>
+  <Tab title="Bulk Invite">
+    ```
+    Bulk Add Team Members
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Upload CSV:
+    [Choose file...] or drag and drop
+
+    CSV Format:
+    email,name,role,team
+    john@company.com,John Smith,agent,Support
+    jane@company.com,Jane Doe,agent,Support
+
+    [Download Template]
+
+    ─────────────────────
+
+    Or paste email addresses (one per line):
+    [john@company.com
+    jane@company.com
+    bob@company.com]
+
+    Default role: [Agent ▾]
+    Default team: [Support Team ▾]
+
+    [Send Invitations]
+    ```
+  </Tab>
+
+  <Tab title="Bulk Edit">
+    ```
+    Bulk Edit Users
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Selected: 5 users
+
+    Change:
+    ☑ Role to: [Agent ▾]
+    ☑ Add to team: [Weekend Support]
+    ☐ Remove from team: [Select...]
+    ☑ Set status: [Active]
+    ☐ Max conversations: [10]
+
+    Apply to:
+    • John Smith
+    • Jane Doe
+    • Bob Wilson
+    • Alice Brown
+    • Charlie Davis
+
+    [Cancel] [Apply Changes]
+    ```
+  </Tab>
+
+  <Tab title="Import/Export">
+    ```
+    User Data Management
+    ━━━━━━━━━━━━━━━━━━━━━━━━
+
+    Export Users:
+    Include: ☑ All users ○ Active only ○ Specific team
+
+    Format: ⦿ CSV ○ JSON ○ Excel
+
+    Fields:
+    ☑ Basic info (name, email, role)
+    ☑ Teams and groups
+    ☑ Performance metrics
+    ☐ Permissions details
+
+    [Export]
+
+    ─────────────────────
+
+    Import Users:
+    [Choose file...]
+
+    ⚠️ Existing users will be updated
+
+    [Preview Import]
+    ```
+  </Tab>
+</Tabs>
+
+## Team Performance Monitoring
+
+### Team Dashboard
+
+```
+Team Performance Overview
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Active Team Members: 12/15
+Currently Handling: 47 conversations
+Queue: 8 unassigned
+
+Today's Metrics:
+├─ Avg Response Time: 3.2 min (↓ 15%)
+├─ Resolution Rate: 87% (↑ 5%)
+├─ CSAT Score: 4.7/5 (↑ 0.2)
+└─ SLA Compliance: 94%
+
+Top Performers (Today):
+1. Sarah Johnson - 28 conversations, 2.1 min avg
+2. Alice Brown - 25 conversations, 2.8 min avg
+3. Bob Wilson - 23 conversations, 3.1 min avg
+
+Needs Attention:
+⚠️ Charlie Davis - 8 min avg response time
+⚠️ 3 conversations >2 hours unattended
+```
+
+### Individual Performance
+
+```
+Performance Report: John Smith
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Last 30 Days:
+Conversations Handled: 234
+Messages Sent: 1,892
+Avg First Response: 3.2 min
+Avg Resolution Time: 45 min
+CSAT: 4.6/5 (89% response rate)
+SLA Compliance: 96%
+
+Trends:
+📈 Response time improving (-12%)
+📈 CSAT score increasing (+0.3)
+📊 Volume stable
+
+Strengths:
+✓ Fast response times
+✓ High customer satisfaction
+✓ Technical troubleshooting
+
+Development Areas:
+• Complex escalations
+• Product knowledge (feature X)
+
+[View Detailed Report] [Schedule Review]
+```
+
+## Team Capacity Planning
+
+### Workload Distribution
+
+```
+Current Team Capacity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Available: 8 agents
+Busy: 3 agents
+Away: 1 agent
+Offline: 3 agents
+
+Capacity Usage: ████████░░ 78%
+
+Agent Workload:
+Sarah    ██████████ 10/10 (100%)
+John     ████████░░  8/10 (80%)
+Alice    ███████░░░  7/10 (70%)
+Bob      ██████░░░░  6/10 (60%)
+Charlie  ████░░░░░░  4/10 (40%)
+
+Recommendations:
+⚠️ Sarah at capacity - redistribute
+✓ Charlie underutilized - can take more
+💡 Consider adding 1 agent during peak hours
+```
+
+### Scheduling
+
+```
+Team Schedule
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Coverage Requirements:
+Mon-Fri: 8 AM - 8 PM (12 hours)
+Sat-Sun: 10 AM - 4 PM (6 hours)
+
+Current Schedule:
+Monday, Nov 29
+├─ 8 AM - 4 PM: Sarah, John, Alice, Bob (4)
+├─ 12 PM - 8 PM: Charlie, Diana, Emma (3)
+└─ Coverage: ████████████ Adequate
+
+Gaps:
+⚠️ Wednesday 6-8 PM: Only 2 agents
+⚠️ Saturday all day: No coverage
+
+[Auto-Schedule] [Manual Adjust]
+```
+
+## Team Communication
+
+### Announcements
+
+```
+Team Announcements
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[+ New Announcement]
+
+Recent:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Nov 29 - System Maintenance
+Scheduled downtime: Tonight 11 PM - 1 AM
+Notify customers if they ask about delays.
+[Edit] [Delete]
+
+Nov 28 - New Feature: AI Suggestions
+We've enabled AI-powered reply suggestions.
+Training video: [link]
+[View]
+
+Nov 25 - Holiday Schedule
+Thanksgiving coverage needed...
+[View]
+```
+
+### Team Meetings
+
+```
+Team Meetings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Scheduled:
+• Weekly Standup - Every Monday 9 AM
+• Performance Review - First Friday of month
+• Training Session - Every other Wednesday
+
+Next Meeting: Monday, Dec 2 at 9:00 AM
+Topic: Week in review
+Attendees: All team members
+Agenda:
+1. Metrics review
+2. Challenges discussion
+3. Wins and recognition
+4. Next week planning
+
+[Join Meeting] [Reschedule] [Cancel]
+```
+
+## Training & Development
+
+### Onboarding Checklist
+
+```
+Onboarding: John Smith (Day 3/14)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Week 1: Setup & Training
+✓ Account created
+✓ Welcome email sent
+✓ System access granted
+✓ Training modules assigned
+● Watch introduction video
+○ Complete platform tutorial
+○ Shadow senior agent (4 hours)
+○ Review knowledge base
+
+Week 2: Supervised Practice
+○ Handle conversations with supervision
+○ Create quick reply templates
+○ Team introductions
+○ First 1-on-1 with manager
+
+Progress: ████░░░░░░ 30%
+
+[View Full Checklist] [Assign Mentor]
+```
+
+### Skill Development
+
+```
+Team Skills Matrix
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+         Technical Support  Sales  Billing
+Sarah    ████████████████  ██░░  ████████
+John     ████████░░░░░░░░  ████  ████████
+Alice    ████████████████  ░░░░  ████░░░░
+Bob      ████░░░░░░░░░░░░  ████  ████████
+
+Training Recommendations:
+• John: Advanced technical training
+• Alice: Billing system certification
+• Team: Sales techniques workshop
+
+[Assign Training] [View Courses]
+```
+
+## Access Control & Security
+
+### Permission Management
+
+```
+Custom Permissions: Manager Role
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Conversations:
+☑ View all team conversations
+☑ Reassign any conversation
+☑ Close any conversation
+☐ Delete conversations
+☐ Export conversation data
+
+Users:
+☑ View team members
+☑ View team performance
+☐ Add/remove users
+☐ Change user roles
+
+Settings:
+☑ Manage team schedule
+☑ Configure auto-assignment
+☐ Access billing
+☐ Modify security settings
+
+[Save Permissions]
+```
+
+### Audit Log
+
+```
+Team Activity Log
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Filters: [All users ▾] [All actions ▾] [Last 7 days ▾]
+
+Today:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+10:23 AM - Sarah Johnson
+   Action: Changed role: John Smith → Manager
+   IP: 192.168.1.100
+
+10:15 AM - Admin
+   Action: Added user: jane@company.com
+   IP: 192.168.1.100
+
+9:45 AM - John Smith
+   Action: Exported contact data
+   Records: 150 contacts
+   IP: 192.168.1.105
+
+[Export Log] [Filter] [Search]
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Regular Reviews" icon="calendar-check">
+    Review team performance and permissions monthly
+  </Card>
+  <Card title="Clear Roles" icon="sitemap">
+    Define clear responsibilities for each role
+  </Card>
+  <Card title="Capacity Planning" icon="chart-line">
+    Monitor workload and adjust team size
+  </Card>
+  <Card title="Continuous Training" icon="graduation-cap">
+    Invest in ongoing skill development
+  </Card>
+  <Card title="Security First" icon="shield">
+    Follow principle of least privilege
+  </Card>
+  <Card title="Document Everything" icon="file-lines">
+    Keep records of role changes and access grants
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conversation Assignment" icon="user-check" href="/admin/conversation-assignment">
+    Configure automatic assignment rules
+  </Card>
+  <Card title="Security Settings" icon="shield" href="/admin/security-settings">
+    Manage security and compliance
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Set up performance monitoring
+  </Card>
+  <Card title="Integrations" icon="plug" href="/admin/integrations">
+    Connect external tools and services
+  </Card>
+</CardGroup>

@@ -1,0 +1,19 @@
+{
+  "name": "whatsapp-team-inbox-docs",
+  "version": "1.0.0",
+  "description": "Mintlify documentation for WhatsApp Team Inbox",
+  "scripts": {
+    "dev": "mintlify dev",
+    "build": "mintlify build",
+    "preview": "mintlify preview",
+    "install-mintlify": "npm install -g mintlify"
+  },
+  "keywords": [
+    "documentation",
+    "mintlify",
+    "whatsapp",
+    "team-inbox"
+  ],
+  "author": "Your Company",
+  "license": "MIT"
+}

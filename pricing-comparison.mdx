@@ -1,0 +1,333 @@
+---
+title: Pricing Comparison
+description: 'See how Team Inbox compares to enterprise customer support platforms'
+---
+
+## Monthly Cost Comparison
+
+<Note>
+  All prices are current as of January 2025. Enterprise/custom pricing estimated based on public information.
+</Note>
+
+### Small Team (5 Agents)
+
+| Platform | Base Cost | WhatsApp Add-on | Total Monthly | Annual Cost |
+|----------|-----------|----------------|---------------|-------------|
+| **Team Inbox** | $80-300 | Included | **$80-300** | **$960-3,600** |
+| Intercom | $370 ($74/user) | $99 | $469 | $5,628 |
+| Front | $295 ($59/user) | $49 | $344 | $4,128 |
+| Zendesk | $275 ($55/user) | $89 | $364 | $4,368 |
+| Freshdesk | $250 ($50/user) | $75 | $325 | $3,900 |
+
+<Check>**Team Inbox saves $1,500-$4,668/year for 5-person teams**</Check>
+
+### Medium Team (10 Agents)
+
+| Platform | Base Cost | WhatsApp Add-on | Total Monthly | Annual Cost |
+|----------|-----------|----------------|---------------|-------------|
+| **Team Inbox** | $80-300 | Included | **$80-300** | **$960-3,600** |
+| Intercom | $740 ($74/user) | $99 | $839 | $10,068 |
+| Front | $590 ($59/user) | $49 | $639 | $7,668 |
+| Zendesk | $550 ($55/user) | $89 | $639 | $7,668 |
+| Freshdesk | $500 ($50/user) | $75 | $575 | $6,900 |
+
+<Check>**Team Inbox saves $3,300-$9,108/year for 10-person teams**</Check>
+
+### Large Team (20 Agents)
+
+| Platform | Base Cost | WhatsApp Add-on | Total Monthly | Annual Cost |
+|----------|-----------|----------------|---------------|-------------|
+| **Team Inbox** | $80-300 | Included | **$80-300** | **$960-3,600** |
+| Intercom | $1,480 ($74/user) | $99 | $1,579 | $18,948 |
+| Front | $1,180 ($59/user) | $49 | $1,229 | $14,748 |
+| Zendesk | $1,100 ($55/user) | $89 | $1,189 | $14,268 |
+| Freshdesk | $1,000 ($50/user) | $75 | $1,075 | $12,900 |
+
+<Check>**Team Inbox saves $9,300-$18,000/year for 20-person teams**</Check>
+
+## What's Included in Team Inbox Cost?
+
+<AccordionGroup>
+  <Accordion title="Infrastructure Hosting ($5-50/month)" icon="server">
+    **Required**: Server to run backend + frontend
+
+    **Options**:
+    - **Railway**: $5-20/month (simplest)
+    - **AWS EC2**: $10-30/month (scalable)
+    - **DigitalOcean**: $12-25/month (affordable)
+    - **Self-hosted**: $0 (if you have servers)
+
+    **Scales with**: Message volume, not team size
+  </Accordion>
+
+  <Accordion title="PostgreSQL Database ($5-30/month)" icon="database">
+    **Required**: Database for conversations + contacts
+
+    **Options**:
+    - **Railway PostgreSQL**: $5-15/month
+    - **AWS RDS**: $15-30/month
+    - **DigitalOcean Managed**: $15/month
+    - **Self-hosted**: $0
+
+    **Scales with**: Data volume, not team size
+  </Accordion>
+
+  <Accordion title="WhatsApp Business API ($50-250/month)" icon="whatsapp">
+    **Required**: Meta's WhatsApp messaging service
+
+    **Pricing Model**: Per conversation (24-hour window)
+    - Marketing conversations: $0.08-0.12 each
+    - Service conversations: $0.04-0.06 each
+    - Free tier: 1,000 service conversations/month
+
+    **Examples**:
+    - 1,000 conversations: ~$50/month
+    - 3,000 conversations: ~$150/month
+    - 5,000 conversations: ~$250/month
+
+    **Note**: This cost is the same regardless of which platform you use (Team Inbox, Intercom, etc.)
+  </Accordion>
+
+  <Accordion title="Email Notifications ($0-20/month)" icon="envelope">
+    **Optional**: Email alerts for new messages
+
+    **Options**:
+    - **Resend**: Free tier (100 emails/day), then $20/month
+    - **SendGrid**: Free tier (100 emails/day), then $15/month
+    - **AWS SES**: $0.10 per 1,000 emails (~$1-5/month)
+    - **No emails**: $0 (rely on push notifications only)
+  </Accordion>
+</AccordionGroup>
+
+## Total Cost Calculator
+
+<Warning>
+  Your actual costs depend on message volume, not team size
+</Warning>
+
+### Low Volume (1,000 conversations/month)
+
+- Railway hosting: **$20/month**
+- Railway PostgreSQL: **$10/month**
+- WhatsApp API: **$50/month**
+- Resend emails: **$0/month** (free tier)
+- **Total: $80/month**
+- **Annual: $960/year**
+
+**vs. Intercom (5 agents): $469/month = $5,628/year**
+**Savings: $389/month = $4,668/year (83% cheaper)**
+
+### Medium Volume (3,000 conversations/month)
+
+- AWS EC2: **$30/month**
+- AWS RDS PostgreSQL: **$25/month**
+- WhatsApp API: **$150/month**
+- Resend emails: **$15/month**
+- **Total: $220/month**
+- **Annual: $2,640/year**
+
+**vs. Front (10 agents): $639/month = $7,668/year**
+**Savings: $419/month = $5,028/year (66% cheaper)**
+
+### High Volume (5,000 conversations/month)
+
+- AWS EC2 (2x instances): **$60/month**
+- AWS RDS (larger): **$40/month**
+- WhatsApp API: **$250/month**
+- Resend emails: **$5/month**
+- **Total: $355/month**
+- **Annual: $4,260/year**
+
+**vs. Zendesk (20 agents): $1,189/month = $14,268/year**
+**Savings: $834/month = $10,008/year (70% cheaper)**
+
+## Feature Comparison
+
+| Feature | Team Inbox | Intercom | Front | Zendesk |
+|---------|-----------|----------|-------|---------|
+| **WhatsApp Support** | ✅ Native | ✅ Add-on | ✅ Add-on | ✅ Add-on |
+| **Unlimited Agents** | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| **Self-Hosted** | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| **Data Ownership** | ✅ Full | ❌ No | ❌ No | ❌ No |
+| **Real-time Collaboration** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Conversation Assignment** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Push Notifications** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Multi-language UI** | ✅ 6 languages | ✅ 40+ languages | ✅ 10+ languages | ✅ 30+ languages |
+| **Custom Branding** | ✅ Full control | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited |
+| **API Access** | ✅ Full | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Email Channel** | ❌ Not yet | ✅ Yes | ✅ Yes | ✅ Yes |
+| **SMS Channel** | ❌ Not yet | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Social Media** | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Knowledge Base** | ❌ Not yet | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Analytics** | ⚠️ Basic | ✅ Advanced | ✅ Advanced | ✅ Advanced |
+| **Chatbot Builder** | ❌ No | ✅ Yes | ⚠️ Limited | ✅ Yes |
+
+## When Each Platform Makes Sense
+
+### Choose Team Inbox If:
+
+<Check>You primarily use WhatsApp for customer communication</Check>
+<Check>You want to save 60-80% on support platform costs</Check>
+<Check>Data privacy and ownership are critical</Check>
+<Check>You plan to scale your team size</Check>
+<Check>You need full customization freedom</Check>
+<Check>You're comfortable with basic technical setup</Check>
+
+### Choose Traditional SaaS If:
+
+<Warning>
+  Consider Intercom/Front/Zendesk if you need:
+  - Multi-channel support (email, SMS, social, chat)
+  - Advanced chatbot and automation
+  - Enterprise-level analytics and reporting
+  - No technical setup/management
+  - Out-of-the-box integrations with 100+ tools
+  - Only 1-2 agents (cost difference minimal)
+</Warning>
+
+## Hidden Costs to Consider
+
+### Traditional SaaS Hidden Costs
+
+<CardGroup cols={2}>
+  <Card title="Per-Agent Pricing" icon="users">
+    Every new team member adds $50-74/month. Hiring support staff directly increases your monthly bill.
+  </Card>
+
+  <Card title="Channel Add-ons" icon="plug">
+    WhatsApp, SMS, social media often cost extra $49-99/month each.
+  </Card>
+
+  <Card title="Storage Limits" icon="database">
+    Conversation history often limited. Extended storage costs extra.
+  </Card>
+
+  <Card title="API Rate Limits" icon="gauge">
+    API calls limited on lower tiers. Higher limits require enterprise plans.
+  </Card>
+
+  <Card title="Migration Costs" icon="arrow-right-arrow-left">
+    Switching platforms is expensive. Data export fees, setup time, training.
+  </Card>
+
+  <Card title="Contract Lock-in" icon="lock">
+    Annual contracts common. Cancellation fees if you leave early.
+  </Card>
+</CardGroup>
+
+### Team Inbox Transparent Costs
+
+<Info>
+  All costs are usage-based and transparent. No hidden fees, no per-agent charges, no contract lock-in.
+</Info>
+
+**One-time Costs**:
+- Setup time: ~2-4 hours of your time
+- Optional: Professional deployment service ($200-500)
+
+**Ongoing Costs**:
+- Infrastructure: Fixed monthly cost
+- WhatsApp API: Per conversation (same as other platforms)
+- Email: Minimal or free
+
+**No Costs For**:
+- ✅ Adding team members
+- ✅ API access
+- ✅ Data storage
+- ✅ Feature updates
+- ✅ Customization
+- ✅ Migration/export
+
+## ROI Calculation Example
+
+**Scenario**: Growing startup with 8-person support team
+
+### Year 1 with Intercom
+
+- Intercom Professional: **$74/user** × 8 = **$592/month**
+- WhatsApp add-on: **$99/month**
+- Setup time: **$0** (no setup)
+- **Monthly: $691**
+- **Annual: $8,292**
+
+### Year 1 with Team Inbox
+
+- Setup time: 4 hours × $50/hour = **$200** (one-time)
+- Railway hosting: **$20/month**
+- Railway database: **$10/month**
+- WhatsApp API: **$100/month** (2,000 conversations)
+- Resend emails: **$0/month** (free tier)
+- **One-time: $200**
+- **Monthly: $130**
+- **Annual: $1,560 + $200 = $1,760**
+
+**Year 1 Savings**: $8,292 - $1,760 = **$6,532 saved**
+
+**3-Year Total**:
+- Intercom: $24,876
+- Team Inbox: $200 + ($130 × 36) = $4,880
+- **Total Savings: $19,996**
+
+<Check>
+  The time investment to deploy Team Inbox pays for itself in the first month
+</Check>
+
+## Scaling Costs
+
+<Tabs>
+  <Tab title="Team Inbox">
+    As your team grows from 5 → 20 people:
+
+    **Cost Change**: $80-300/month → $80-400/month
+
+    Slight increase only if message volume increases. Team size doesn't matter.
+  </Tab>
+
+  <Tab title="Traditional SaaS">
+    As your team grows from 5 → 20 people:
+
+    **Cost Change**: $469/month → $1,579/month
+
+    Linear increase with every new hire. 4x the monthly cost.
+  </Tab>
+</Tabs>
+
+## Get Your Custom Estimate
+
+<CardGroup cols={2}>
+  <Card
+    title="Cost Calculator"
+    icon="calculator"
+    href="/cost/monthly-costs"
+  >
+    Calculate your exact monthly costs
+  </Card>
+
+  <Card
+    title="Deploy Now"
+    icon="rocket"
+    href="/getting-started/deploy-in-30-minutes"
+  >
+    Start saving in 30 minutes
+  </Card>
+</CardGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="What if I need to cancel?" icon="circle-question">
+    No contracts, no cancellation fees. Stop paying for infrastructure whenever you want. Export all your data first - it's yours.
+  </Accordion>
+
+  <Accordion title="Do costs increase as I get more customers?" icon="chart-line">
+    WhatsApp API costs scale with conversation volume (same for any platform). Infrastructure costs only increase significantly if you exceed 10,000+ conversations/month.
+  </Accordion>
+
+  <Accordion title="What about support costs?" icon="headset">
+    Community support is free. Documentation is comprehensive. Professional deployment assistance available for $200-500 one-time fee.
+  </Accordion>
+
+  <Accordion title="Can I switch from SaaS later?" icon="right-left">
+    Yes! Export your data from the SaaS platform, import contacts into Team Inbox, and switch your WhatsApp webhook. Most teams complete this in 1 day.
+  </Accordion>
+</AccordionGroup>

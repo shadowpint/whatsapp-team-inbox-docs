@@ -1,0 +1,408 @@
+---
+title: Requirements
+description: 'Everything you need to deploy WhatsApp Team Inbox'
+---
+
+## Overview
+
+WhatsApp Team Inbox is designed to be easy to deploy with minimal technical requirements. If you can follow a tutorial and copy environment variables, you can get this running.
+
+<Info>
+  **No coding required.** All setup is configuration-based through environment variables and cloud service dashboards.
+</Info>
+
+## Required Services
+
+### 1. WhatsApp Business API Account
+
+<Card title="Meta WhatsApp Business Platform" icon="whatsapp">
+  **Cost**: Free to set up, pay-as-you-go for messages
+
+  **What you need**:
+  - Business phone number (not previously used on WhatsApp)
+  - Facebook Business Manager account
+  - Business verification (may take 1-3 days)
+
+  **Pricing**:
+  - Free tier: 1,000 service conversations/month
+  - After free tier: $0.04-0.12 per conversation
+</Card>
+
+<Steps>
+  <Step title="Create Business Account">
+    Sign up at business.facebook.com
+  </Step>
+
+  <Step title="Add Phone Number">
+    Add a phone number not used on regular WhatsApp
+  </Step>
+
+  <Step title="Verify Business">
+    Complete business verification (name, address, documents)
+  </Step>
+
+  <Step title="Get API Credentials">
+    Get Phone Number ID, Business Account ID, Access Token
+  </Step>
+</Steps>
+
+<Note>
+  Detailed WhatsApp setup guide: [WhatsApp Business API Setup](/deployment/whatsapp-setup)
+</Note>
+
+### 2. PostgreSQL Database
+
+<Card title="Database Server" icon="database">
+  **Cost**: $5-30/month depending on provider
+
+  **What you need**:
+  - PostgreSQL 14 or higher
+  - Connection URL with username/password
+
+  **Storage needs**:
+  - Small team (&lt;1,000 conversations/month): 1GB sufficient
+  - Medium team (1,000-5,000 conversations/month): 2-5GB
+  - Large team (&gt;5,000 conversations/month): 10GB+
+</Card>
+
+**Recommended Providers**:
+
+| Provider | Starting Price | Setup Difficulty | Recommendation |
+|----------|---------------|------------------|----------------|
+| **Railway** | $5/month | ⭐ Easiest | Best for beginners |
+| **Supabase** | Free tier, then $25/month | ⭐⭐ Easy | Good for startups |
+| **DigitalOcean** | $15/month | ⭐⭐ Medium | Reliable and affordable |
+| **AWS RDS** | $15/month | ⭐⭐⭐ Complex | Best for scale |
+| **Self-hosted** | $0 | ⭐⭐⭐⭐ Advanced | If you have infrastructure |
+
+<Tip>
+  For first-time deployment, we recommend **Railway** for its simplicity and all-in-one platform.
+</Tip>
+
+### 3. Hosting Platform
+
+<Card title="Application Server" icon="server">
+  **Cost**: $5-50/month depending on provider and traffic
+
+  **What you need**:
+  - Node.js runtime environment
+  - Support for Docker (optional but recommended)
+  - HTTPS/SSL certificate (usually included)
+
+  **Resource needs**:
+  - Small team: 512MB RAM, 1 vCPU
+  - Medium team: 1GB RAM, 1-2 vCPU
+  - Large team: 2GB+ RAM, 2+ vCPU
+</Card>
+
+**Deployment Options**:
+
+<Tabs>
+  <Tab title="Railway (Recommended)">
+    **Pros**:
+    - ✅ Easiest deployment
+    - ✅ Database + hosting in one platform
+    - ✅ Automatic HTTPS
+    - ✅ GitHub integration
+    - ✅ Environment variables UI
+
+    **Cons**:
+    - ⚠️ Slightly more expensive at scale
+    - ⚠️ Less infrastructure control
+
+    **Pricing**: $5-20/month for complete setup
+
+    **Perfect for**: First deployment, small-medium teams
+  </Tab>
+
+  <Tab title="Vercel + AWS">
+    **Pros**:
+    - ✅ Excellent Next.js performance
+    - ✅ Global CDN
+    - ✅ Generous free tier for frontend
+    - ✅ Automatic scaling
+
+    **Cons**:
+    - ⚠️ Backend needs separate hosting
+    - ⚠️ More complex setup
+
+    **Pricing**: $0-20/month (frontend) + $10-30/month (backend)
+
+    **Perfect for**: Developers familiar with Vercel
+  </Tab>
+
+  <Tab title="AWS (EC2 + RDS)">
+    **Pros**:
+    - ✅ Maximum scalability
+    - ✅ Full infrastructure control
+    - ✅ Enterprise-grade reliability
+    - ✅ Advanced monitoring tools
+
+    **Cons**:
+    - ⚠️ Steeper learning curve
+    - ⚠️ More setup complexity
+    - ⚠️ Requires AWS knowledge
+
+    **Pricing**: $15-60/month depending on configuration
+
+    **Perfect for**: Growing teams, enterprise deployments
+  </Tab>
+
+  <Tab title="Self-Hosted">
+    **Pros**:
+    - ✅ $0 infrastructure cost
+    - ✅ Complete control
+    - ✅ No vendor lock-in
+
+    **Cons**:
+    - ⚠️ Requires server management skills
+    - ⚠️ You handle backups, security, updates
+    - ⚠️ Need existing server infrastructure
+
+    **Pricing**: $0 (use existing servers)
+
+    **Perfect for**: Teams with existing infrastructure
+  </Tab>
+</Tabs>
+
+### 4. Email Service (Optional but Recommended)
+
+<Card title="Email Notifications" icon="envelope">
+  **Cost**: $0-20/month (most teams use free tier)
+
+  **What you need**:
+  - SMTP credentials or API key
+  - Verified sender domain (optional)
+
+  **Purpose**:
+  - New message email notifications
+  - Team member invitations
+  - Password reset emails
+</Card>
+
+**Email Provider Options**:
+
+| Provider | Free Tier | Paid Plan | Setup Difficulty |
+|----------|-----------|-----------|------------------|
+| **Resend** | 100 emails/day | $20/month | ⭐ Easiest |
+| **SendGrid** | 100 emails/day | $15/month | ⭐⭐ Easy |
+| **AWS SES** | 62,000/month | $0.10/1,000 | ⭐⭐⭐ Medium |
+| **Mailgun** | 5,000/month (3 months) | $35/month | ⭐⭐ Easy |
+
+<Warning>
+  If you skip email service, you can still use push notifications. Email is optional but recommended for better team coordination.
+</Warning>
+
+## Optional Services
+
+### Domain Name
+
+<Card title="Custom Domain" icon="globe">
+  **Cost**: $10-15/year
+
+  **What you need**:
+  - Domain registrar (Namecheap, Google Domains, etc.)
+  - DNS configuration access
+
+  **Purpose**:
+  - Professional URL (inbox.yourcompany.com)
+  - Custom email sender (@yourcompany.com)
+  - Better branding
+</Card>
+
+Not required for deployment, but recommended for production use.
+
+### Monitoring & Analytics (Optional)
+
+<Card title="Application Monitoring" icon="chart-line">
+  **Cost**: Free tiers available
+
+  **Options**:
+  - Sentry (error tracking)
+  - LogRocket (session replay)
+  - Google Analytics (usage analytics)
+
+  **Purpose**:
+  - Track errors and bugs
+  - Monitor performance
+  - Understand usage patterns
+</Card>
+
+## Technical Skills Needed
+
+<Info>
+  **Skill Level: Beginner to Intermediate**
+
+  You do NOT need to be a developer. If you can follow step-by-step instructions, you can deploy this.
+</Info>
+
+### What You Need to Know:
+
+<Check>**How to sign up for cloud services** - Creating accounts on Railway, AWS, etc.</Check>
+<Check>**How to copy and paste** - Most setup is copying environment variables</Check>
+<Check>**Basic command line comfort** - Running a few terminal commands</Check>
+<Check>**How to read documentation** - Following deployment guides</Check>
+
+### What You DON'T Need to Know:
+
+❌ Programming or coding
+❌ Server administration
+❌ Database management
+❌ DevOps or infrastructure engineering
+❌ Advanced networking concepts
+
+<Tip>
+  If you can use Shopify or WordPress, you can deploy Team Inbox. It's mostly clicking buttons and copying values.
+</Tip>
+
+## Time Investment
+
+<Steps>
+  <Step title="WhatsApp Business API Setup">
+    **Time**: 1-2 hours
+    **Includes**: Account creation, business verification, getting credentials
+  </Step>
+
+  <Step title="Infrastructure Setup">
+    **Time**: 30-45 minutes
+    **Includes**: Database creation, hosting setup, environment variables
+  </Step>
+
+  <Step title="Application Deployment">
+    **Time**: 15-30 minutes
+    **Includes**: Code deployment, initial configuration
+  </Step>
+
+  <Step title="Testing & Verification">
+    **Time**: 15-30 minutes
+    **Includes**: Sending test messages, verifying everything works
+  </Step>
+</Steps>
+
+<Note>
+  **Total Time**: 2-4 hours for first deployment
+
+  Subsequent deployments or updates take ~15 minutes.
+</Note>
+
+## Budget Requirements
+
+### Minimum Monthly Budget
+
+```
+PostgreSQL (Railway):      $5/month
+Hosting (Railway):         $5/month
+WhatsApp API:              $0-50/month (free tier + light usage)
+Email (Resend free tier):  $0/month
+───────────────────────────────────
+Total:                     $10-60/month
+```
+
+### Recommended Monthly Budget
+
+```
+PostgreSQL (Managed):      $15/month
+Hosting (Better resources): $20/month
+WhatsApp API:              $50-150/month
+Email (Resend):            $0-20/month
+Domain:                    $1/month (amortized)
+───────────────────────────────────
+Total:                     $86-206/month
+```
+
+### Enterprise Budget
+
+```
+PostgreSQL (AWS RDS):      $30/month
+Hosting (AWS EC2 2x):      $60/month
+WhatsApp API:              $200-500/month
+Email (AWS SES):           $5/month
+Domain + SSL:              $2/month
+Monitoring (Sentry):       $26/month
+───────────────────────────────────
+Total:                     $323-623/month
+```
+
+<Check>
+  Even the enterprise setup costs 70-80% less than traditional SaaS platforms
+</Check>
+
+## Before You Start Checklist
+
+<AccordionGroup>
+  <Accordion title="✅ I have a business phone number" icon="phone">
+    A phone number that has never been used on WhatsApp (personal or business). Can be a landline or mobile number.
+  </Accordion>
+
+  <Accordion title="✅ I have a Facebook Business Manager account" icon="facebook">
+    Or I'm willing to create one. Required for WhatsApp Business API access.
+  </Accordion>
+
+  <Accordion title="✅ I have a credit card" icon="credit-card">
+    For cloud service payments. Most services have free tiers but require payment method on file.
+  </Accordion>
+
+  <Accordion title="✅ I have 2-4 hours available" icon="clock">
+    To complete the initial setup in one sitting. Can pause and resume, but continuous time is easier.
+  </Accordion>
+
+  <Accordion title="✅ I can follow technical instructions" icon="book-open">
+    Comfortable with step-by-step guides, copying values, running terminal commands.
+  </Accordion>
+</AccordionGroup>
+
+## What Happens After Deployment?
+
+Once deployed, your ongoing responsibilities are minimal:
+
+<CardGroup cols={2}>
+  <Card title="Monthly Monitoring" icon="chart-mixed">
+    Check error logs, message volume, system performance (~30 min/month)
+  </Card>
+
+  <Card title="User Management" icon="users">
+    Add/remove team members as needed (5 min per change)
+  </Card>
+
+  <Card title="Updates" icon="arrow-up">
+    Optional: Update to new versions for features/fixes (~1 hour/quarter)
+  </Card>
+
+  <Card title="Backups" icon="database">
+    Most providers handle automatically. Verify backups work (~15 min/month)
+  </Card>
+</CardGroup>
+
+<Info>
+  **Ongoing time investment**: ~1-2 hours per month for monitoring and maintenance
+</Info>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Community Support"
+    icon="users"
+    href="https://github.com/yourusername/whatsapp-team-inbox/discussions"
+  >
+    Free help from community members
+  </Card>
+
+  <Card
+    title="Professional Deployment"
+    icon="briefcase"
+    href="/support/contact"
+  >
+    We'll deploy it for you ($200-500)
+  </Card>
+</CardGroup>
+
+## Ready to Deploy?
+
+<Card
+  title="30-Minute Deployment Guide"
+  icon="rocket"
+  href="/getting-started/deploy-in-30-minutes"
+>
+  Follow our step-by-step guide to get Team Inbox running
+</Card>

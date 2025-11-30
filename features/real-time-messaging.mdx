@@ -1,0 +1,341 @@
+---
+title: 'Real-Time Messaging'
+description: 'Instant message delivery and live updates powered by WebSocket technology'
+---
+
+## Overview
+
+Real-time messaging ensures instant communication between your team and customers with no delays or page refreshes required.
+
+<Info>
+Messages appear instantly for both agents and customers, providing a seamless chat experience.
+</Info>
+
+## How It Works
+
+Real-time updates are powered by WebSocket connections:
+
+```
+Customer sends WhatsApp message
+         ↓
+WhatsApp Business API
+         ↓
+Your webhook endpoint
+         ↓
+WebSocket broadcasts to connected agents
+         ↓
+Message appears in agent's inbox (< 2 seconds)
+```
+
+## Features
+
+<CardGroup cols={2}>
+  <Card title="Instant Delivery" icon="bolt">
+    Messages appear within 2 seconds
+  </Card>
+  <Card title="Typing Indicators" icon="keyboard">
+    See when customers are typing
+  </Card>
+  <Card title="Read Receipts" icon="check-double">
+    Know when messages are read
+  </Card>
+  <Card title="Presence Status" icon="circle">
+    See who's online in your team
+  </Card>
+  <Card title="Live Updates" icon="arrows-rotate">
+    Conversation status changes instantly
+  </Card>
+  <Card title="No Refresh Needed" icon="ban">
+    Everything updates automatically
+  </Card>
+</CardGroup>
+
+## Message Delivery
+
+### Inbound Messages
+
+When a customer messages you:
+
+1. **Received** (< 1s): WhatsApp delivers to your webhook
+2. **Processed** (< 1s): System processes and stores message
+3. **Broadcasted** (< 500ms): Sent to all connected agents via WebSocket
+4. **Displayed** (instant): Appears in assigned agent's inbox
+
+**Total delivery time: < 2 seconds**
+
+### Outbound Messages
+
+When an agent sends a message:
+
+1. **Sent** (instant): Message submitted from inbox
+2. **Queued** (< 100ms): Added to sending queue
+3. **API Call** (< 500ms): Sent to WhatsApp Business API
+4. **Delivered** (1-3s): WhatsApp delivers to customer
+5. **Status Update** (instant): Delivery status shown to agent
+
+## Typing Indicators
+
+See real-time typing status:
+
+```
+Customer Side (WhatsApp):
+Agent is typing... [displayed when agent types]
+
+Agent Side (Team Inbox):
+Customer is typing... [displayed when customer types]
+```
+
+**Configuration:**
+```javascript
+{
+  "typingIndicators": {
+    "enabled": true,
+    "timeout": 10, // Hide after 10 seconds
+    "showToCustomer": true
+  }
+}
+```
+
+## Read Receipts
+
+Track message status in real-time:
+
+| Status | Icon | Meaning |
+|--------|------|---------|
+| Sending | ⏱️ | Message being sent |
+| Sent | ✓ | Delivered to WhatsApp |
+| Delivered | ✓✓ | Received by customer |
+| Read | ✓✓ (blue) | Customer opened message |
+| Failed | ❌ | Send failed |
+
+Updates happen automatically without refresh.
+
+## Presence & Availability
+
+### Agent Presence
+
+```
+Team Status (Live)
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+🟢 Sarah Johnson    Online
+🟢 John Smith       Online  
+🟡 Alice Brown      Away (5 min)
+🔴 Bob Wilson       Offline
+
+Last Update: Just now
+```
+
+**Automatic presence:**
+- Active typing → Online
+- No activity 5 min → Away
+- No activity 30 min → Offline  
+- Browser closed → Offline
+
+### Customer Presence
+
+See when customers were last active:
+
+```
+Customer Profile
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+John Smith
+🟢 Active now
+Last seen: Just now
+
+Jane Doe
+⚪ Offline
+Last seen: 2 hours ago
+```
+
+## Live Conversation Updates
+
+All changes sync instantly across team members viewing the same conversation:
+
+- **Messages**: New messages appear automatically
+- **Assignments**: See who's assigned in real-time
+- **Status**: Conversation status updates instantly
+- **Tags**: Tag additions/removals sync
+- **Notes**: Internal notes appear for team
+- **Typing**: See who's typing a response
+
+**Prevents conflicts:**
+```
+When Alice starts typing:
+  → "Alice is typing a response..."
+  → Other agents see notification
+  → Prevents duplicate responses
+```
+
+## Connection Management
+
+### Automatic Reconnection
+
+If connection is lost:
+
+```
+Connection Status
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ Disconnected
+
+Attempting to reconnect...
+Retry 1 of 5 (in 2 seconds)
+
+───────────────────────────
+
+✓ Connected
+
+Real-time updates resumed
+```
+
+**Reconnection strategy:**
+1. Try immediately
+2. Wait 2s, try again
+3. Wait 4s, try again  
+4. Wait 8s, try again
+5. Wait 16s, try again
+6. If still failing, switch to polling
+
+### Fallback to Polling
+
+If WebSocket unavailable:
+
+```javascript
+{
+  "realtime": {
+    "preferredMethod": "websocket",
+    "fallback": "polling",
+    "pollingInterval": 3000 // Check every 3 seconds
+  }
+}
+```
+
+## Performance Optimization
+
+### Message Batching
+
+Multiple rapid messages are batched:
+
+```
+Instead of:
+  WebSocket update #1
+  WebSocket update #2  
+  WebSocket update #3
+  (3 separate renders)
+
+Batched:
+  WebSocket update with 3 messages
+  (1 optimized render)
+```
+
+### Smart Loading
+
+```javascript
+{
+  "lazyLoading": {
+    "initialMessages": 50,
+    "loadMoreIncrement": 25,
+    "preloadNext": true // Preload next conversation
+  }
+}
+```
+
+## Technical Details
+
+### WebSocket Connection
+
+```javascript
+// Connection established automatically
+const ws = new WebSocket('wss://your-inbox.com/ws');
+
+ws.on('connect', () => {
+  console.log('Real-time updates active');
+});
+
+ws.on('message', (event) => {
+  const { type, data } = JSON.parse(event.data);
+  
+  switch(type) {
+    case 'message.new':
+      displayMessage(data);
+      break;
+    case 'conversation.updated':
+      updateConversation(data);
+      break;
+    case 'user.typing':
+      showTypingIndicator(data);
+      break;
+  }
+});
+```
+
+### Event Types
+
+| Event | Trigger | Data |
+|-------|---------|------|
+| `message.new` | New message received | Message object |
+| `message.sent` | Message sent successfully | Message ID, status |
+| `message.read` | Customer read message | Message ID, timestamp |
+| `conversation.updated` | Status/assignment changed | Conversation object |
+| `user.typing` | User is typing | User ID, conversation ID |
+| `user.presence` | User status changed | User ID, status |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Messages delayed or not appearing">
+    **Possible causes:**
+    - WebSocket connection failed
+    - Browser blocking WebSocket
+    - Network firewall issues
+
+    **Solutions:**
+    1. Check browser console for errors
+    2. Verify WebSocket URL is accessible
+    3. Check if fallback polling is active
+    4. Refresh browser/clear cache
+  </Accordion>
+
+  <Accordion title="Frequent disconnections">
+    **Possible causes:**
+    - Unstable internet connection
+    - Load balancer timeout
+    - Browser throttling inactive tabs
+
+    **Solutions:**
+    1. Check internet stability
+    2. Increase server timeout settings
+    3. Keep inbox tab active
+    4. Use desktop app (if available)
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Stable Connection" icon="wifi">
+    Ensure reliable internet for real-time updates
+  </Card>
+  <Card title="Active Tab" icon="window-maximize">
+    Keep inbox tab active for best performance
+  </Card>
+  <Card title="Modern Browser" icon="browser">
+    Use latest Chrome, Firefox, or Safari
+  </Card>
+  <Card title="Monitor Status" icon="signal">
+    Watch connection indicator
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Push Notifications" icon="bell" href="/features/push-notifications">
+    Get notified even when inbox is closed
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/features/webhooks">
+    Integrate with external systems
+  </Card>
+</CardGroup>

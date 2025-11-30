@@ -1,0 +1,140 @@
+---
+title: 'Webhooks'
+description: 'Real-time event notifications for external integrations'
+---
+
+## Overview
+
+Webhooks allow your applications to receive real-time notifications when events occur in Team Inbox.
+
+## Event Types
+
+<Tabs>
+  <Tab title="Conversations">
+    - `conversation.created`
+    - `conversation.updated`
+    - `conversation.assigned`
+    - `conversation.closed`
+  </Tab>
+
+  <Tab title="Messages">
+    - `message.received`
+    - `message.sent`
+    - `message.delivered`
+    - `message.read`
+    - `message.failed`
+  </Tab>
+
+  <Tab title="Contacts">
+    - `contact.created`
+    - `contact.updated`
+    - `contact.deleted`
+  </Tab>
+
+  <Tab title="Users">
+    - `user.status_changed`
+    - `user.assigned`
+  </Tab>
+</Tabs>
+
+## Webhook Setup
+
+<Steps>
+  <Step title="Create Webhook">
+    ```
+    POST /api/webhooks
+    {
+      "url": "https://your-app.com/webhook",
+      "events": ["message.received", "conversation.assigned"],
+      "secret": "your_secret_key"
+    }
+    ```
+  </Step>
+
+  <Step title="Receive Events">
+    ```javascript
+    app.post('/webhook', (req, res) => {
+      const event = req.body;
+      
+      // Verify signature
+      if (!verifySignature(req)) {
+        return res.status(401).send('Invalid signature');
+      }
+      
+      // Handle event
+      switch(event.type) {
+        case 'message.received':
+          handleNewMessage(event.data);
+          break;
+      }
+      
+      res.status(200).send('OK');
+    });
+    ```
+  </Step>
+
+  <Step title="Verify Signature">
+    ```javascript
+    function verifySignature(req) {
+      const signature = req.headers['x-webhook-signature'];
+      const payload = JSON.stringify(req.body);
+      const expected = crypto
+        .createHmac('sha256', secret)
+        .update(payload)
+        .digest('hex');
+      return signature === expected;
+    }
+    ```
+  </Step>
+</Steps>
+
+## Payload Example
+
+```json
+{
+  "id": "evt_123",
+  "type": "message.received",
+  "created_at": "2025-11-29T10:30:00Z",
+  "data": {
+    "message": {
+      "id": "msg_456",
+      "conversation_id": "conv_789",
+      "from": "+1234567890",
+      "text": "Hello, I need help",
+      "type": "text",
+      "timestamp": "2025-11-29T10:30:00Z"
+    }
+  }
+}
+```
+
+## Retry Policy
+
+Failed webhook deliveries are retried:
+
+- Attempt 1: Immediate
+- Attempt 2: After 1 minute
+- Attempt 3: After 5 minutes
+- Attempt 4: After 15 minutes
+- Attempt 5: After 1 hour
+
+After 5 failures, webhook is disabled.
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Verify Signatures" icon="shield">
+    Always verify webhook signatures
+  </Card>
+  <Card title="Return Quickly" icon="bolt">
+    Respond 200 OK within 5 seconds
+  </Card>
+  <Card title="Handle Retries" icon="arrows-rotate">
+    Make webhooks idempotent
+  </Card>
+  <Card title="Monitor Health" icon="heart-pulse">
+    Track webhook delivery success rate
+  </Card>
+</CardGroup>
+
+[API Reference →](/api-reference/webhooks)

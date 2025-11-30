@@ -1,0 +1,238 @@
+---
+title: 'Scaling Guide'
+description: 'Scale your WhatsApp Team Inbox from 100 to 100,000+ conversations'
+---
+
+## Overview
+
+Plan your infrastructure scaling strategy to handle growth while managing costs effectively.
+
+## Scaling Stages
+
+<Steps>
+  <Step title="Stage 1: Small Team (0-1K conversations/month)">
+    **Infrastructure:**
+    - Server: Render/Railway ($5-15/month)
+    - Database: Supabase Free (500 MB)
+    - Email: SendGrid Free (100/day)
+
+    **Team Size:** 1-3 agents
+    **Total Cost:** $20-30/month
+
+    **When to scale:** Database >400 MB or >500 conversations/month
+  </Step>
+
+  <Step title="Stage 2: Growing Team (1K-5K conversations/month)">
+    **Infrastructure:**
+    - Server: Railway Pro or AWS t3.small ($20-30/month)
+    - Database: Supabase Pro 8GB ($25/month)
+    - Email: SendGrid Essentials ($20/month)
+    - Redis: Upstash Free or Railway ($5-10/month)
+
+    **Team Size:** 3-8 agents
+    **Total Cost:** $70-85/month + WhatsApp fees
+
+    **When to scale:** CPU >70% consistently or database >6 GB
+  </Step>
+
+  <Step title="Stage 3: Medium Team (5K-20K conversations/month)">
+    **Infrastructure:**
+    - Server: AWS t3.medium or 2× t3.small ($50-70/month)
+    - Database: AWS RDS db.t3.small ($28/month) or Supabase Team
+    - Email: SendGrid Pro ($90/month) or AWS SES
+    - Redis: AWS ElastiCache ($25/month)
+    - Load Balancer: AWS ALB ($20/month)
+
+    **Team Size:** 8-20 agents
+    **Total Cost:** $213+/month + WhatsApp fees
+
+    **When to scale:** Multiple servers needed or >15K conversations
+  </Step>
+
+  <Step title="Stage 4: Large Team (20K+ conversations/month)">
+    **Infrastructure:**
+    - Servers: Auto-scaling group, 2-5× t3.large ($120-300/month)
+    - Database: RDS Multi-AZ db.m5.large ($200/month)
+    - Email: AWS SES ($0.10/1K emails)
+    - Redis: ElastiCache cluster ($100/month)
+    - CDN: CloudFront ($20/month)
+    - Monitoring: Datadog ($100/month)
+
+    **Team Size:** 20-100+ agents
+    **Total Cost:** $500-800/month + WhatsApp fees
+
+    **Still cheaper than:** Zendesk at $49/agent × 50 = $2,450/month
+  </Step>
+</Steps>
+
+## Horizontal Scaling
+
+Run multiple application servers:
+
+```
+                   Load Balancer
+                        |
+        +---------------+----------------+
+        |               |                |
+   Server 1         Server 2        Server 3
+        |               |                |
+        +---------------+----------------+
+                        |
+                   Database
+```
+
+**Benefits:**
+- Handle more concurrent users
+- Zero-downtime deployments
+- Automatic failover
+
+**Cost:** ~$30-60 per additional server
+
+## Database Scaling
+
+<Tabs>
+  <Tab title="Vertical Scaling">
+    Upgrade to larger instance:
+
+    | Size | Storage | RAM | CPU | Cost/mo |
+    |------|---------|-----|-----|---------|
+    | Small | 20 GB | 1 GB | 1 vCPU | $15 |
+    | Medium | 100 GB | 4 GB | 2 vCPU | $60 |
+    | Large | 500 GB | 16 GB | 4 vCPU | $200 |
+    | XLarge | 1 TB | 32 GB | 8 vCPU | $400 |
+
+    **When:** Single database can handle load
+  </Tab>
+
+  <Tab title="Read Replicas">
+    Add read-only database copies:
+
+    ```
+    Primary DB (writes)
+         |
+    +----+----+
+    |         |
+    Replica  Replica (reads)
+    ```
+
+    **Cost:** +50-100% of primary DB cost
+    **Benefit:** 3-5× read capacity
+  </Tab>
+
+  <Tab title="Partitioning">
+    Split data by date:
+
+    ```
+    conversations_2025_11
+    conversations_2025_10
+    conversations_2025_09 (archived)
+    ```
+
+    **Cost:** Storage only
+    **Benefit:** Faster queries on recent data
+  </Tab>
+</Tabs>
+
+## Performance Optimization
+
+### Caching Strategy
+
+Implement Redis caching:
+
+```javascript
+{
+  "cache": {
+    "conversations": {
+      "ttl": 300, // 5 minutes
+      "keys": ["user:{id}:conversations"]
+    },
+    "contacts": {
+      "ttl": 3600, // 1 hour
+      "keys": ["contact:{phone}"]
+    },
+    "team_status": {
+      "ttl": 60, // 1 minute
+      "keys": ["team:presence"]
+    }
+  }
+}
+```
+
+**Impact:** 50-80% reduction in database queries
+
+### Database Indexing
+
+Critical indexes for scaling:
+
+```sql
+CREATE INDEX idx_conversations_assigned_updated 
+  ON conversations(assigned_to, updated_at DESC);
+
+CREATE INDEX idx_messages_conversation_created 
+  ON messages(conversation_id, created_at DESC);
+
+CREATE INDEX idx_contacts_phone_hash 
+  ON contacts USING HASH (phone);
+```
+
+**Impact:** 10-100× faster queries
+
+## Cost-Effective Scaling
+
+<CardGroup cols={2}>
+  <Card title="Use Spot Instances" icon="dollar-sign">
+    Save 60-80% on AWS EC2 with spot instances for non-critical workloads
+  </Card>
+  <Card title="Archive Old Data" icon="box-archive">
+    Move conversations >6 months to cheaper storage
+  </Card>
+  <Card title="Optimize Images" icon="image">
+    Compress and CDN for media files
+  </Card>
+  <Card title="Right-Size Resources" icon="sliders">
+    Monitor and adjust instance sizes monthly
+  </Card>
+</CardGroup>
+
+## Monitoring for Scale
+
+Track these metrics:
+
+```
+Scaling Indicators
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Server CPU: 72% (consider scaling at >75%)
+Memory: 68% (consider scaling at >80%)
+Database Connections: 78/100 (OK)
+Response Time P95: 450ms (target <500ms)
+Error Rate: 0.1% (target <1%)
+
+Recommendation: Monitor, no action needed yet
+Next review: In 7 days
+```
+
+## Growth Planning
+
+Plan ahead based on growth rate:
+
+| Current | Growth | In 3 Months | Infrastructure |
+|---------|--------|-------------|----------------|
+| 500/mo | 20%/mo | 850/mo | Current OK |
+| 2K/mo | 30%/mo | 4.4K/mo | Upgrade DB soon |
+| 5K/mo | 25%/mo | 9.8K/mo | Add load balancer |
+| 10K/mo | 15%/mo | 15K/mo | Scale horizontally |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Monthly Costs" icon="dollar-sign" href="/cost/monthly-costs">
+    Detailed cost breakdown
+  </Card>
+  <Card title="Optimization Tips" icon="lightbulb" href="/cost/optimization-tips">
+    Reduce costs without sacrificing performance
+  </Card>
+  <Card title="Monitoring" icon="chart-line" href="/admin/monitoring">
+    Set up performance monitoring
+  </Card>
+</CardGroup>

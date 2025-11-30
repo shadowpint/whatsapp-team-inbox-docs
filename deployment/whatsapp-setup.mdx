@@ -1,0 +1,559 @@
+---
+title: 'WhatsApp API Setup'
+description: 'Configure WhatsApp Business API for your Team Inbox'
+icon: 'whatsapp'
+---
+
+# WhatsApp Business API Setup
+
+Complete step-by-step guide to set up WhatsApp Business API and integrate it with your Team Inbox.
+
+## TL;DR - Quick Setup
+
+<Steps>
+  <Step title="Create Meta Business Account">
+    [business.facebook.com](https://business.facebook.com) → Create account → Verify email
+  </Step>
+  <Step title="Create WhatsApp App">
+    Add App → Business type → Add WhatsApp product → Add phone number
+  </Step>
+  <Step title="Get Credentials">
+    Copy: Access Token (System Users), Phone Number ID, Business Account ID
+  </Step>
+  <Step title="Setup Webhook">
+    Configuration → Webhook → Add your API URL + verify token → Subscribe to `messages`
+  </Step>
+</Steps>
+
+**Total time:** ~30 minutes | **Cost:** Free (test mode) / Pay per conversation (production)
+
+**Credentials needed:** Access Token, Phone Number ID, Business Account ID, Webhook Verify Token
+
+---
+
+## Overview
+
+To use WhatsApp Team Inbox, you need:
+
+<CardGroup cols={2}>
+  <Card title="Meta Business Account" icon="facebook">
+    Free to create at business.facebook.com
+  </Card>
+  <Card title="WhatsApp Business App" icon="whatsapp">
+    Created within Meta Business Suite
+  </Card>
+  <Card title="Phone Number" icon="phone">
+    Dedicated number for your business
+  </Card>
+  <Card title="API Access" icon="key">
+    Cloud API access (free tier available)
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+<Check>A Meta (Facebook) account</Check>
+<Check>A phone number not currently registered with WhatsApp (can be landline)</Check>
+<Check>Business verification documents (for production use)</Check>
+<Check>Admin access to create a Meta Business Account</Check>
+
+## Step 1: Create Meta Business Account
+
+<Steps>
+  <Step title="Go to Meta Business Suite">
+    Visit [business.facebook.com](https://business.facebook.com) and log in with your Facebook account.
+  </Step>
+
+  <Step title="Create Business Portfolio">
+    Click **Create Account** and follow the prompts:
+    - Enter your business name
+    - Provide business details
+    - Add a business email
+  </Step>
+
+  <Step title="Verify Your Business Email">
+    Check your email and click the verification link sent by Meta.
+  </Step>
+</Steps>
+
+## Step 2: Create WhatsApp Business App
+
+<Steps>
+  <Step title="Access App Creation">
+    1. In Meta Business Suite, go to **Business Settings**
+    2. Click **Accounts** → **Apps**
+    3. Click **Add** → **Create a New App**
+  </Step>
+
+  <Step title="Select App Type">
+    Choose **Business** as your app type and click **Next**.
+  </Step>
+
+  <Step title="Configure App Details">
+    - **App Name:** WhatsApp Team Inbox (or your preferred name)
+    - **App Contact Email:** Your support email
+    - **Business Portfolio:** Select your business account
+
+    Click **Create App**.
+  </Step>
+
+  <Step title="Add WhatsApp Product">
+    1. In your app dashboard, find **WhatsApp** product
+    2. Click **Set Up** to add WhatsApp to your app
+  </Step>
+</Steps>
+
+## Step 3: Configure WhatsApp Business Profile
+
+<Steps>
+  <Step title="Access WhatsApp Settings">
+    Navigate to **WhatsApp** → **Getting Started** in your app dashboard.
+  </Step>
+
+  <Step title="Add Phone Number">
+    1. Click **Add Phone Number**
+    2. Enter your business phone number
+    3. Choose SMS or voice call for verification
+    4. Enter the verification code you receive
+
+    <Warning>
+      This phone number cannot be used with regular WhatsApp or WhatsApp Business app.
+    </Warning>
+  </Step>
+
+  <Step title="Set Up Business Profile">
+    Configure your business profile:
+    - **Business Name:** Your company name
+    - **Category:** Select appropriate business category
+    - **Description:** Brief about your business
+    - **Profile Photo:** Upload your logo (640x640px recommended)
+    - **Address:** Business address (optional)
+    - **Website:** Your website URL
+  </Step>
+</Steps>
+
+## Step 4: Get API Credentials
+
+### Phone Number ID
+
+<Steps>
+  <Step title="Navigate to API Setup">
+    Go to **WhatsApp** → **API Setup** in the left sidebar.
+  </Step>
+
+  <Step title="Copy Phone Number ID">
+    Find the **Phone Number ID** field and copy it.
+
+    ```bash
+    # Example format:
+    123456789012345
+    ```
+
+    Save this as `WHATSAPP_PHONE_NUMBER_ID` in your `.env` file.
+  </Step>
+</Steps>
+
+### Access Token
+
+<Steps>
+  <Step title="Create System User">
+    1. Go to **Business Settings** → **Users** → **System Users**
+    2. Click **Add** and create a new system user:
+       - Name: WhatsApp Team Inbox API
+       - Role: Admin
+  </Step>
+
+  <Step title="Assign Assets">
+    1. Click on your system user
+    2. Click **Add Assets**
+    3. Select your WhatsApp app
+    4. Enable **Full Control**
+    5. Click **Save Changes**
+  </Step>
+
+  <Step title="Generate Access Token">
+    1. Click **Generate New Token**
+    2. Select your WhatsApp app
+    3. Set token expiration to **Never**
+    4. Select permissions:
+       - `whatsapp_business_messaging`
+       - `whatsapp_business_management`
+    5. Click **Generate Token**
+    6. **Copy and save the token immediately** (it won't be shown again)
+
+    Save this as `WHATSAPP_ACCESS_TOKEN` in your `.env` file.
+
+    <Warning>
+      Store this token securely. Never commit it to version control or expose it publicly.
+    </Warning>
+  </Step>
+</Steps>
+
+### Business Account ID
+
+<Steps>
+  <Step title="Find Business Account ID">
+    1. Go to **Business Settings** → **WhatsApp Accounts**
+    2. Copy the **WhatsApp Business Account ID**
+
+    Save this as `WHATSAPP_BUSINESS_ACCOUNT_ID` in your `.env` file.
+  </Step>
+</Steps>
+
+## Step 5: Configure Webhook
+
+Webhooks allow WhatsApp to send incoming messages to your Team Inbox.
+
+### Generate Verify Token
+
+First, create a random verification token:
+
+```bash
+openssl rand -hex 16
+```
+
+Save this as `WHATSAPP_WEBHOOK_VERIFY_TOKEN` in your `.env` file.
+
+### Set Up Webhook in Meta
+
+<Steps>
+  <Step title="Access Webhook Configuration">
+    Go to **WhatsApp** → **Configuration** → **Webhook**.
+  </Step>
+
+  <Step title="Enter Webhook Details">
+    **Callback URL:** Your API endpoint for receiving webhooks
+    ```
+    https://api.your-domain.com/api/webhook
+    ```
+
+    **Verify Token:** The token you generated above
+
+    Click **Verify and Save**.
+
+    <Info>
+      For local development, use a tunneling service like [ngrok](https://ngrok.com):
+      ```bash
+      ngrok http 4000
+      # Use the HTTPS URL: https://abc123.ngrok.io/api/webhook
+      ```
+    </Info>
+  </Step>
+
+  <Step title="Subscribe to Webhook Fields">
+    Enable these webhook fields:
+    - ✅ **messages** - Receive incoming messages
+    - ✅ **message_status** - Receive message delivery status (sent, delivered, read)
+
+    Click **Save**.
+  </Step>
+
+  <Step title="Test Webhook Connection">
+    Send a test message to your WhatsApp number to verify the webhook is working.
+
+    Check your backend logs:
+    ```bash
+    docker-compose logs -f backend
+    ```
+
+    You should see incoming webhook events.
+  </Step>
+</Steps>
+
+## Step 6: Test Configuration
+
+### Send Test Message
+
+Use the API Test tool in Meta Business Suite:
+
+<Steps>
+  <Step title="Access API Test Tool">
+    Go to **WhatsApp** → **API Setup** → **Send and receive messages**.
+  </Step>
+
+  <Step title="Send Test Message">
+    1. Select a recipient phone number (can be your own number)
+    2. Choose a message type (text message recommended for testing)
+    3. Enter message content
+    4. Click **Send Message**
+  </Step>
+
+  <Step title="Verify Receipt">
+    Check that:
+    - Message appears in WhatsApp on recipient's phone
+    - Your Team Inbox receives the message via webhook
+    - Backend logs show successful webhook processing
+  </Step>
+</Steps>
+
+### Verify Environment Variables
+
+Ensure all required variables are set in your `.env` file:
+
+```bash
+# WhatsApp Business API
+WHATSAPP_API_URL=https://graph.facebook.com/v21.0
+WHATSAPP_ACCESS_TOKEN=EAAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+WHATSAPP_PHONE_NUMBER_ID=123456789012345
+WHATSAPP_BUSINESS_ACCOUNT_ID=123456789012345
+WHATSAPP_WEBHOOK_VERIFY_TOKEN=your_random_token_here
+```
+
+## API Limits & Pricing
+
+### Free Tier (Cloud API)
+
+<CardGroup cols={2}>
+  <Card title="Test Mode" icon="flask">
+    - 5 conversations per day
+    - Message template testing
+    - Webhook configuration
+    - Perfect for development
+  </Card>
+  <Card title="Business Verification Required" icon="badge-check">
+    - For production use
+    - Higher conversation limits
+    - Access to all features
+  </Card>
+</CardGroup>
+
+### Conversation-Based Pricing
+
+WhatsApp charges per conversation (24-hour window):
+
+| Type | Description | Price |
+|------|-------------|-------|
+| **Business-initiated** | You message user first | ~$0.005-0.10 per conversation* |
+| **User-initiated** | User messages you first | Free for 24 hours after first message |
+| **Service conversations** | Utility/authentication | Lower rates |
+
+*Pricing varies by country. Check [WhatsApp Pricing](https://developers.facebook.com/docs/whatsapp/pricing) for details.
+
+<Info>
+**Conversation Window:** Once a conversation starts, you have 24 hours to send messages freely without additional charges.
+</Info>
+
+## Message Templates
+
+For business-initiated conversations, you must use approved templates.
+
+### Create Message Template
+
+<Steps>
+  <Step title="Access Templates">
+    Go to **WhatsApp** → **Message Templates**.
+  </Step>
+
+  <Step title="Create New Template">
+    Click **Create Template** and configure:
+    - **Template Name:** greeting_new_user (lowercase, underscores only)
+    - **Category:** Marketing, Utility, or Authentication
+    - **Languages:** Select languages you'll use
+    - **Template Content:** Your message with optional variables
+
+    Example:
+    ```
+    Hello {{1}}, welcome to our service!
+    How can we help you today?
+    ```
+  </Step>
+
+  <Step title="Submit for Approval">
+    Submit your template for Meta review. Approval typically takes 1-24 hours.
+  </Step>
+
+  <Step title="Use Approved Templates">
+    Once approved, use templates in your application:
+    ```javascript
+    const response = await sendWhatsAppTemplate({
+      to: phoneNumber,
+      template: 'greeting_new_user',
+      variables: ['John']
+    });
+    ```
+  </Step>
+</Steps>
+
+## Production Checklist
+
+Before going live with WhatsApp API:
+
+<Check>WhatsApp Business Account verified by Meta</Check>
+<Check>Business display name approved</Check>
+<Check>Permanent access token generated</Check>
+<Check>Webhook configured and tested</Check>
+<Check>Message templates created and approved</Check>
+<Check>Phone number verified and tested</Check>
+<Check>Webhook URL is HTTPS and publicly accessible</Check>
+<Check>Environment variables configured correctly</Check>
+<Check>Rate limits and pricing understood</Check>
+
+## Business Verification
+
+For production use and higher limits:
+
+<Steps>
+  <Step title="Start Verification">
+    1. Go to **Business Settings** → **Security Center**
+    2. Click **Start Verification**
+  </Step>
+
+  <Step title="Provide Business Information">
+    Required documents:
+    - Business registration certificate
+    - Business address proof
+    - Tax documents (varies by country)
+    - Website or social media presence
+  </Step>
+
+  <Step title="Wait for Review">
+    Meta typically reviews within 1-3 business days.
+
+    You'll receive email updates on verification status.
+  </Step>
+</Steps>
+
+## Common Issues & Solutions
+
+<AccordionGroup>
+  <Accordion title="Webhook verification failed">
+    **Causes:**
+    - Verify token mismatch
+    - Webhook URL not accessible
+    - SSL certificate issues
+
+    **Solutions:**
+    1. Ensure `WHATSAPP_WEBHOOK_VERIFY_TOKEN` matches in both places
+    2. Test webhook URL accessibility: `curl https://your-domain.com/api/webhook`
+    3. Verify SSL certificate is valid
+  </Accordion>
+
+  <Accordion title="Messages not being received">
+    **Causes:**
+    - Webhook not subscribed to correct fields
+    - Firewall blocking Meta's IP ranges
+    - Backend not processing webhook events
+
+    **Solutions:**
+    1. Check webhook subscriptions include `messages` field
+    2. Whitelist Meta's webhook IPs
+    3. Check backend logs: `docker-compose logs backend`
+  </Accordion>
+
+  <Accordion title="Access token expired">
+    **Causes:**
+    - Token was set to expire
+    - Token was revoked
+
+    **Solutions:**
+    1. Generate new token with **Never** expiration
+    2. Update `WHATSAPP_ACCESS_TOKEN` in environment
+    3. Restart backend: `docker-compose restart backend`
+  </Accordion>
+
+  <Accordion title="Cannot send template messages">
+    **Causes:**
+    - Template not approved
+    - Template name incorrect
+    - Variables not matching template
+
+    **Solutions:**
+    1. Verify template status in Meta Business Suite
+    2. Check template name matches exactly (case-sensitive)
+    3. Ensure variable count matches template placeholders
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<Warning>
+**Critical Security Measures:**
+</Warning>
+
+1. **Never expose access tokens**
+   - Don't commit to version control
+   - Use environment variables only
+   - Rotate tokens periodically
+
+2. **Verify webhook signatures**
+   - Validate X-Hub-Signature-256 header
+   - Reject unsigned requests
+
+3. **Use HTTPS only**
+   - Never use HTTP in production
+   - Ensure valid SSL certificates
+
+4. **Monitor API usage**
+   - Set up alerts for unusual activity
+   - Review access logs regularly
+
+5. **Limit access token permissions**
+   - Use minimum required scopes
+   - Create separate tokens for different services
+
+## API Rate Limits
+
+Be aware of WhatsApp API rate limits:
+
+| Tier | Messages/Second | Criteria |
+|------|----------------|----------|
+| **Tier 1** | 80 | Default for new businesses |
+| **Tier 2** | 400 | After 7 days of good messaging |
+| **Tier 3** | 1,600 | After 14 days of good messaging |
+| **Tier 4** | 6,400 | After 21 days of good messaging |
+
+<Info>
+Quality rating and user feedback affect tier progression. Maintain high message quality to increase limits.
+</Info>
+
+## Monitoring & Analytics
+
+Track your WhatsApp API usage:
+
+<Steps>
+  <Step title="Access Analytics">
+    Go to **WhatsApp** → **Analytics** in Meta Business Suite.
+  </Step>
+
+  <Step title="Monitor Key Metrics">
+    - Message volume (sent/received)
+    - Conversation costs
+    - Template performance
+    - Delivery rates
+    - Quality rating
+  </Step>
+
+  <Step title="Set Up Alerts">
+    Configure alerts for:
+    - High message volumes
+    - Quality rating drops
+    - Failed deliveries
+    - Cost thresholds
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environment Variables" icon="gear" href="/deployment/environment-variables">
+    Configure all required environment variables
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/deployment/quick-start">
+    Deploy your Team Inbox
+  </Card>
+  <Card title="Message Templates" icon="message" href="/features/message-templates">
+    Create and manage message templates
+  </Card>
+  <Card title="Going Live" icon="globe" href="/deployment/going-live">
+    Production deployment checklist
+  </Card>
+</CardGroup>
+
+## Additional Resources
+
+- [WhatsApp Cloud API Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api)
+- [WhatsApp Business Platform](https://business.whatsapp.com)
+- [Meta Business Help Center](https://business.facebook.com/help)
+- [WhatsApp API Pricing](https://developers.facebook.com/docs/whatsapp/pricing)
