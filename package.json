@@ -4,16 +4,30 @@
   "description": "Mintlify documentation for WhatsApp Team Inbox",
   "scripts": {
     "dev": "mintlify dev",
-    "build": "mintlify build",
+    "build": "npm install -g mintlify && mintlify build",
+    "start": "serve out -l ${PORT:-3000}",
     "preview": "mintlify preview",
-    "install-mintlify": "npm install -g mintlify"
+    "railway:build": "npm install -g mintlify && mintlify build",
+    "railway:start": "npx serve out -l 3000"
   },
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "devDependencies": {},
   "keywords": [
     "documentation",
     "mintlify",
     "whatsapp",
-    "team-inbox"
+    "team-inbox",
+    "self-hosted"
   ],
-  "author": "Your Company",
-  "license": "MIT"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shadowpint/whatsapp-team-inbox-docs.git"
+  },
+  "author": "Reachbox Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }

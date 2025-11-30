@@ -1,0 +1,14 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install -g mintlify && mintlify build"
+
+[deploy]
+startCommand = "npx serve out -l 3000"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[[deploy.environmentVariables]]
+name = "PORT"
+value = "3000"

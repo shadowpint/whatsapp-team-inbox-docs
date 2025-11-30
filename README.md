@@ -6,7 +6,11 @@ Official documentation for [WhatsApp Team Inbox](https://hello.reachbox.in) - a 
 [![GitHub](https://img.shields.io/github/stars/shadowpint/whatsapp-team-inbox-docs)](https://github.com/shadowpint/whatsapp-team-inbox-docs)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## 🚀 Quick Links
+## 🚀 Quick Deploy
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
+
+## 🔗 Quick Links
 
 - **Live Docs**: [docs.reachbox.in](https://docs.reachbox.in) (coming soon)
 - **Demo App**: [hello.reachbox.in](https://hello.reachbox.in)
@@ -108,9 +112,23 @@ The documentation will be available at `http://localhost:3000`
 3. Preview at http://localhost:3000
 4. Commit and push when ready
 
-## 🚀 Deployment
+## 🚀 Deployment Options
 
-### Deploy to Mintlify Cloud (Recommended)
+### Deploy to Railway (Recommended for Reachbox)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
+
+**Manual Railway Deployment:**
+```bash
+# 1. Create new project in Railway
+# 2. Connect GitHub repo
+# 3. Railway auto-detects configuration
+# 4. Add custom domain: docs.reachbox.in
+```
+
+See [RAILWAY-DEPLOYMENT.md](RAILWAY-DEPLOYMENT.md) for detailed guide.
+
+### Deploy to Mintlify Cloud
 
 ```bash
 # Install Mintlify CLI
@@ -136,11 +154,9 @@ vercel --prod
 ### Deploy with Docker
 
 ```bash
-# Build static site
-mintlify build
-
-# Serve with any static file server
-npx serve out
+# Build and run
+docker build -t docs .
+docker run -p 80:80 docs
 ```
 
 ## 📝 Contributing
