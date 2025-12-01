@@ -316,7 +316,7 @@ Already configured in `vercel.json`. Add similar headers for other platforms.
 
 - **Mintlify Docs**: https://mintlify.com/docs
 - **Vercel Docs**: https://vercel.com/docs
-- **GitHub Issues**: https://github.com/shadowpint/whatsapp-team-inbox-docs/issues
+- **GitHub Issues**: https://github.com/shadowpint/whatsapp-team-inbox-ui-docs/issues
 
 ## Quick Commands
 

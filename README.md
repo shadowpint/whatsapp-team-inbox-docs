@@ -3,18 +3,18 @@
 Official documentation for [WhatsApp Team Inbox](https://hello.reachbox.in) - a self-hosted alternative to expensive customer support platforms.
 
 [![Documentation](https://img.shields.io/badge/docs-mintlify-green)](https://docs.reachbox.in)
-[![GitHub](https://img.shields.io/github/stars/shadowpint/whatsapp-team-inbox-docs)](https://github.com/shadowpint/whatsapp-team-inbox-docs)
+[![GitHub](https://img.shields.io/github/stars/shadowpint/whatsapp-team-inbox-docs)](https://github.com/shadowpint/whatsapp-team-inbox-ui-docs)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 🚀 Quick Deploy
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-ui-docs)
 
 ## 🔗 Quick Links
 
 - **Live Docs**: [docs.reachbox.in](https://docs.reachbox.in) (coming soon)
 - **Demo App**: [hello.reachbox.in](https://hello.reachbox.in)
-- **Main Repo**: [github.com/shadowpint/whatsapp-team-inbox](https://github.com/shadowpint/whatsapp-team-inbox)
+- **Main Repo**: [github.com/shadowpint/whatsapp-team-inbox-ui](https://github.com/shadowpint/whatsapp-team-inbox-ui)
 
 ## 📚 What's Inside
 
@@ -93,7 +93,7 @@ docs/
 
 ```bash
 # Clone the repository
-git clone https://github.com/shadowpint/whatsapp-team-inbox-docs.git
+git clone https://github.com/shadowpint/whatsapp-team-inbox-ui-docs.git
 cd whatsapp-team-inbox-docs
 
 # Install Mintlify CLI
@@ -116,7 +116,7 @@ The documentation will be available at `http://localhost:3000`
 
 ### Deploy to Railway (Recommended for Reachbox)
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-ui-docs)
 
 **Manual Railway Deployment:**
 ```bash
@@ -177,7 +177,7 @@ We welcome contributions! Here's how you can help:
 
 Found a typo, broken link, or unclear explanation?
 
-1. Check [existing issues](https://github.com/shadowpint/whatsapp-team-inbox-docs/issues)
+1. Check [existing issues](https://github.com/shadowpint/whatsapp-team-inbox-ui-docs/issues)
 2. Create a new issue with details
 3. We'll review and fix it promptly
 
@@ -232,7 +232,7 @@ Add your Google Analytics ID in `mint.json`:
 - [Mintlify Documentation](https://mintlify.com/docs)
 - [MDX Documentation](https://mdxjs.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Main Repository](https://github.com/shadowpint/whatsapp-team-inbox)
+- [Main Repository](https://github.com/shadowpint/whatsapp-team-inbox-ui)
 
 ## 📄 License
 
@@ -241,7 +241,7 @@ This documentation is licensed under the MIT License - see the [LICENSE](LICENSE
 ## 💬 Support
 
 - **Email**: support@reachbox.in
-- **GitHub Issues**: [Create an issue](https://github.com/shadowpint/whatsapp-team-inbox-docs/issues)
+- **GitHub Issues**: [Create an issue](https://github.com/shadowpint/whatsapp-team-inbox-ui-docs/issues)
 - **Discord**: [Join our community](https://discord.gg/your-server)
 
 ## 🌟 Acknowledgments

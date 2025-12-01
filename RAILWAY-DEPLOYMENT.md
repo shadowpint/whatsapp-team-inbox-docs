@@ -4,7 +4,7 @@ Deploy WhatsApp Team Inbox documentation to Railway.
 
 ## Quick Deploy
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-ui-docs)
 
 ## Requirements
 
@@ -115,4 +115,4 @@ git push origin main
 ## Support
 
 - [Railway Docs](https://docs.railway.app)
-- [GitHub Issues](https://github.com/shadowpint/whatsapp-team-inbox-docs/issues)
+- [GitHub Issues](https://github.com/shadowpint/whatsapp-team-inbox-ui-docs/issues)

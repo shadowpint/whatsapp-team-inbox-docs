@@ -39,7 +39,7 @@
     {
       "name": "GitHub",
       "icon": "github",
-      "url": "https://github.com/shadowpint/whatsapp-team-inbox"
+      "url": "https://github.com/shadowpint/whatsapp-team-inbox-ui"
     },
     {
       "name": "Live Demo",
@@ -153,7 +153,7 @@
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/shadowpint/whatsapp-team-inbox",
+    "github": "https://github.com/shadowpint/whatsapp-team-inbox-ui",
     "twitter": "https://twitter.com/reachbox_in",
     "linkedin": "https://linkedin.com/company/reachbox"
   },
