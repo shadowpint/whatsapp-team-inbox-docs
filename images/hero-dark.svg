@@ -1,0 +1,58 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="whatsapp-gradient-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#25D366;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34E677;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bg-dark)"/>
+
+  <!-- WhatsApp icon circles in background -->
+  <circle cx="150" cy="80" r="60" fill="#25D366" opacity="0.15"/>
+  <circle cx="1050" cy="320" r="80" fill="#34E677" opacity="0.15"/>
+  <circle cx="950" cy="100" r="50" fill="#25D366" opacity="0.1"/>
+
+  <!-- Main WhatsApp icon -->
+  <g transform="translate(450, 120)">
+    <circle cx="100" cy="80" r="70" fill="url(#whatsapp-gradient-dark)"/>
+    <path d="M100 30 C128 30 150 52 150 80 C150 108 128 130 100 130 C92 130 84 128 77 125 L50 133 L58 106 C54 99 50 90 50 80 C50 52 72 30 100 30 Z" fill="white"/>
+    <path d="M85 65 L85 95 M85 65 L115 80 M85 95 L115 80" stroke="url(#whatsapp-gradient-dark)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Team collaboration icons -->
+  <g transform="translate(650, 150)">
+    <!-- User 1 -->
+    <circle cx="20" cy="50" r="18" fill="#34E677" opacity="0.3"/>
+    <circle cx="20" cy="45" r="8" fill="#34E677"/>
+    <path d="M10 58 Q10 52 20 52 Q30 52 30 58" fill="#34E677"/>
+
+    <!-- User 2 -->
+    <circle cx="60" cy="50" r="18" fill="#25D366" opacity="0.3"/>
+    <circle cx="60" cy="45" r="8" fill="#25D366"/>
+    <path d="M50 58 Q50 52 60 52 Q70 52 70 58" fill="#25D366"/>
+
+    <!-- User 3 -->
+    <circle cx="100" cy="50" r="18" fill="#128C7E" opacity="0.3"/>
+    <circle cx="100" cy="45" r="8" fill="#10b981"/>
+    <path d="M90 58 Q90 52 100 52 Q110 52 110 58" fill="#10b981"/>
+
+    <!-- Connection lines -->
+    <line x1="35" y1="50" x2="45" y2="50" stroke="#34E677" stroke-width="2" stroke-dasharray="4 2"/>
+    <line x1="75" y1="50" x2="85" y2="50" stroke="#25D366" stroke-width="2" stroke-dasharray="4 2"/>
+  </g>
+
+  <!-- Text -->
+  <text x="600" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="700" fill="#34E677" text-anchor="middle">
+    WhatsApp Team Inbox
+  </text>
+  <text x="600" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#25D366" text-anchor="middle">
+    Self-Hosted • Open Source • Team Collaboration
+  </text>
+</svg>
