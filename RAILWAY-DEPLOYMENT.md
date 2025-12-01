@@ -70,8 +70,8 @@ cmd = "mintlify dev --host 0.0.0.0 --port $PORT"
 ## Repository Structure
 
 - **Docs**: `shadowpint/whatsapp-team-inbox-docs`
-- **Backend**: `shadowpint/whatsapp-team-inbox` (backend folder)
-- **Frontend**: `shadowpint/whatsapp-team-inbox` (frontend folder)
+- **Backend**: `shadowpint/whatsapp-team-inbox-backend`
+- **Frontend**: `shadowpint/whatsapp-team-inbox-ui`
 
 ## Costs
 
