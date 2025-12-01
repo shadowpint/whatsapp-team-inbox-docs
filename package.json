@@ -27,6 +27,7 @@
   "author": "Reachbox Team",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.17.0",
+    "npm": ">=10.0.0"
   }
 }

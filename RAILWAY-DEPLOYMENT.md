@@ -6,6 +6,11 @@ This guide will help you deploy the WhatsApp Team Inbox documentation to Railway
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
 
+## ⚙️ Requirements
+
+- **Node.js**: Version 20.17.0 or higher (required by Mintlify)
+- Railway automatically uses the correct Node version from our config
+
 ## 📋 Manual Deployment Steps
 
 ### Step 1: Create Railway Account

@@ -1,5 +1,5 @@
-# Use official Mintlify image or Node with live server
-FROM node:18-alpine
+# Use Node 20 LTS (required by Mintlify)
+FROM node:20-alpine
 
 WORKDIR /app
 
