@@ -1,100 +1,51 @@
-# Deploy to Railway - Quick Guide
+# Railway Deployment
 
-This guide will help you deploy the WhatsApp Team Inbox documentation to Railway in under 5 minutes.
+Deploy WhatsApp Team Inbox documentation to Railway.
 
-## 🚀 One-Click Deploy
+## Quick Deploy
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/shadowpint/whatsapp-team-inbox-docs)
 
-## ⚙️ Requirements
+## Requirements
 
-- **Node.js**: Version 20.17.0 or higher (required by Mintlify)
-- Railway automatically uses the correct Node version from our config
+- Node.js 20.17.0+
+- Railway account (free tier available)
 
-## 📋 Manual Deployment Steps
+## Deployment Steps
 
-### Step 1: Create Railway Account
+### 1. Deploy from GitHub
 
-1. Go to [Railway.app](https://railway.app)
-2. Sign up with GitHub (recommended)
-3. Verify your email
+```bash
+# Railway Dashboard
+New Project → Deploy from GitHub repo → shadowpint/whatsapp-team-inbox-docs
+```
 
-### Step 2: Deploy from GitHub
+Railway auto-detects configuration from `railway.toml`:
+- Build: `npm install -g mintlify`
+- Start: `mintlify dev --host 0.0.0.0 --port $PORT`
 
-1. **New Project**
-   - Click "New Project" in Railway dashboard
-   - Select "Deploy from GitHub repo"
-   - Choose `shadowpint/whatsapp-team-inbox-docs`
+Build time: ~2-3 minutes
 
-2. **Railway Auto-Detects Configuration**
-   - Railway will read `railway.toml`
-   - Build command: `npm install -g mintlify && mintlify build`
-   - Start command: `npx serve out -l 3000`
+### 2. Configure Domain (Optional)
 
-3. **Click Deploy**
-   - Railway will start building
-   - Build takes ~2-3 minutes
-   - You'll get a temporary URL like `xxx.railway.app`
+**Railway Dashboard → Settings → Domains → Custom Domain**
 
-### Step 3: Configure Custom Domain
+Add DNS record:
+```
+Type: CNAME
+Name: docs
+Value: <your-project>.railway.app
+```
 
-1. **Add Domain in Railway**
-   - Go to your project settings
-   - Click "Domains" tab
-   - Click "Custom Domain"
-   - Enter: `docs.reachbox.in`
+SSL provisions automatically in 5-10 minutes.
 
-2. **Update DNS Records**
+### 3. Enable Auto-Deploy
 
-   Add these records to your DNS provider (e.g., Cloudflare, Namecheap):
+**Settings → Deploy Triggers → Enable "Deploy on push to main"**
 
-   **Option A: CNAME (Recommended)**
-   ```
-   Type: CNAME
-   Name: docs
-   Value: xxx.railway.app (from Railway dashboard)
-   TTL: Auto
-   ```
+## Configuration Files
 
-   **Option B: A Record**
-   ```
-   Type: A
-   Name: docs
-   Value: <IP from Railway>
-   TTL: Auto
-   ```
-
-3. **Wait for SSL**
-   - Railway automatically provisions SSL
-   - Takes 5-10 minutes
-   - Your docs will be live at `https://docs.reachbox.in`
-
-### Step 4: Enable Auto-Deploy
-
-1. **Settings → Deploy Triggers**
-   - Enable "Deploy on push to main"
-   - Now every git push automatically deploys
-
-2. **Branch Deployments (Optional)**
-   - Enable preview deployments for PRs
-   - Each PR gets a unique URL
-
-## ⚙️ Configuration Details
-
-### Environment Variables (Optional)
-
-If you want to add analytics or custom configuration:
-
-1. Go to **Variables** tab in Railway
-2. Add variables:
-   ```
-   PORT=3000
-   NODE_ENV=production
-   ```
-
-### Build Settings
-
-Railway uses `railway.toml`:
+**railway.toml**
 ```toml
 [build]
 builder = "nixpacks"
@@ -104,217 +55,64 @@ buildCommand = "npm install -g mintlify"
 startCommand = "mintlify dev --host 0.0.0.0 --port $PORT"
 ```
 
-**Note**: Mintlify runs as a live development server rather than building static files. This provides:
-- ✅ Hot reload capabilities
-- ✅ Built-in search functionality
-- ✅ Optimized performance
-- ✅ Real-time updates
+**nixpacks.toml**
+```toml
+[phases.setup]
+nixPkgs = ["nodejs-20_x"]
 
-### Using Docker (Alternative)
+[phases.install]
+cmds = ["npm install -g mintlify"]
 
-If you prefer Docker deployment:
-
-1. Railway will auto-detect `Dockerfile`
-2. Build uses the Dockerfile we created
-3. Runs Mintlify dev server on port 3000
-
-**Docker Command**:
-```bash
-docker build -t docs .
-docker run -p 3000:3000 docs
+[start]
+cmd = "mintlify dev --host 0.0.0.0 --port $PORT"
 ```
 
-## 🎯 Post-Deployment
+## Repository Structure
 
-### Verify Deployment
+- **Docs**: `shadowpint/whatsapp-team-inbox-docs`
+- **Backend**: `shadowpint/whatsapp-team-inbox` (backend folder)
+- **Frontend**: `shadowpint/whatsapp-team-inbox` (frontend folder)
 
-1. **Check Build Logs**
-   - Click on deployment
-   - View build logs for errors
+## Costs
 
-2. **Test the Site**
-   ```bash
-   curl https://docs.reachbox.in
-   ```
+Railway charges after free tier ($5/month credit):
+- Docs hosting: ~$0-5/month
+- Full app (backend + frontend + DB): ~$20-35/month
 
-3. **Check Health**
-   - Railway monitors automatically
-   - View metrics in dashboard
+Use [Railway Calculator](https://railway.app/pricing) for estimates.
 
-### Performance Optimization
+## Troubleshooting
 
-Railway provides:
-- ✅ Global CDN
-- ✅ Automatic SSL
-- ✅ HTTP/2 support
-- ✅ Gzip compression
-- ✅ Edge caching
+**Build fails: "mintlify: command not found"**
+→ Check `railway.toml` build command
 
-### Monitor Deployments
+**Node version error**
+→ Ensure Node 20.17+ in `nixpacks.toml`, `.nvmrc`, `package.json`
 
-1. **Deployment History**
-   - See all past deployments
-   - Rollback to previous versions
+**Service unavailable after deploy**
+→ Wait 1-2 minutes for Mintlify to compile docs
 
-2. **Logs**
-   - Real-time logs
-   - Filter by severity
+**Domain not working**
+→ Check DNS propagation: `dig docs.reachbox.in`
 
-3. **Metrics**
-   - CPU usage
-   - Memory usage
-   - Request count
-
-## 💰 Cost Estimate
-
-**Railway Pricing:**
-- **Free Tier**: $5 credit/month (enough for docs)
-- **Developer Plan**: $5/month (500 hours)
-- **Pro Plan**: $20/month (unlimited)
-
-**Expected Usage for Docs:**
-- Static site: ~$0-2/month
-- Low resource usage
-- Free tier is usually sufficient
-
-## 🔧 Troubleshooting
-
-### Build Fails
-
-**Error**: `mintlify: command not found`
-**Solution**: Check `railway.toml` has correct build command
-
-**Error**: `No such file or directory: out`
-**Solution**: Ensure `mintlify build` runs successfully locally first
-
-### Domain Not Working
-
-**Issue**: Custom domain shows "Not found"
-**Solution**:
-- Verify DNS propagation: `dig docs.reachbox.in`
-- Check SSL status in Railway dashboard
-- Wait 5-10 minutes for SSL provisioning
-
-### Slow Build Times
-
-**Issue**: Build takes &gt;5 minutes
-**Solution**:
-- Railway caches dependencies
-- First build is slower
-- Subsequent builds are faster
-
-### Healthcheck Failures
-
-**Issue**: "Attempt #X failed with service unavailable"
-**Solution**:
-- This is normal for Mintlify - it takes 30-60s to start
-- Railway will keep retrying
-- Eventually the service will be available
-- Healthchecks have been removed from config (not needed for docs)
-
-**Why it happens**:
-- Mintlify dev server compiles documentation on startup
-- Takes longer than typical static sites
-- Once running, it's very fast
-
-**What to do**:
-- Wait 1-2 minutes after deployment
-- Check deployment logs for "Server is running"
-- Visit your Railway URL to confirm it's live
-
-## 🚀 Advanced Configuration
-
-### Multiple Environments
-
-Deploy to different environments:
+## Update Workflow
 
 ```bash
-# Production (main branch)
-docs.reachbox.in → main branch
-
-# Staging (develop branch)
-docs-staging.reachbox.in → develop branch
-```
-
-### Custom Nginx Configuration
-
-Already included in `nginx.conf`:
-- Security headers
-- Gzip compression
-- Browser caching
-- Health check endpoint
-
-### Monitoring & Alerts
-
-Set up Railway notifications:
-1. Go to Project Settings
-2. Enable email notifications
-3. Get alerts for:
-   - Failed deployments
-   - High resource usage
-   - Downtime
-
-## 📊 Analytics
-
-After deployment, add analytics:
-
-1. **Google Analytics**
-   - Get GA4 measurement ID
-   - Update `mint.json`
-   - Commit and push
-
-2. **Railway Metrics**
-   - Built-in metrics dashboard
-   - Request logs
-   - Performance monitoring
-
-## 🔄 Update Workflow
-
-```bash
-# 1. Make changes locally
 git add .
-git commit -m "Update documentation"
-
-# 2. Push to GitHub
+git commit -m "Update docs"
 git push origin main
-
-# 3. Railway auto-deploys
-# Check Railway dashboard for status
-
-# 4. Verify
-curl https://docs.reachbox.in
+# Railway auto-deploys
 ```
 
-## 📱 Mobile Testing
+## Deployment Checklist
 
-Railway provides preview URLs:
-- Test on mobile devices
-- Share preview with team
-- Get feedback before production
-
-## ✅ Deployment Checklist
-
-- [ ] Railway account created
-- [ ] GitHub repository connected
-- [ ] Deployment successful
-- [ ] Custom domain configured
-- [ ] DNS records updated
-- [ ] SSL certificate active
-- [ ] Site loads correctly
+- [ ] Railway account connected to GitHub
+- [ ] Repo deployed successfully
+- [ ] Custom domain configured (if needed)
 - [ ] Auto-deploy enabled
-- [ ] Analytics configured (optional)
-- [ ] Team notified
+- [ ] Site accessible
 
-## 🆘 Support
+## Support
 
-- **Railway Docs**: https://docs.railway.app
-- **Railway Discord**: https://discord.gg/railway
-- **GitHub Issues**: https://github.com/shadowpint/whatsapp-team-inbox-docs/issues
-
-## 🎉 You're Live!
-
-Once deployed, your documentation will be available at:
-- **Production**: https://docs.reachbox.in
-- **Railway URL**: https://xxx.railway.app (fallback)
-
-Share it with your team and users! 🚀
+- [Railway Docs](https://docs.railway.app)
+- [GitHub Issues](https://github.com/shadowpint/whatsapp-team-inbox-docs/issues)
