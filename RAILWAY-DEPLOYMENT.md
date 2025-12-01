@@ -93,11 +93,17 @@ Railway uses `railway.toml`:
 ```toml
 [build]
 builder = "nixpacks"
-buildCommand = "npm install -g mintlify && mintlify build"
+buildCommand = "npm install -g mintlify"
 
 [deploy]
-startCommand = "npx serve out -l 3000"
+startCommand = "mintlify dev --host 0.0.0.0 --port $PORT"
 ```
+
+**Note**: Mintlify runs as a live development server rather than building static files. This provides:
+- ✅ Hot reload capabilities
+- ✅ Built-in search functionality
+- ✅ Optimized performance
+- ✅ Real-time updates
 
 ### Using Docker (Alternative)
 
@@ -105,7 +111,13 @@ If you prefer Docker deployment:
 
 1. Railway will auto-detect `Dockerfile`
 2. Build uses the Dockerfile we created
-3. Serves via Nginx on port 80
+3. Runs Mintlify dev server on port 3000
+
+**Docker Command**:
+```bash
+docker build -t docs .
+docker run -p 3000:3000 docs
+```
 
 ## 🎯 Post-Deployment
 

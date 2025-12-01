@@ -1,26 +1,16 @@
-# Build stage
-FROM node:18-alpine AS builder
+# Use official Mintlify image or Node with live server
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Install Mintlify
+# Install Mintlify globally
 RUN npm install -g mintlify
 
-# Copy documentation files
+# Copy all documentation files
 COPY . .
 
-# Build documentation
-RUN mintlify build
+# Expose port
+EXPOSE 3000
 
-# Production stage
-FROM nginx:alpine
-
-# Copy built files from builder
-COPY --from=builder /app/out /usr/share/nginx/html
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Start Mintlify dev server in production mode
+CMD ["mintlify", "dev", "--host", "0.0.0.0", "--port", "3000"]

@@ -4,11 +4,10 @@
   "description": "Mintlify documentation for WhatsApp Team Inbox",
   "scripts": {
     "dev": "mintlify dev",
-    "build": "npm install -g mintlify && mintlify build",
-    "start": "serve out -l ${PORT:-3000}",
-    "preview": "mintlify preview",
-    "railway:build": "npm install -g mintlify && mintlify build",
-    "railway:start": "npx serve out -l 3000"
+    "start": "mintlify dev --host 0.0.0.0 --port ${PORT:-3000}",
+    "preview": "mintlify dev",
+    "railway:install": "npm install -g mintlify",
+    "railway:start": "mintlify dev --host 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "serve": "^14.2.1"
