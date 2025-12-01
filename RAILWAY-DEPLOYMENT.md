@@ -198,6 +198,25 @@ Railway provides:
 - First build is slower
 - Subsequent builds are faster
 
+### Healthcheck Failures
+
+**Issue**: "Attempt #X failed with service unavailable"
+**Solution**:
+- This is normal for Mintlify - it takes 30-60s to start
+- Railway will keep retrying
+- Eventually the service will be available
+- Healthchecks have been removed from config (not needed for docs)
+
+**Why it happens**:
+- Mintlify dev server compiles documentation on startup
+- Takes longer than typical static sites
+- Once running, it's very fast
+
+**What to do**:
+- Wait 1-2 minutes after deployment
+- Check deployment logs for "Server is running"
+- Visit your Railway URL to confirm it's live
+
 ## 🚀 Advanced Configuration
 
 ### Multiple Environments

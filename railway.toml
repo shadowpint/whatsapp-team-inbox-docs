@@ -4,7 +4,7 @@ buildCommand = "npm install -g mintlify"
 
 [deploy]
 startCommand = "mintlify dev --host 0.0.0.0 --port $PORT"
-healthcheckPath = "/"
-healthcheckTimeout = 100
+# No healthcheck needed for static documentation site
+# Mintlify dev server takes time to compile and start
 restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
+restartPolicyMaxRetries = 3
